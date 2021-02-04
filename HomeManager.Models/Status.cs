@@ -11,7 +11,7 @@ namespace HomeManager.Models
             this.Payments = new HashSet<Payment>();
         }
 
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public int Deleted { get; set; }
 

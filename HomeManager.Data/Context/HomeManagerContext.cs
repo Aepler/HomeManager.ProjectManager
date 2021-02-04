@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using HomeManager.Models;
+using Type = HomeManager.Models.Type;
 
 namespace HomeManager.Data
 {
@@ -12,25 +13,19 @@ namespace HomeManager.Data
         {
         }
 
-        public DbSet<Salary> Salaries { get; set; }
-        public DbSet<MonthlyExpens> MonthlyExpenses { get; set; }
-        public DbSet<Expenditure> Expenditures { get; set; }
-        public DbSet<Earning> Earnings { get; set; }
-        public DbSet<Cash> Cashes { get; set; }
-        public DbSet<Category_Entry> Category_Entries { get; set; }
-        public DbSet<Status_Entry> Status_Entries { get; set; }
-        public DbSet<MonthlyExpenses_Entry> MonthlyExpenses_Entries { get; set; }
+        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Type> Types { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Status> Statuses { get; set; }
+        public DbSet<Payment_Template> Payment_Templates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Salary>().ToTable("Salary");
-            modelBuilder.Entity<MonthlyExpens>().ToTable("MonthlyExpens");
-            modelBuilder.Entity<Expenditure>().ToTable("Expenditure");
-            modelBuilder.Entity<Earning>().ToTable("Earning");
-            modelBuilder.Entity<Cash>().ToTable("Cash");
-            modelBuilder.Entity<Category_Entry>().ToTable("Category_Entry");
-            modelBuilder.Entity<Status_Entry>().ToTable("Status_Entry");
-            modelBuilder.Entity<MonthlyExpenses_Entry>().ToTable("MonthlyExpenses_Entry");
+            modelBuilder.Entity<Payment>().ToTable("Payment");
+            modelBuilder.Entity<Type>().ToTable("Type");
+            modelBuilder.Entity<Category>().ToTable("Category");
+            modelBuilder.Entity<Status>().ToTable("Status");
+            modelBuilder.Entity<Payment_Template>().ToTable("Payment_Template");
         }
     }
 }

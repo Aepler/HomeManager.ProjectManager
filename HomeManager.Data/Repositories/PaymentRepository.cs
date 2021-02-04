@@ -11,39 +11,87 @@ namespace HomeManager.Data.Repositories
     {
         private readonly HomeManagerContext _context;
 
-        public void Add(Payment payment)
+        public PaymentRepository(HomeManagerContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public IEnumerable<Payment> GetAll()
+        public bool Add(Payment payment)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Payments.Add(payment);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
-        public IEnumerable<Payment> GetByCategory(int fk_CategoryID)
+        public ICollection<Payment> GetAll()
         {
-            throw new NotImplementedException();
+            ICollection<Payment> payments = _context.Payments.ToList();
+            return payments;
+        }
+
+        public ICollection<Payment> GetByCategory(int fk_CategoryId)
+        {
+            ICollection<Payment> payments = GetAll();
+            return payments.Where(x => x.fk_CategoryId == fk_CategoryId).ToList();
+        }
+
+        public ICollection<Payment> GetByDate(DateTime dateTime)
+        {
+            ICollection<Payment> payments = GetAll();
+            return payments.Where(x => x.Date == dateTime).ToList();
+        }
+
+        public ICollection<Payment> GetByDateRange(DateTime dateTimeStart, DateTime dateTimeEnd)
+        {
+            ICollection<Payment> payments = GetAll();
+            return payments.Where(x => x.Date >= dateTimeStart && x.Date <= dateTimeEnd).ToList();
         }
 
         public Payment GetById(int id)
         {
-            throw new NotImplementedException();
+            ICollection<Payment> payments = GetAll();
+            return payments.Where(x => x.Id == id).FirstOrDefault();
         }
 
-        public IEnumerable<Payment> GetByStatus(int fk_StatusID)
+        public ICollection<Payment> GetByStatus(int fk_StatusId)
         {
-            throw new NotImplementedException();
+            ICollection<Payment> payments = GetAll();
+            return payments.Where(x => x.fk_StatusId == fk_StatusId).ToList();
         }
 
-        public IEnumerable<Payment> GetByType(int fk_TypeID)
+        public ICollection<Payment> GetByType(int fk_TypeId)
         {
-            throw new NotImplementedException();
+            ICollection<Payment> payments = GetAll();
+            return payments.Where(x => x.fk_TypeId == fk_TypeId).ToList();
         }
 
-        public void Update(Payment payment)
+        public ICollection<Payment> GetByUser(string user)
         {
-            throw new NotImplementedException();
+            ICollection<Payment> payments = GetAll();
+            return payments.Where(x => x.User == user).ToList();
+        }
+
+        public bool Update(Payment payment)
+        {
+            try
+            {
+                _context.Payments.Update(payment);
+                _context.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

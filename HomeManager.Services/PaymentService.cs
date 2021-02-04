@@ -1,0 +1,141 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using HomeManager.Models;
+using HomeManager.Models.Interfaces;
+using HomeManager.Data.Repositories;
+
+namespace HomeManager.Services
+{
+    public class PaymentService : IPaymentService
+    {
+        private readonly IPaymentRepository _paymentRepository;
+
+        public PaymentService(IPaymentRepository paymentRepository)
+        {
+            _paymentRepository = paymentRepository;
+        }
+
+        public bool Add(Payment payment)
+        {
+            try
+            {
+                return _paymentRepository.Add(payment);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public ICollection<Payment> GetAll()
+        {
+            try
+            {
+                return _paymentRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public ICollection<Payment> GetByCategory(int fk_CategoryId)
+        {
+            try
+            {
+                return _paymentRepository.GetByCategory(fk_CategoryId);
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public ICollection<Payment> GetByDate(DateTime dateTime)
+        {
+            try
+            {
+                return _paymentRepository.GetByDate(dateTime);
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public ICollection<Payment> GetByDateRange(DateTime dateTimeStart, DateTime dateTimeEnd)
+        {
+            try
+            {
+                return _paymentRepository.GetByDateRange(dateTimeStart, dateTimeEnd);
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public Payment GetById(int id)
+        {
+            try
+            {
+                return _paymentRepository.GetById(id);
+            }
+            catch (Exception ex)
+            {
+                return new Payment();
+            }
+        }
+
+        public ICollection<Payment> GetByStatus(int fk_StatusId)
+        {
+            try
+            {
+                return _paymentRepository.GetByStatus(fk_StatusId);
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public ICollection<Payment> GetByType(int fk_TypeId)
+        {
+            try
+            {
+                return _paymentRepository.GetByType(fk_TypeId);
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public ICollection<Payment> GetByUser(string user)
+        {
+            try
+            {
+                return _paymentRepository.GetByUser(user);
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public bool Update(Payment payment)
+        {
+            try
+            {
+                return _paymentRepository.Update(payment);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+    }
+}

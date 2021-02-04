@@ -4,4 +4,9 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HomeManager.Data\HomeManager.Data.csproj" />
+    <ProjectReference Include="..\HomeManager.Models\HomeManager.Models.csproj" />
+  </ItemGroup>
+
 </Project>

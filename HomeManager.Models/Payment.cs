@@ -9,7 +9,7 @@ namespace HomeManager.Models
 {
     public class Payment
     {
-        public int ID { get; set; }
+        public int Id { get; set; }
         public string User { get; set; }
         public System.DateTime Date { get; set; }
         public string Description { get; set; }
@@ -23,16 +23,16 @@ namespace HomeManager.Models
         public string Amount_Extra { get; set; }
         public string Invoice { get; set; }
 
-        public int fk_TypeID { get; set; }
-        [ForeignKey("fk_TypeID")]
+        public int fk_TypeId { get; set; }
+        [ForeignKey("fk_TypeId")]
         public Type Type { get; set; }
 
-        public int fk_CategoryID { get; set; }
-        [ForeignKey("fk_CategoryID")]
+        public int fk_CategoryId { get; set; }
+        [ForeignKey("fk_CategoryId")]
         public Category Category { get; set; }
 
-        public int fk_StatusID { get; set; }
-        [ForeignKey("fk_StatusID")]
+        public int fk_StatusId { get; set; }
+        [ForeignKey("fk_StatusId")]
         public Status Status { get; set; }
 
         public bool Deleted { get; set; }
