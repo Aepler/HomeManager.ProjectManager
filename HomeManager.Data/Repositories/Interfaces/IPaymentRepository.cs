@@ -9,15 +9,15 @@ namespace HomeManager.Data.Repositories.Interfaces
 {
     public interface IPaymentRepository
     {
-        Payment GetById(int id);
-        ICollection<Payment> GetAll();
-        ICollection<Payment> GetByType(int fk_TypeId);
-        ICollection<Payment> GetByCategory(int fk_CategoryId);
-        ICollection<Payment> GetByStatus(int fk_StatusId);
-        ICollection<Payment> GetByDate(DateTime dateTime);
-        ICollection<Payment> GetByDateRange(DateTime dateTimeStart, DateTime dateTimeEnd);
-        ICollection<Payment> GetByUser(string user);
-        bool Add(Payment payment);
-        bool Update(Payment payment);
+        Task<Payment> GetById(User user, int id);
+        Task<ICollection<Payment>> GetAll(User user);
+        Task<ICollection<Payment>> GetByType(User user, int fk_TypeId);
+        Task<ICollection<Payment>> GetByCategory(User user, int fk_CategoryId);
+        Task<ICollection<Payment>> GetByStatus(User user, int fk_StatusId);
+        Task<ICollection<Payment>> GetByDate(User user, DateTime dateTime);
+        Task<ICollection<Payment>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd);
+        Task<ICollection<Payment>> GetByUser(User user, string searchUser);
+        Task<bool> Add(User user, Payment payment);
+        Task<bool> Update(User user, Payment payment);
     }
 }

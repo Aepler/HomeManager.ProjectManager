@@ -9,9 +9,9 @@ namespace HomeManager.Services.Interfaces
 {
     public interface IStatusService
     {
-        Status GetById(int id);
-        ICollection<Status> GetAll();
-        bool Add(Status status);
-        bool Update(Status status);
+        Task<Status> GetById(int id);
+        Task<ICollection<Status>> GetAll();
+        Task<bool> Add(Status status);
+        Task<bool> Update(Status status);
     }
 }

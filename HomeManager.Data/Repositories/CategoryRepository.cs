@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeManager.Data.Repositories
 {
@@ -17,26 +18,26 @@ namespace HomeManager.Data.Repositories
             _context = context;
         }
 
-        public Category GetById(int id)
+        public async Task<Category> GetById(int id)
         {
-            Category category = _context.Categories.Find(id);
+            Category category = await _context.Categories.Where(x => x.Id == id).FirstOrDefaultAsync();
             return category;
         }
 
-        public ICollection<Category> GetAll()
+        public async Task<ICollection<Category>> GetAll()
         {
-            ICollection<Category> categories = _context.Categories.ToList();
+            ICollection<Category> categories = await _context.Categories.ToListAsync();
             return categories;
         }
 
 
 
-        public bool Add(Category category)
+        public async Task<bool> Add(Category category)
         {
             try
             {
                 _context.Categories.Add(category);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -46,12 +47,12 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public bool Update(Category category)
+        public async Task<bool> Update(Category category)
         {
             try
             {
                 _context.Categories.Update(category);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }

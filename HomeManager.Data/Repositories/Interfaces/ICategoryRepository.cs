@@ -9,9 +9,9 @@ namespace HomeManager.Data.Repositories.Interfaces
 {
     public interface ICategoryRepository
     {
-        Category GetById(int id);
-        ICollection<Category> GetAll();
-        bool Add(Category category);
-        bool Update(Category category);
+        Task<Category> GetById(int id);
+        Task<ICollection<Category>> GetAll();
+        Task<bool> Add(Category category);
+        Task<bool> Update(Category category);
     }
 }

@@ -1,4 +1,6 @@
-﻿using HomeManager.WebApplication.ViewModels;
+﻿using HomeManager.Models;
+using HomeManager.WebApplication.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,10 +13,12 @@ namespace HomeManager.WebApplication.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly UserManager<User> _userManager;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(UserManager<User> userManager, ILogger<HomeController> logger)
         {
+            _userManager = userManager;
             _logger = logger;
         }
 

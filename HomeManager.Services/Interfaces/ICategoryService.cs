@@ -9,9 +9,9 @@ namespace HomeManager.Services.Interfaces
 {
     public interface ICategoryService
     {
-        Category GetById(int id);
-        ICollection<Category> GetAll();
-        bool Add(Category category);
-        bool Update(Category category);
+        Task<Category> GetById(int id);
+        Task<ICollection<Category>> GetAll();
+        Task<bool> Add(Category category);
+        Task<bool> Update(Category category);
     }
 }

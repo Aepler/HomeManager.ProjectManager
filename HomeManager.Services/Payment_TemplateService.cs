@@ -18,11 +18,11 @@ namespace HomeManager.Services
             _payment_TemplateRepository = payment_TemplateRepository;
         }
 
-        public bool Add(Payment_Template payment_Template)
+        public async Task<bool> Add(Payment_Template payment_Template)
         {
             try
             {
-                return _payment_TemplateRepository.Add(payment_Template);
+                return await _payment_TemplateRepository.Add(payment_Template);
             }
             catch (Exception ex)
             {
@@ -30,11 +30,11 @@ namespace HomeManager.Services
             }
         }
 
-        public ICollection<Payment_Template> GetAll()
+        public async Task<ICollection<Payment_Template>> GetAll()
         {
             try
             {
-                return _payment_TemplateRepository.GetAll();
+                return await _payment_TemplateRepository.GetAll();
             }
             catch (Exception ex)
             {
@@ -42,11 +42,11 @@ namespace HomeManager.Services
             }
         }
 
-        public ICollection<Payment_Template> GetByCategory(int fk_CategoryId)
+        public async Task<ICollection<Payment_Template>> GetByCategory(int fk_CategoryId)
         {
             try
             {
-                return _payment_TemplateRepository.GetByCategory(fk_CategoryId);
+                return await _payment_TemplateRepository.GetByCategory(fk_CategoryId);
             }
             catch (Exception ex)
             {
@@ -54,11 +54,11 @@ namespace HomeManager.Services
             }
         }
 
-        public Payment_Template GetById(int id)
+        public async Task<Payment_Template> GetById(int id)
         {
             try
             {
-                return _payment_TemplateRepository.GetById(id);
+                return await _payment_TemplateRepository.GetById(id);
             }
             catch (Exception ex)
             {
@@ -66,11 +66,11 @@ namespace HomeManager.Services
             }
         }
 
-        public ICollection<Payment_Template> GetByType(int fk_TypeId)
+        public async Task<ICollection<Payment_Template>> GetByType(int fk_TypeId)
         {
             try
             {
-                return _payment_TemplateRepository.GetByType(fk_TypeId);
+                return await _payment_TemplateRepository.GetByType(fk_TypeId);
             }
             catch (Exception ex)
             {
@@ -78,11 +78,11 @@ namespace HomeManager.Services
             }
         }
 
-        public bool Update(Payment_Template payment_Template)
+        public async Task<bool> Update(Payment_Template payment_Template)
         {
             try
             {
-                return _payment_TemplateRepository.Update(payment_Template);
+                return await _payment_TemplateRepository.Update(payment_Template);
             }
             catch (Exception ex)
             {

@@ -10,9 +10,9 @@ namespace HomeManager.Services.Interfaces
 {
     public interface ITypeService
     {
-        Type GetById(int id);
-        ICollection<Type> GetAll();
-        bool Add(Type type);
-        bool Update(Type type);
+        Task<Type> GetById(int id);
+        Task<ICollection<Type>> GetAll();
+        Task<bool> Add(Type type);
+        Task<bool> Update(Type type);
     }
 }

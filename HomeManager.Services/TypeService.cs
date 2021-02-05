@@ -19,11 +19,11 @@ namespace HomeManager.Services
             _typeRepository = typeRepository;
         }
 
-        public bool Add(Type type)
+        public async Task<bool> Add(Type type)
         {
             try
             {
-                return _typeRepository.Add(type);
+                return await _typeRepository.Add(type);
             }
             catch (Exception ex)
             {
@@ -31,11 +31,11 @@ namespace HomeManager.Services
             }
         }
 
-        public ICollection<Type> GetAll()
+        public async Task<ICollection<Type>> GetAll()
         {
             try
             {
-                return _typeRepository.GetAll();
+                return await _typeRepository.GetAll();
             }
             catch (Exception ex)
             {
@@ -43,11 +43,11 @@ namespace HomeManager.Services
             }
         }
 
-        public Type GetById(int id)
+        public async Task<Type> GetById(int id)
         {
             try
             {
-                return _typeRepository.GetById(id);
+                return await _typeRepository.GetById(id);
             }
             catch (Exception ex)
             {
@@ -55,11 +55,11 @@ namespace HomeManager.Services
             }
         }
 
-        public bool Update(Type type)
+        public async Task<bool> Update(Type type)
         {
             try
             {
-                return _typeRepository.Update(type);
+                return await _typeRepository.Update(type);
             }
             catch (Exception ex)
             {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeManager.Data.Repositories
 {
@@ -17,26 +18,26 @@ namespace HomeManager.Data.Repositories
             _context = context;
         }
 
-        public Status GetById(int id)
+        public async Task<Status> GetById(int id)
         {
-            Status status = _context.Statuses.Find(id);
+            Status status = await _context.Statuses.Where(x => x.Id == id).FirstOrDefaultAsync();
             return status;
         }
 
-        public ICollection<Status> GetAll()
+        public async Task<ICollection<Status>> GetAll()
         {
-            ICollection<Status> statuses = _context.Statuses.ToList();
+            ICollection<Status> statuses = await _context.Statuses.ToListAsync();
             return statuses;
         }
 
 
 
-        public bool Add(Status status)
+        public async Task<bool> Add(Status status)
         {
             try
             {
                 _context.Statuses.Add(status);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -46,12 +47,12 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public bool Update(Status status)
+        public async Task<bool> Update(Status status)
         {
             try
             {
                 _context.Statuses.Update(status);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }

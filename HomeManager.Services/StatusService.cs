@@ -18,11 +18,11 @@ namespace HomeManager.Services
             _statusRepository = statusRepository;
         }
 
-        public bool Add(Status status)
+        public async Task<bool> Add(Status status)
         {
             try
             {
-                return _statusRepository.Add(status);
+                return await _statusRepository.Add(status);
             }
             catch (Exception ex)
             {
@@ -30,11 +30,11 @@ namespace HomeManager.Services
             }
         }
 
-        public ICollection<Status> GetAll()
+        public async Task<ICollection<Status>> GetAll()
         {
             try
             {
-                return _statusRepository.GetAll();
+                return await _statusRepository.GetAll();
             }
             catch (Exception ex)
             {
@@ -42,11 +42,11 @@ namespace HomeManager.Services
             }
         }
 
-        public Status GetById(int id)
+        public async Task<Status> GetById(int id)
         {
             try
             {
-                return _statusRepository.GetById(id);
+                return await _statusRepository.GetById(id);
             }
             catch (Exception ex)
             {
@@ -54,11 +54,11 @@ namespace HomeManager.Services
             }
         }
 
-        public bool Update(Status status)
+        public async Task<bool> Update(Status status)
         {
             try
             {
-                return _statusRepository.Update(status);
+                return await _statusRepository.Update(status);
             }
             catch (Exception ex)
             {

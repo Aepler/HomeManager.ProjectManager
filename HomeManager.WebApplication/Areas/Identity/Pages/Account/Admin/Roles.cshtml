@@ -1,0 +1,35 @@
+﻿@page
+@model HomeManager.WebApplication.Areas.Identity.Pages.Account.Admin.RolesModel
+@{
+    ViewData["Title"] = "Roles";
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.roles)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a asp-action="EditRole" asp-route-id="@item.Id">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

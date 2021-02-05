@@ -18,11 +18,11 @@ namespace HomeManager.Services
             _categoryRepository = categoryRepository;
         }
 
-        public bool Add(Category category)
+        public async Task<bool> Add(Category category)
         {
             try
             {
-                return _categoryRepository.Add(category);
+                return await _categoryRepository.Add(category);
             }
             catch (Exception ex)
             {
@@ -30,11 +30,11 @@ namespace HomeManager.Services
             }
         }
 
-        public ICollection<Category> GetAll()
+        public async Task<ICollection<Category>> GetAll()
         {
             try
             {
-                return _categoryRepository.GetAll();
+                return await _categoryRepository.GetAll();
             }
             catch (Exception ex)
             {
@@ -42,11 +42,11 @@ namespace HomeManager.Services
             }
         }
 
-        public Category GetById(int id)
+        public async Task<Category> GetById(int id)
         {
             try
             {
-                return _categoryRepository.GetById(id);
+                return await _categoryRepository.GetById(id);
             }
             catch (Exception ex)
             {
@@ -54,11 +54,11 @@ namespace HomeManager.Services
             }
         }
 
-        public bool Update(Category category)
+        public async Task<bool> Update(Category category)
         {
             try
             {
-                return _categoryRepository.Update(category);
+                return await _categoryRepository.Update(category);
             }
             catch (Exception ex)
             {

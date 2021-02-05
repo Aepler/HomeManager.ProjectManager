@@ -40,12 +40,16 @@ namespace HomeManager.WebApplication
             .AddDefaultUI()
             .AddDefaultTokenProviders();
 
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IStatusRepository, StatusRepository>();
             services.AddScoped<ITypeRepository, TypeRepository>();
             services.AddScoped<IPayment_TemplateRepository, Payment_TemplateRepository>();
 
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IStatusService, StatusService>();

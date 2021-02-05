@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Type = HomeManager.Models.Type;
 
 namespace HomeManager.Data.Repositories
@@ -17,26 +18,26 @@ namespace HomeManager.Data.Repositories
             _context = context;
         }
 
-        public Type GetById(int id)
+        public async Task<Type> GetById(int id)
         {
-            Type type = _context.Types.Find(id);
+            Type type = await _context.Types.Where(x => x.Id == id).FirstOrDefaultAsync();
             return type;
         }
 
-        public ICollection<Type> GetAll()
+        public async Task<ICollection<Type>> GetAll()
         {
-            ICollection<Type> types = _context.Types.ToList();
+            ICollection<Type> types = await _context.Types.ToListAsync();
             return types;
         }
 
 
 
-        public bool Add(Type type)
+        public async Task<bool> Add(Type type)
         {
             try
             {
                 _context.Types.Add(type);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -46,12 +47,12 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public bool Update(Type type)
+        public async Task<bool> Update(Type type)
         {        
             try
             {
                 _context.Types.Update(type);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }

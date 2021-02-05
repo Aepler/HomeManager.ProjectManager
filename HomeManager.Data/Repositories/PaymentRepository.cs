@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models;
 using HomeManager.Data.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomeManager.Data.Repositories
 {
@@ -17,62 +18,62 @@ namespace HomeManager.Data.Repositories
             _context = context;
         }
 
-        public Payment GetById(int id)
+        public async Task<Payment> GetById(User user, int id)
         {
-            Payment payment = _context.Payments.Find(id);
+            Payment payment = await _context.Payments.Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Where(x => x.fk_UserId == user.Id && x.Id == id).FirstOrDefaultAsync();
             return payment;
         }
 
-        public ICollection<Payment> GetAll()
+        public async Task<ICollection<Payment>> GetAll(User user)
         {
-            ICollection<Payment> payments = _context.Payments.ToList();
+            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
             return payments;
         }
 
-        public ICollection<Payment> GetByCategory(int fk_CategoryId)
+        public async Task<ICollection<Payment>> GetByCategory(User user, int fk_CategoryId)
         {
-            ICollection<Payment> payments = _context.Payments.Where(x => x.fk_CategoryId == fk_CategoryId).ToList();
+            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_CategoryId == fk_CategoryId).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
             return payments;
         }
 
-        public ICollection<Payment> GetByDate(DateTime dateTime)
+        public async Task<ICollection<Payment>> GetByDate(User user, DateTime dateTime)
         {
-            ICollection<Payment> payments = _context.Payments.Where(x => x.Date == dateTime).ToList();
+            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.Date == dateTime).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
             return payments;
         }
 
-        public ICollection<Payment> GetByDateRange(DateTime dateTimeStart, DateTime dateTimeEnd)
+        public async Task<ICollection<Payment>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
         {
-            ICollection<Payment> payments = _context.Payments.Where(x => x.Date >= dateTimeStart && x.Date <= dateTimeEnd).ToList();
+            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.Date >= dateTimeStart && x.Date <= dateTimeEnd).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
             return payments;
         }
 
-        public ICollection<Payment> GetByStatus(int fk_StatusId)
+        public async Task<ICollection<Payment>> GetByStatus(User user, int fk_StatusId)
         {
-            ICollection<Payment> payments = _context.Payments.Where(x => x.fk_StatusId == fk_StatusId).ToList();
+            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_StatusId == fk_StatusId).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
             return payments;
         }
 
-        public ICollection<Payment> GetByType(int fk_TypeId)
+        public async Task<ICollection<Payment>> GetByType(User user, int fk_TypeId)
         {
-            ICollection<Payment> payments = _context.Payments.Where(x => x.fk_TypeId == fk_TypeId).ToList();
+            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_TypeId == fk_TypeId).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
             return payments;
         }
 
-        public ICollection<Payment> GetByUser(string user)
+        public async Task<ICollection<Payment>> GetByUser(User user, string searchUser)
         {
-            ICollection<Payment> payments = _context.Payments.Where(x => x.fk_UserId == Guid.Parse(user)).ToList();
+            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_UserId == Guid.Parse(searchUser)).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
             return payments;
         }
 
 
 
-        public bool Add(Payment payment)
+        public async Task<bool> Add(User user, Payment payment)
         {
             try
             {
                 _context.Payments.Add(payment);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }
@@ -82,12 +83,12 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public bool Update(Payment payment)
+        public async Task<bool> Update(User user, Payment payment)
         {
             try
             {
                 _context.Payments.Update(payment);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }
