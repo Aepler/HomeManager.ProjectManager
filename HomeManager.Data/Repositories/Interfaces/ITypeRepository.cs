@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using HomeManager.Models;
 using Type = HomeManager.Models.Type;
 
-namespace HomeManager.Data.Repositories
+namespace HomeManager.Data.Repositories.Interfaces
 {
     public interface ITypeRepository
     {

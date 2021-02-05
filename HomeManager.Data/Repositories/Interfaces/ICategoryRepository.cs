@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models;
 
-namespace HomeManager.Data.Repositories
+namespace HomeManager.Data.Repositories.Interfaces
 {
     public interface ICategoryRepository
     {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models;
+using HomeManager.Data.Repositories.Interfaces;
 
 namespace HomeManager.Data.Repositories
 {
@@ -15,6 +16,56 @@ namespace HomeManager.Data.Repositories
         {
             _context = context;
         }
+
+        public Payment GetById(int id)
+        {
+            Payment payment = _context.Payments.Find(id);
+            return payment;
+        }
+
+        public ICollection<Payment> GetAll()
+        {
+            ICollection<Payment> payments = _context.Payments.ToList();
+            return payments;
+        }
+
+        public ICollection<Payment> GetByCategory(int fk_CategoryId)
+        {
+            ICollection<Payment> payments = _context.Payments.Where(x => x.fk_CategoryId == fk_CategoryId).ToList();
+            return payments;
+        }
+
+        public ICollection<Payment> GetByDate(DateTime dateTime)
+        {
+            ICollection<Payment> payments = _context.Payments.Where(x => x.Date == dateTime).ToList();
+            return payments;
+        }
+
+        public ICollection<Payment> GetByDateRange(DateTime dateTimeStart, DateTime dateTimeEnd)
+        {
+            ICollection<Payment> payments = _context.Payments.Where(x => x.Date >= dateTimeStart && x.Date <= dateTimeEnd).ToList();
+            return payments;
+        }
+
+        public ICollection<Payment> GetByStatus(int fk_StatusId)
+        {
+            ICollection<Payment> payments = _context.Payments.Where(x => x.fk_StatusId == fk_StatusId).ToList();
+            return payments;
+        }
+
+        public ICollection<Payment> GetByType(int fk_TypeId)
+        {
+            ICollection<Payment> payments = _context.Payments.Where(x => x.fk_TypeId == fk_TypeId).ToList();
+            return payments;
+        }
+
+        public ICollection<Payment> GetByUser(string user)
+        {
+            ICollection<Payment> payments = _context.Payments.Where(x => x.fk_UserId == Guid.Parse(user)).ToList();
+            return payments;
+        }
+
+
 
         public bool Add(Payment payment)
         {
@@ -29,54 +80,6 @@ namespace HomeManager.Data.Repositories
             {
                 return false;
             }
-        }
-
-        public ICollection<Payment> GetAll()
-        {
-            ICollection<Payment> payments = _context.Payments.ToList();
-            return payments;
-        }
-
-        public ICollection<Payment> GetByCategory(int fk_CategoryId)
-        {
-            ICollection<Payment> payments = GetAll();
-            return payments.Where(x => x.fk_CategoryId == fk_CategoryId).ToList();
-        }
-
-        public ICollection<Payment> GetByDate(DateTime dateTime)
-        {
-            ICollection<Payment> payments = GetAll();
-            return payments.Where(x => x.Date == dateTime).ToList();
-        }
-
-        public ICollection<Payment> GetByDateRange(DateTime dateTimeStart, DateTime dateTimeEnd)
-        {
-            ICollection<Payment> payments = GetAll();
-            return payments.Where(x => x.Date >= dateTimeStart && x.Date <= dateTimeEnd).ToList();
-        }
-
-        public Payment GetById(int id)
-        {
-            ICollection<Payment> payments = GetAll();
-            return payments.Where(x => x.Id == id).FirstOrDefault();
-        }
-
-        public ICollection<Payment> GetByStatus(int fk_StatusId)
-        {
-            ICollection<Payment> payments = GetAll();
-            return payments.Where(x => x.fk_StatusId == fk_StatusId).ToList();
-        }
-
-        public ICollection<Payment> GetByType(int fk_TypeId)
-        {
-            ICollection<Payment> payments = GetAll();
-            return payments.Where(x => x.fk_TypeId == fk_TypeId).ToList();
-        }
-
-        public ICollection<Payment> GetByUser(string user)
-        {
-            ICollection<Payment> payments = GetAll();
-            return payments.Where(x => x.User == user).ToList();
         }
 
         public bool Update(Payment payment)

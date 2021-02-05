@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HomeManager.Data.Repositories.Interfaces;
 
 namespace HomeManager.Data.Repositories
 {
@@ -15,6 +16,21 @@ namespace HomeManager.Data.Repositories
         {
             _context = context;
         }
+
+        public Category GetById(int id)
+        {
+            Category category = _context.Categories.Find(id);
+            return category;
+        }
+
+        public ICollection<Category> GetAll()
+        {
+            ICollection<Category> categories = _context.Categories.ToList();
+            return categories;
+        }
+
+
+
         public bool Add(Category category)
         {
             try
@@ -28,18 +44,6 @@ namespace HomeManager.Data.Repositories
             {
                 return false;
             }
-        }
-
-        public ICollection<Category> GetAll()
-        {
-            ICollection<Category> categories = _context.Categories.ToList();
-            return categories;
-        }
-
-        public Category GetById(int id)
-        {
-            ICollection<Category> categories = GetAll();
-            return categories.Where(x => x.Id == id).FirstOrDefault();
         }
 
         public bool Update(Category category)

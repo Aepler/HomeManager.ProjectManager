@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models;
-using HomeManager.Models.Interfaces;
-using HomeManager.Data.Repositories;
+using HomeManager.Services.Interfaces;
+using HomeManager.Data.Repositories.Interfaces;
 using Type = HomeManager.Models.Type;
 
 namespace HomeManager.Services

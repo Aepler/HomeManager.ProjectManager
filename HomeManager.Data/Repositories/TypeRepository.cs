@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HomeManager.Data.Repositories.Interfaces;
 using Type = HomeManager.Models.Type;
 
 namespace HomeManager.Data.Repositories
@@ -15,6 +16,21 @@ namespace HomeManager.Data.Repositories
         {
             _context = context;
         }
+
+        public Type GetById(int id)
+        {
+            Type type = _context.Types.Find(id);
+            return type;
+        }
+
+        public ICollection<Type> GetAll()
+        {
+            ICollection<Type> types = _context.Types.ToList();
+            return types;
+        }
+
+
+
         public bool Add(Type type)
         {
             try
@@ -28,18 +44,6 @@ namespace HomeManager.Data.Repositories
             {
                 return false;
             }
-        }
-
-        public ICollection<Type> GetAll()
-        {
-            ICollection<Type> types = _context.Types.ToList();
-            return types;
-        }
-
-        public Type GetById(int id)
-        {
-            ICollection<Type> types = GetAll();
-            return types.Where(x => x.Id == id).FirstOrDefault();
         }
 
         public bool Update(Type type)

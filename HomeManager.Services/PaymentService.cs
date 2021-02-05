@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models;
-using HomeManager.Models.Interfaces;
-using HomeManager.Data.Repositories;
+using HomeManager.Services.Interfaces;
+using HomeManager.Data.Repositories.Interfaces;
 
 namespace HomeManager.Services
 {
@@ -35,6 +35,52 @@ namespace HomeManager.Services
             try
             {
                 return _paymentRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public ICollection<Payment> GetAllPending()
+        {
+            try
+            {
+                ICollection<Payment> payments = GetAll().Where(x => x.fk_StatusId == 3 && x.fk_StatusId == 4 && x.Date > DateTime.Today).ToList();
+                return payments;
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public ICollection<Payment> GetBalanceForDate(DateTime dateTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<Payment> GetBalanceToday()
+        {
+            try
+            {
+                decimal result = 0;
+
+                ICollection<Payment> payments = GetAll();
+
+                foreach (var x in payments)
+                {
+                    if (x.fk_TypeId == 1 || x.fk_TypeId == 4)
+                    {
+                        result += x.Amount;
+                    }
+                    else if(x.fk_TypeId == 2 || x.fk_TypeId == 3)
+                    {
+                        result -= x.Amount;
+                    }
+                }
+
+                return payments;
             }
             catch (Exception ex)
             {
@@ -119,6 +165,32 @@ namespace HomeManager.Services
             try
             {
                 return _paymentRepository.GetByUser(user);
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public ICollection<Payment> GetRealCompleted()
+        {
+            try
+            {
+                ICollection<Payment> payments = GetAll().Where(x => x.fk_StatusId == 1 && x.fk_StatusId == 2).ToList();
+                return payments;
+            }
+            catch (Exception ex)
+            {
+                return new List<Payment>();
+            }
+        }
+
+        public ICollection<Payment> GetRealPending()
+        {
+            try
+            {
+                ICollection<Payment> payments = GetAll().Where(x => x.fk_StatusId == 3 && x.Date > DateTime.Today).ToList();
+                return payments;
             }
             catch (Exception ex)
             {

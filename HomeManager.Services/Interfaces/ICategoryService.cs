@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HomeManager.Models;
 
-namespace HomeManager.Models.Interfaces
+namespace HomeManager.Services.Interfaces
 {
     public interface ICategoryService
     {

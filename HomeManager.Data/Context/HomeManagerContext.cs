@@ -4,10 +4,15 @@ using System.Collections.Generic;
 using System.Text;
 using HomeManager.Models;
 using Type = HomeManager.Models.Type;
+using HomeManager.Data.Context;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+
+//Add-Migration HomeManager.PutNameHere -Context HomeManagerContext -OutputDir "Migrations"
 
 namespace HomeManager.Data
 {
-    public class HomeManagerContext : DbContext
+    public class HomeManagerContext : IdentityDbContext<User, Role, Guid>
     {
         public HomeManagerContext(DbContextOptions<HomeManagerContext> options) : base(options)
         {
@@ -21,11 +26,15 @@ namespace HomeManager.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Payment>().ToTable("Payment");
-            modelBuilder.Entity<Type>().ToTable("Type");
-            modelBuilder.Entity<Category>().ToTable("Category");
-            modelBuilder.Entity<Status>().ToTable("Status");
-            modelBuilder.Entity<Payment_Template>().ToTable("Payment_Template");
+            modelBuilder.Entity<Payment>().ToTable("Payments");
+            modelBuilder.Entity<Type>().ToTable("Types");
+            modelBuilder.Entity<Category>().ToTable("Categories");
+            modelBuilder.Entity<Status>().ToTable("Statuses");
+            modelBuilder.Entity<Payment_Template>().ToTable("Payment_Templates");
+
+            modelBuilder.Seed();
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

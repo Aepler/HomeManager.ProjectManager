@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using HomeManager.Data.Repositories.Interfaces;
 
 namespace HomeManager.Data.Repositories
 {
@@ -15,6 +16,33 @@ namespace HomeManager.Data.Repositories
         {
             _context = context;
         }
+
+        public Payment_Template GetById(int id)
+        {
+            Payment_Template payment_Template = _context.Payment_Templates.Find(id);
+            return payment_Template;
+        }
+
+        public ICollection<Payment_Template> GetAll()
+        {
+            ICollection<Payment_Template> payment_Templates = _context.Payment_Templates.ToList();
+            return payment_Templates;
+        }
+
+        public ICollection<Payment_Template> GetByCategory(int fk_CategoryId)
+        {
+            ICollection<Payment_Template> payment_Templates = _context.Payment_Templates.Where(x => x.fk_CategoryId == fk_CategoryId).ToList();
+            return payment_Templates;
+        }
+
+        public ICollection<Payment_Template> GetByType(int fk_TypeId)
+        {
+            ICollection<Payment_Template> payment_Templates = _context.Payment_Templates.Where(x => x.fk_TypeId == fk_TypeId).ToList();
+            return payment_Templates;
+        }
+
+
+
         public bool Add(Payment_Template payment_Template)
         {
             try
@@ -28,30 +56,6 @@ namespace HomeManager.Data.Repositories
             {
                 return false;
             }
-        }
-
-        public ICollection<Payment_Template> GetAll()
-        {
-            ICollection<Payment_Template> payment_Templates = _context.Payment_Templates.ToList();
-            return payment_Templates;
-        }
-
-        public ICollection<Payment_Template> GetByCategory(int fk_CategoryId)
-        {
-            ICollection<Payment_Template> payment_Templates = GetAll();
-            return payment_Templates.Where(x => x.fk_CategoryId == fk_CategoryId).ToList();
-        }
-
-        public Payment_Template GetById(int id)
-        {
-            ICollection<Payment_Template> payment_Templates = GetAll();
-            return payment_Templates.Where(x => x.Id == id).FirstOrDefault();
-        }
-
-        public ICollection<Payment_Template> GetByType(int fk_TypeId)
-        {
-            ICollection<Payment_Template> payment_Templates = GetAll();
-            return payment_Templates.Where(x => x.fk_TypeId == fk_TypeId).ToList();
         }
 
         public bool Update(Payment_Template payment_Template)

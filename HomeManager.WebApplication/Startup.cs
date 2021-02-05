@@ -10,6 +10,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using HomeManager.Data;
 using Microsoft.EntityFrameworkCore;
+using HomeManager.Data.Repositories;
+using HomeManager.Data.Repositories.Interfaces;
+using HomeManager.Services;
+using HomeManager.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using HomeManager.Models;
 
 namespace HomeManager.WebApplication
 {
@@ -27,7 +33,25 @@ namespace HomeManager.WebApplication
         {
             services.AddDbContext<HomeManagerContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("HomeManagerDbConnection")));
+                    Configuration.GetConnectionString("HomeManagerDbConnection"), b => b.MigrationsAssembly("HomeManager.Data")));
+
+            services.AddIdentity<User, Role>()
+            .AddEntityFrameworkStores<HomeManagerContext>()
+            .AddDefaultUI()
+            .AddDefaultTokenProviders();
+
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IStatusRepository, StatusRepository>();
+            services.AddScoped<ITypeRepository, TypeRepository>();
+            services.AddScoped<IPayment_TemplateRepository, Payment_TemplateRepository>();
+
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IStatusService, StatusService>();
+            services.AddScoped<ITypeService, TypeService>();
+            services.AddScoped<IPayment_TemplateService, Payment_TemplateService>();
+
             services.AddControllersWithViews();
             services.AddMvc();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
@@ -52,6 +76,7 @@ namespace HomeManager.WebApplication
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -59,14 +84,7 @@ namespace HomeManager.WebApplication
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                  name: "areas",
-                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                );
+                endpoints.MapRazorPages();
             });
         }
 
