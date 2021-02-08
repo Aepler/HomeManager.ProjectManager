@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
-    List();
+    //List();
+    CreatePayment()
 });
 
 //==============================================================================
@@ -35,273 +36,17 @@ function List() {
         ]
     });
 
-    var container = $('<div/>').insertBefore(overview.table().container());
-
-    var chart = Highcharts.chart(container[0], {
-        chart: {
-            type: 'pie',
-        },
-        title: {
-            text: 'Staff Count Per Position',
-        },
-        series: [
-            {
-                data: chartData(overview),
-            },
-        ],
-    });
-
-    // On each draw, update the data in the chart
-    table.on('draw', function () {
-        chart.series[0].setData(chartData(table));
-    });
-
-    var overviewPending = $("#tblIndexOverviewPending").DataTable({
-        "processing": true,
-        "serverSide": true,
-        "filter": true,
-        "orderMulti": false,
-        "destroy": true,
-        "ordering": true,
-        "order": [[1, "ASC"]],
-        "ajax": {
-            "url": '/Payments/GetTableDataPending',
-            "type": "POST",
-            "datatype": "json"
-        },
-        "columns": [
-            {
-                "className": 'details-control',
-                "orderable": false,
-                "data": null,
-                "defaultContent": '<button class="btn btn-primary" type="button">+</button>'
-            }
-            , { "data": "Date" }
-            , { "data": "Description" }
-            , { "data": "Type" }
-            , { "data": "Amount" }
-        ]
-    });
-
-    var overviewSalary = $("#tblIndexSalary").DataTable({
-        "processing": true,
-        "serverSide": true,
-        "filter": true,
-        "orderMulti": false,
-        "destroy": true,
-        "ordering": true,
-        "order": [[1, "ASC"]],
-        "ajax": {
-            "url": '/Payments/GetTableDataSalary',
-            "type": "POST",
-            "datatype": "json"
-        },
-        "columns": [
-            {
-                "className": 'details-control',
-                "orderable": false,
-                "data": null,
-                "defaultContent": '<button class="btn btn-primary" type="button">+</button>'
-            }
-            , { "data": "Date" }
-            , { "data": "Description" }
-            , { "data": "Amount" }
-        ]
-    });
-
-    var overviewMonthlyExpenses = $("#tblIndexMonthlyExpenses").DataTable({
-        "processing": true,
-        "serverSide": true,
-        "filter": true,
-        "orderMulti": false,
-        "destroy": true,
-        "ordering": true,
-        "order": [[1, "ASC"]],
-        "ajax": {
-            "url": '/Payments/GetTableDataMonthlyExpenses',
-            "type": "POST",
-            "datatype": "json"
-        },
-        "columns": [
-            {
-                "className": 'details-control',
-                "orderable": false,
-                "data": null,
-                "defaultContent": '<button class="btn btn-primary" type="button">+</button>'
-            }
-            , { "data": "Date" }
-            , { "data": "Description" }
-            , { "data": "Amount" }
-        ]
-    });
-
-    var overviewExpenditure = $("#tblIndexExpenditure").DataTable({
-        "processing": true,
-        "serverSide": true,
-        "filter": true,
-        "orderMulti": false,
-        "destroy": true,
-        "ordering": true,
-        "order": [[1, "ASC"]],
-        "ajax": {
-            "url": '/Payments/GetTableDataExpenditure',
-            "type": "POST",
-            "datatype": "json"
-        },
-        "columns": [
-            {
-                "className": 'details-control',
-                "orderable": false,
-                "data": null,
-                "defaultContent": '<button class="btn btn-primary" type="button">+</button>'
-            }
-            , { "data": "Date" }
-            , { "data": "Description" }
-            , { "data": "Amount" }
-        ]
-    });
-
-    var overviewEarnings = $("#tblIndexEarnings").DataTable({
-        "processing": true,
-        "serverSide": true,
-        "filter": true,
-        "orderMulti": false,
-        "destroy": true,
-        "ordering": true,
-        "order": [[1, "ASC"]],
-        "ajax": {
-            "url": '/Payments/GetTableDataEarnings',
-            "type": "POST",
-            "datatype": "json"
-        },
-        "columns": [
-            {
-                "className": 'details-control',
-                "orderable": false,
-                "data": null,
-                "defaultContent": '<button class="btn btn-primary" type="button">+</button>'
-            }
-            , { "data": "Date" }
-            , { "data": "Description" }
-            , { "data": "Amount" }
-        ]
-    });
-
-    ListExtra(overview, overviewPending, overviewSalary, overviewMonthlyExpenses, overviewExpenditure, overviewEarnings);
-}
-
-function chartData(table) {
-    var counts = {};
-
-    // Count the number of entries for each position
-    table
-        .column(1, { search: 'applied' })
-        .data()
-        .each(function (val) {
-            if (counts[val]) {
-                counts[val] += 1;
-            } else {
-                counts[val] = 1;
-            }
-        });
-
-    // And map it to the format highcharts uses
-    return $.map(counts, function (val, key) {
-        return {
-            name: key,
-            y: val,
-        };
-    });
+    ListExtra(overview);
 }
 
 //==============================================================================
 // List Child row ==============================================================
 //==============================================================================
 
-function ListExtra(overview, overviewPending, overviewSalary, overviewMonthlyExpenses, overviewExpenditure, overviewEarnings) {
+function ListExtra(overview) {
     $('#tblIndexOverview tbody').on('click', 'td.details-control', function () {
         var tr = $(this).closest('tr');
         var row = overview.row(tr);
-
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            // Open this row
-            row.child(ListFormat(row.data())).show();
-            tr.addClass('shown');
-        }
-    });
-
-    $('#tblIndexOverviewPending tbody').on('click', 'td.details-control', function () {
-        var tr = $(this).closest('tr');
-        var row = overviewPending.row(tr);
-
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            // Open this row
-            row.child(ListFormat(row.data())).show();
-            tr.addClass('shown');
-        }
-    });
-
-    $('#tblIndexSalary tbody').on('click', 'td.details-control', function () {
-        var tr = $(this).closest('tr');
-        var row = overviewSalary.row(tr);
-
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            // Open this row
-            row.child(ListFormat(row.data())).show();
-            tr.addClass('shown');
-        }
-    });
-
-    $('#tblIndexMonthlyExpenses tbody').on('click', 'td.details-control', function () {
-        var tr = $(this).closest('tr');
-        var row = overviewMonthlyExpenses.row(tr);
-
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            // Open this row
-            row.child(ListFormat(row.data())).show();
-            tr.addClass('shown');
-        }
-    });
-
-    $('#tblIndexExpenditure tbody').on('click', 'td.details-control', function () {
-        var tr = $(this).closest('tr');
-        var row = overviewExpenditure.row(tr);
-
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            // Open this row
-            row.child(ListFormat(row.data())).show();
-            tr.addClass('shown');
-        }
-    });
-
-    $('#tblIndexEarnings tbody').on('click', 'td.details-control', function () {
-        var tr = $(this).closest('tr');
-        var row = overviewEarnings.row(tr);
 
         if (row.child.isShown()) {
             // This row is already open - close it
@@ -619,128 +364,275 @@ function DeleteEarnings(id) {
 // Create Entry ================================================================
 //==============================================================================
 
-function AmountCreateSalary() {
-    var gross = $('#Amount_GrossCreateSalary').val().replace(',', '.');
-    var net = $('#Amount_NetCreateSalary').val().replace(',', '.');
+function CreatePayment() {
+    var init = '<div class="form-group form-floating">' +
+        '<select name="fk_TypeId" class ="form-control" id="dropdownTypeCreatePayment"></select>' +
+        '<label for="fk_TypeId" class="control-label">Type</label>' +
+        '</div >';
 
-    if (gross != "" && net != "") {
-        var resultTax = gross - net;
-        resultTax = resultTax.toFixed(2);
-        $('#Amount_TaxCreateSalary').val(resultTax.replace('.', ','));
+    $("#modalBodyCreatePayment").append(init);
 
-        var resultPercentage = (100 / (net / gross)) - 100;
-        resultPercentage = resultPercentage.toFixed(0);
-        $('#TaxCreateSalary').val(resultPercentage);
+    var dropdownCategory = $('#dropdownTypeCreatePayment');
+
+    GetTypeList(dropdownCategory);
+
+    dropdownCategory.change(function () {
+        var type = $("#dropdownTypeCreatePayment option:selected").val;
+        var statusId = $("#dropdownTypeCreatePayment option:selected").attr("id");
+        var taxType = $("#dropdownTypeCreatePayment option:selected").attr("tax");
+        var inputFields = $("#dropdownTypeCreatePayment option:selected").attr("inputfields");
+
+        var date = '<br class="created" />' +
+            '<div class="form-group form-floating  created">' + 
+            '<input name="Date" placeholder="Date" class="form-control" type="date"  id="datepickerDateCreatePayment" />' +
+            '<label for="Date" class="control-label">Date</label>' +
+            '</div>';
+        var description = '<br class="created" />' +
+            '<div class="form-group form-floating created">' +
+            '<input name="Description" placeholder="Description" class="form-control" id="inputDescriptionCreatePayment" />' +
+            '<label for="Description">Description</label>' +
+            '</div>';
+        var description_extra = '<br class="created" />' +
+            '<div class="form-group form-floating created">' +
+            '<input name="Description_Extra" placeholder="Description_Extra" class="form-control" id="inputDescriptionExtraCreatePayment" />' +
+            '<label for="Description_Extra" class="control-label">Description Extra</label>' +
+            '</div>';
+        var tax = '<br class="created" />' +
+            '<div class="row g-3 form-group created">' +
+            '<div class="col form-floating created">' +            
+            '<input name="Tax" placeholder="Tax" class="form-control" id="inputTaxCreatePayment" />' +
+            '<label for="Tax" class="control-label">Tax</label>' +
+            '</div>' +
+            '<div class="col form-floating created">' +
+            '<input name="Amount_Tax" placeholder="Amount_Tax" class="form-control" id="inputAmountTaxCreatePayment" />' +
+            '<label for="Amount_Tax" class="control-label">Amount Tax</label>' +
+            '</div>' +
+            '</div>';
+        var amount = '<br class="created" />' +
+            '<div class="form-group form-floating created">' +            
+            '<input name="Amount" placeholder="Amount" class="form-control" id="inputAmountCreatePayment" />' +
+            '<label for="Amount" class="control-label">Total Amount</label>' +
+            '</div>';
+        var amount_gross = '<div class="form-group form-floating created">' +
+            '<input name="Amount_Gross" placeholder="Amount_Gross" class="form-control" id="inputAmountGrossCreatePayment" />' +
+            '<label for="Amount_Gross" class="control-label">Amount Gross</label>' +
+            '</div>';
+        var amount_net = '<div class="form-group form-floating created">' +
+            '<input name="Amount_Net" placeholder="Amount_Net" class="form-control" id="inputAmountNetCreatePayment" />' +
+            '<label for="Amount_Net" class="control-label">Amount Net</label>' +
+            '</div>';
+        var amount_extra = '<br class="created" />' +
+            '<div class="form-group form-floating created">' +            
+            '<input name="Amount_Extra" placeholder="Amount_Extra" class="form-control" id="inputAmountExtraCreatePayment" />' +
+            '<label for="Amount_Extra" class="control-label">Amount Extra</label>' +
+            '</div>';
+        var files = '<br class="created" />' +
+            '<div class="form-group created">' +            
+            '<label class="control-label" for="files">Upload Invoice</label>' +
+            '<input class="form-control" name="files" type="file" id="uploadFilesCreatePayment" />' +
+            '</div>';
+        var category = '<br class="created" />' +
+            '<div class="form-group form-floating created">' +            
+            '<select name="fk_CategoryId" class ="form-control" id="dropdownCategoryCreatePayment"></select>' +
+            '<label for="fk_CategoryId" class="control-label">Category</label>' +
+            '</div>';
+        var status = '<br class="created" />' +
+            '<div class="form-group form-floating created">' +            
+            '<select name="fk_StatusId" class ="form-control" id="dropdownStatusCreatePayment"></select>' +
+            '<label for="fk_StatusId" class="control-label">Status</label>' +
+            '</div>';
+
+        var advancedAmount = '<a href="#" class="link-dark created" id="linkAdvancedAmountCreatePayment" onclick="AdvancedAmount()" value="0" >Advanced</a>'
+        var advancedTax = '<a href="#" class="link-dark created" id="linkAdvancedTaxCreatePayment" onclick="AdvancedTax()" value="0">Advanced</a>'
+        var extraAmount = '<a href="#" class="link-dark created" id="linkExtraAmountCreatePayment" onclick="ExtraAmount()" value="0">Extra Cost</a>'
+
+        var data = date + description + amount;
+
+        if (inputFields.includes("Extra_Amount")) {
+            data = data + extraAmount;
+        }
+
+        data = data + advancedAmount;
+        if (taxType == "Gross") {
+            data = data + '<div class="created" id="divAdvancedCreatePayment" style="display: none">' + amount_gross + '<br class="created" />' + amount_net + '</div>';
+        } else if (taxType == "Net") {
+            data = data + '<div class="created" id="divAdvancedCreatePayment" style="display: none">' + amount_net + '<br class="created" />' + amount_gross + '</div>';
+        }
+
+        data = data + tax;
+
+        if (inputFields.includes("TaxList")) {
+            data = data + advancedTax;
+        }
+
+        data = data + category + status + files;
+
+        $(".created").remove();
+        $("#modalBodyCreatePayment").append(data);
+
+        var dropdownCategory = $('#dropdownCategoryCreatePayment');
+        var dropdownStatus = $('#dropdownStatusCreatePayment');
+        GetCategoryList(dropdownCategory);
+        GetStatusListByType(dropdownStatus, statusId);
+    });
+
+    $('#inputAmountGrossCreatePayment').change(function () {
+        var grossField = $('#inputAmountGrossCreatePayment');
+        var netField = $('#inputAmountNetCreatePayment');
+        var taxField = $('#inputAmountTaxCreatePayment');
+
+        CalcNet(grossField, netField, taxField);
+    });
+}
+
+
+function AdvancedTax() {
+    var countString = $('#linkAdvancedTaxCreatePayment').attr("value");
+    var count = parseInt(countString);
+    if (count == 0) {
+        var advancedTax = '<a href="#" class="link-dark created advancedTax" id="linkAddTaxCreatePayment" onclick="AddTax()" value="1">Add Tax</a>'
+        $('#linkAdvancedTaxCreatePayment').after(advancedTax);
+        var data = '<br class="advancedTax created" />' +
+            '<div class="row g-3 form-group advancedTax created">' +
+            '<div class="col form-floating">' +
+            '<input name="Description_Tax" placeholder="Description_Tax" class="form-control" id="inputDescriptionTaxCreatePayment" />' +
+            '<label for="Description_Tax" class="control-label">Description</label>' +
+            '</div>' +
+            '<div class="col form-floating">' +
+            '<input name="Amount_TaxList" placeholder="Amount_TaxList" class="form-control" id="inputAmountTaxListCreatePayment" />' +
+            '<label for="Amount_TaxList" class="control-label">Amount</label>' +
+            '</div>' +
+            '</div>';
+        $('#linkAdvancedTaxCreatePayment').after(data);
+
+        $('#linkAdvancedTaxCreatePayment').attr("value", 1);
     }
+    if (count == 1) {
+        $('.advancedTax').remove();
+        $('#linkAdvancedTaxCreatePayment').attr("value", 0);
+    }   
+}
 
-};
+function AddTax() {
+    var countString = $('#linkAddTaxCreatePayment').attr("value");
+    var count = parseInt(countString);
+    count += 1;
+    $('#linkAddTaxCreatePayment').attr("value", count);
 
-function AmountCreateMonthlyExpenses() {
-    var gross = $('#Amount_GrossCreateMonthlyExpenses').val().replace(',', '.');
-    var tax = $('#TaxCreateMonthlyExpenses').val();
+    var data = '<br class="created advancedTax" />' +
+        '<div class="row g-3 form-group created advancedTax">' +
+        '<div class="col form-floating">' +
+        '<input name="Description_Tax" placeholder="Description_Tax" class="form-control" id="inputDescriptionTaxCreatePayment" />' +
+        '<label for="Description_Tax" class="control-label">Description</label>' +
+        '</div>' +
+        '<div class="col form-floating">' +
+        '<input name="Amount_TaxList" placeholder="Amount_TaxList" class="form-control" id="inputAmountTaxListCreatePayment" />' +
+        '<label for="Amount_TaxList" class="control-label">Amount</label>' +
+        '</div>' +
+        '</div>';
 
-    if (gross != "" && tax != "") {
-        var resultNet = gross / ((tax / 100) + 1);
-        var resultTax = gross - resultNet;
-        resultNet = resultNet.toFixed(2);
-        resultTax = resultTax.toFixed(2);
-        $('#Amount_NetCreateMonthlyExpenses').val(resultNet.replace('.', ','));
-        $('#Amount_TaxCreateMonthlyExpenses').val(resultTax.replace('.', ','));
-    }
+    $('#linkAddTaxCreatePayment').before(data);
+}
 
-};
 
-function AmountCreateExpenditure() {
-    var gross = $('#Amount_GrossCreateExpenditure').val().replace(',', '.');
-    var tax = $('#TaxCreateExpenditure').val();
-
-    if (gross != "" && tax != "") {
-        var resultNet = gross / ((tax / 100) + 1);
-        var resultTax = gross - resultNet;
-        resultNet = resultNet.toFixed(2);
-        resultTax = resultTax.toFixed(2);
-        $('#Amount_NetCreateExpenditure').val(resultNet.replace('.', ','));
-        $('#Amount_TaxCreateExpenditure').val(resultTax.replace('.', ','));
-    }
-
-};
-
-function AmountCreateEarnings() {
-    var gross = $('#Amount_GrossCreateEarnings').val().replace(',', '.');
-    var net = $('#Amount_NetCreateEarnings').val().replace(',', '.');
-
-    if (gross != "" && net != "") {
-        var resultTax = gross - net;
-        resultTax = resultTax.toFixed(2);
-        $('#Amount_TaxCreateEarnings').val(resultTax.replace('.', ','));
-
-        var resultPercentage = (100 / (net / gross)) - 100;
-        resultPercentage = resultPercentage.toFixed(0);
-        $('#TaxCreateEarnings').val(resultPercentage);
-    }
-};
+function AdvancedAmount() {
+    $("#divAdvancedCreatePayment").toggle();
+}
 
 //==============================================================================
 // Edit Entry ==================================================================
 //==============================================================================
 
-function AmountEditSalary() {
-    var gross = $('#Amount_GrossEditSalary').val().replace(',', '.');
-    var net = $('#Amount_NetEditSalary').val().replace(',', '.');
+
+
+//==============================================================================
+// Calc ========================================================================
+//==============================================================================
+
+function CalcTax(grossField, netField, taxField, taxPrecentField) {
+    var gross = grossField.val().replace(',', '.');
+    var net = netField.val().replace(',', '.');
 
     if (gross != "" && net != "") {
         var resultTax = gross - net;
         resultTax = resultTax.toFixed(2);
-        $('#Amount_TaxEditSalary').val(resultTax.replace('.', ','));
-
-        var resultPercentage = (100 / (net / gross)) - 100
-        resultPercentage = resultPercentage.toFixed(0);
-        $('#TaxEditSalary').val(resultPercentage);
-    }
-
-};
-
-function AmountEditMonthlyExpenses() {
-    var gross = $('#Amount_GrossEditMonthlyExpenses').val().replace(',', '.');
-    var tax = $('#TaxEditMonthlyExpenses').val();
-
-    if (gross != "" && tax != "") {
-        var resultNet = gross / ((tax / 100) + 1);
-        var resultTax = gross - resultNet;
-        resultNet = resultNet.toFixed(2);
-        resultTax = resultTax.toFixed(2);
-        $('#Amount_NetEditMonthlyExpenses').val(resultNet.replace('.', ','));
-        $('#Amount_TaxEditMonthlyExpenses').val(resultTax.replace('.', ','));
-    }
-
-};
-
-function AmountEditExpenditure() {
-    var gross = $('#Amount_GrossEditExpenditure').val().replace(',', '.');
-    var tax = $('#TaxEditExpenditure').val();
-
-    if (gross != "" && tax != "") {
-        var resultNet = gross / ((tax / 100) + 1);
-        var resultTax = gross - resultNet;
-        resultNet = resultNet.toFixed(2);
-        resultTax = resultTax.toFixed(2);
-        $('#Amount_NetEditExpenditure').val(resultNet.replace('.', ','));
-        $('#Amount_TaxEditExpenditure').val(resultTax.replace('.', ','));
-    }
-
-};
-
-function AmountEditEarnings() {
-    var gross = $('#Amount_GrossEditEarnings').val().replace(',', '.');
-    var net = $('#Amount_NetEditEarnings').val().replace(',', '.');
-
-    if (gross != "" && net != "") {
-        var resultTax = gross - net;
-        resultTax = resultTax.toFixed(2);
-        $('#Amount_TaxEditEarnings').val(resultTax.replace('.', ','));
+        taxField.val(resultTax.replace('.', ','));
 
         var resultPercentage = (100 / (net / gross)) - 100;
         resultPercentage = resultPercentage.toFixed(0);
-        $('#TaxEditEarnings').val(resultPercentage);
+        taxPrecentField.val(resultPercentage);
     }
+
+};
+
+function CalcNet(grossField, netField, taxField) {
+    var gross = grossField.val().replace(',', '.');
+    var tax = taxField.val();
+
+    if (gross != "" && tax != "") {
+        var resultNet = gross / ((tax / 100) + 1);
+        var resultTax = gross - resultNet;
+        resultNet = resultNet.toFixed(2);
+        resultTax = resultTax.toFixed(2);
+        netField.val(resultNet.replace('.', ','));
+        taxField.val(resultTax.replace('.', ','));
+    }
+};
+
+//==============================================================================
+// Ajax ========================================================================
+//==============================================================================
+
+function GetTypeList(dropDown) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "Payments/GetTypeList",
+        success: function (data) {
+            var s = '<option value="-1" disabled selected>Select a Type</option>';
+            for (var i = 0; i < data.length; i++) {
+                s += '<option value="' + data[i].id + '" id="' + data[i].fk_StatusId + '" tax="' + data[i].endTaxType + '" inputFields="' + data[i].extraInput + '">' + data[i].name + '</option>';
+            }
+            dropDown.html(s);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve types.');
+        }
+    });
+};
+
+function GetCategoryList(dropDown) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "Payments/GetCategoryList",
+        success: function (data) {
+            var s = '<option value="-1" disabled selected>Select a Category</option>';
+            for (var i = 0; i < data.length; i++) {
+                s += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+            }
+            dropDown.html(s);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve categories.');
+        }
+    });
+};
+
+function GetStatusListByType(dropDown, id) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "Payments/GetStatusListByType/" + id,
+        success: function (data) {
+            var s = '<option value="-1" disabled selected>Select a Status</option>';
+            for (var i = 0; i < data.length; i++) {
+                s += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+            }
+            dropDown.html(s);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve status.');
+        }
+    });
 };

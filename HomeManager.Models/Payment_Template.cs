@@ -22,6 +22,7 @@ namespace HomeManager.Models
         public decimal Amount { get; set; }
         public string Invoice { get; set; }
         public bool Deleted { get; set; }
+        public DateTime? DeletedOn { get; set; }
 
         public int fk_TypeId { get; set; }
         [ForeignKey("fk_TypeId")]

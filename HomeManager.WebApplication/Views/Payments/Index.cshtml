@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HomeManager.Models.Payment>
+﻿@model HomeManager.Models.Payment
 
 @{
     ViewData["Title"] = "Index";
@@ -6,9 +6,28 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreatePayment">New Payment</button>
+
+<form asp-action="Create" enctype="multipart/form-data">
+    <div class="modal fade" id="modalCreatePayment" role="dialog" aria-labelledby="modalLabelCreatePayment" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelCreatePayment">New Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyCreatePayment">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -64,62 +83,69 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description_Extra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description_Tax)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tax)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount_Tax)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount_Gross)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount_Net)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount_Extra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Invoice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deleted)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in ViewBag.Payments)
+        {
+            <tr>
+                <td>
+                    @item.User.Id
+                </td>
+                <td>
+                    @item.Date
+                </td>
+                <td>
+                    @item.Description
+                </td>
+                <td>
+                    @item.Description_Extra
+                </td>
+                <td>
+                    @item.Description_Tax
+                </td>
+                <td>
+                    @item.Tax
+                </td>
+                <td>
+                    @item.Amount
+                </td>
+                <td>
+                    @item.Amount_Tax
+                </td>
+                <td>
+                    @item.Amount_Gross
+                </td>
+                <td>
+                    @item.Amount_Net
+                </td>
+                <td>
+                    @item.Amount_Extra
+                </td>
+                <td>
+                    @item.Invoice
+                </td>
+                <td>
+                    @item.Type.Name
+                </td>
+                <td>
+                    @item.Category.Name
+                </td>
+                <td>
+                    @item.Status.Name
+                </td>
+                <td>
+                    @item.Deleted
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/payments.js"></script>
+}

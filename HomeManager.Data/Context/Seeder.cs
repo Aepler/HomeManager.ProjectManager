@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models;
 using Type = HomeManager.Models.Type;
+using Microsoft.AspNetCore.Identity;
 
 namespace HomeManager.Data.Context
 {
@@ -13,37 +14,98 @@ namespace HomeManager.Data.Context
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
+            SeedRole(modelBuilder);
+            SeedUser(modelBuilder);
+            SeedUserRole(modelBuilder);
             SeedStatus(modelBuilder);
             SeedType(modelBuilder);
             SeedCategory(modelBuilder);
         }
 
-        public static void SeedStatus(ModelBuilder modelBuilder)
+        public static void SeedRole(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Role>().HasData(
+                new Role
+                {
+                    Id = Guid.Parse("898DA44C-F5C4-45A4-7236-08D8C9FA7C8F"),
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = "cc4e0669-e7ef-4edc-83d7-977ef284d407"
+                },
+                new Role
+                {
+                    Id = Guid.Parse("C50E0C00-BF4A-4E6A-8B06-08D8CA5D9E57"),
+                    Name = "User",
+                    NormalizedName = "USER",
+                    ConcurrencyStamp = "896e6ba7-5b4f-4231-bcc7-34aba5ca1e57"
+                },
+                new Role
+                {
+                    Id = Guid.Parse("626E5439-AC0E-423F-F10A-08D8CABAFA0B"),
+                    Name = "Test",
+                    NormalizedName = "TEST",
+                    ConcurrencyStamp = "714a5239-a8a3-4b42-af07-033481bd81e0"
+                }
+                );
+        }
+
+        public static void SeedUser(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                Id = Guid.Parse("1C30ADD5-C7A9-48E9-6BEB-08D8C9D5DC9C"),
+                UserName = "Admin",
+                NormalizedUserName = "ADMIN",
+                Email = "Francesco.Aepler@gmail.com",
+                NormalizedEmail = "FRANCESCO.AEPLER@GMAIL.COM",
+                EmailConfirmed = true,
+                PasswordHash = "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==",
+                SecurityStamp = "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO",
+                ConcurrencyStamp = "22ac1596-f950-40cc-ad84-92df87f8d892",
+                PhoneNumber = null,
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnd = null,
+                LockoutEnabled = true,
+                AccessFailedCount = 0
+            });
+        }
+
+        public static void SeedUserRole(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+            new IdentityUserRole<Guid>
+            {
+                UserId = Guid.Parse("1C30ADD5-C7A9-48E9-6BEB-08D8C9D5DC9C"),
+                RoleId = Guid.Parse("898DA44C-F5C4-45A4-7236-08D8C9FA7C8F")
+            });
+        }
+
+            public static void SeedStatus(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Status>().HasData(
             new Status
             {
                 Id = 1,
                 Name = "Paid",
-                Deleted = false
+                EndPoint = true
             },
             new Status
             {
                 Id = 2,
                 Name = "Received",
-                Deleted = false
+                EndPoint = true
             },
             new Status
             {
                 Id = 3,
-                Name = "Pending",
-                Deleted = false
+                Name = "Pending"
             },
             new Status
             {
                 Id = 4,
-                Name = "Fictitious",
-                Deleted = false
+                Name = "Fictitious"
             }
             );
         }
@@ -55,36 +117,41 @@ namespace HomeManager.Data.Context
             {
                 Id = 1,
                 Name = "Salary",
-                TaxType = "Net",
-                Deleted = false
+                EndTaxType = "Net",
+                ExtraInput = new string[] { "Extra_Amount", "TaxList" },
+                fk_StatusId = 2
             },
             new Type
             {
                 Id = 2,
                 Name = "Monthly Expens",
-                TaxType = "Gross",
-                Deleted = false
+                EndTaxType = "Gross",
+                Debit = true,
+                fk_StatusId = 1
             },
             new Type
             {
                 Id = 3,
                 Name = "Expenditure",
-                TaxType = "Gross",
-                Deleted = false
+                EndTaxType = "Gross",
+                Debit = true,
+                ExtraInput = new string[] { "Extra_Amount" },
+                fk_StatusId = 1
             },
             new Type
             {
                 Id = 4,
                 Name = "Earnings",
-                TaxType = "Gross",
-                Deleted = false
+                EndTaxType = "Net",
+                ExtraInput = new string[] { "Extra_Amount" },
+                fk_StatusId = 2
             },
             new Type
             {
                 Id = 5,
                 Name = "Start Balance",
-                TaxType = "None",
-                Deleted = false
+                EndTaxType = "None",
+                fk_StatusId = 2
             }
             );
         }
@@ -95,44 +162,37 @@ namespace HomeManager.Data.Context
             new Category
             {
                 Id = 1,
-                Name = "Living",
-                Deleted = false
+                Name = "Living"
             },
             new Category
             {
                 Id = 2,
-                Name = "Groceries",
-                Deleted = false
+                Name = "Groceries"
             },
             new Category
             {
                 Id = 3,
-                Name = "Leisure",
-                Deleted = false
+                Name = "Leisure"
             },
             new Category
             {
                 Id = 4,
-                Name = "Mobility",
-                Deleted = false
+                Name = "Mobility"
             },
             new Category
             {
                 Id = 5,
-                Name = "Insurance",
-                Deleted = false
+                Name = "Insurance"
             },
             new Category
             {
                 Id = 6,
-                Name = "Loans",
-                Deleted = false
+                Name = "Loans"
             },
             new Category
             {
                 Id = 7,
-                Name = "Saving",
-                Deleted = false
+                Name = "Saving"
             }
             );
         }

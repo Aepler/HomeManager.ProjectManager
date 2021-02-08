@@ -10,9 +10,13 @@ using HomeManager.Data;
 using HomeManager.Models;
 using HomeManager.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
+using HomeManager.Models.Helpers;
+using System.IO;
 
 namespace HomeManager.WebApplication.Controllers
 {
+    [Authorize]
     public class PaymentsController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -21,7 +25,7 @@ namespace HomeManager.WebApplication.Controllers
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
 
-        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService , ICategoryService categoryService, ITypeService typeService, IStatusService statusService)
+        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService)
         {
             _userManager = userManager;
             _paymentService = paymentService;
@@ -35,29 +39,38 @@ namespace HomeManager.WebApplication.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             var payments = await _paymentService.GetAll(user);
-            return View(payments);
-        }
 
-        // GET: Payments/Details/5
-        public async Task<IActionResult> Details(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var payment = await _paymentService.GetById(user, id);
-            if (payment == null)
-            {
-                return NotFound();
-            }
+            ViewBag.Payments = payments;
 
-            return View(payment);
-        }
+            ViewData["Type"] = await _typeService.GetAll();
 
-        // GET: Payments/Create
-        public async Task<IActionResult> Create()
-        {
             ViewData["fk_CategoryId"] = new SelectList(await _categoryService.GetAll(), "Id", "Name");
             ViewData["fk_StatusId"] = new SelectList(await _statusService.GetAll(), "Id", "Name");
             ViewData["fk_TypeId"] = new SelectList(await _typeService.GetAll(), "Id", "Name");
+
             return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetTypeList()
+        {
+            var types = await _typeService.GetAll();
+            return Json(types);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetCategoryList()
+        {
+            var categories = await _categoryService.GetAll();
+            return Json(categories);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetStatusListByType(int id)
+        {
+            var status = await _statusService.GetAll();
+            status = status.Where(x => x.Id == id || x.EndPoint == false).ToList();
+            return Json(status);
         }
 
         // POST: Payments/Create
@@ -65,29 +78,36 @@ namespace HomeManager.WebApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,fk_UserId,Date,Description,Description_Extra,Description_Tax,Tax,Amount,Amount_Tax,Amount_Gross,Amount_Net,Amount_Extra,Invoice,fk_TypeId,fk_CategoryId,fk_StatusId,Deleted")] Payment payment)
+        public async Task<IActionResult> Create([Bind("Id,fk_UserId,Date,Description,Description_Extra,Description_Tax,Tax,Amount,Amount_Tax,Amount_Gross,Amount_Net,Amount_Extra,Invoice,fk_TypeId,fk_CategoryId,fk_StatusId,Deleted")] Payment payment, IFormFile files)
         {
             if (ModelState.IsValid)
             {
+                if (files != null && FormFileExtensions.IsImage(files))
+                {
+                    if (files.IsImage())
+                    {
+                        using (var target = new MemoryStream())
+                        {
+                            files.CopyTo(target);
+                            payment.Invoice = target.ToArray();
+                            payment.DataType = Path.GetExtension(files.FileName);
+                        }
+                    }
+                    else if (files.IsPDF())
+                    {
+                        using (var target = new MemoryStream())
+                        {
+                            files.CopyTo(target);
+                            payment.Invoice = target.ToArray();
+                            payment.DataType = "PDF";
+                        }
+                    }
+                }
+
                 var user = await _userManager.GetUserAsync(User);
                 payment.fk_UserId = user.Id;
                 await _paymentService.Add(user, payment);
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["fk_CategoryId"] = new SelectList(await _categoryService.GetAll(), "Id", "Name", payment.fk_CategoryId);
-            ViewData["fk_StatusId"] = new SelectList(await _statusService.GetAll(), "Id", "Name", payment.fk_StatusId);
-            ViewData["fk_TypeId"] = new SelectList(await _typeService.GetAll(), "Id", "Name", payment.fk_TypeId);
-            return View(payment);
-        }
-
-        // GET: Payments/Edit/5
-        public async Task<IActionResult> Edit(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var payment = await _paymentService.GetById(user, id);
-            if (payment == null)
-            {
-                return NotFound();
             }
             ViewData["fk_CategoryId"] = new SelectList(await _categoryService.GetAll(), "Id", "Name", payment.fk_CategoryId);
             ViewData["fk_StatusId"] = new SelectList(await _statusService.GetAll(), "Id", "Name", payment.fk_StatusId);

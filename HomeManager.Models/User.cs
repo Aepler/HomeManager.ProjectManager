@@ -12,5 +12,6 @@ namespace HomeManager.Models
     {
         public ICollection<Payment> Payments { get; set; }
         public ICollection<Payment_Template> Payment_Templates { get; set; }
+        public ICollection<Category> Categories { get; set; }
     }
 }

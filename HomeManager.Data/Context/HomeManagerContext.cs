@@ -7,6 +7,7 @@ using Type = HomeManager.Models.Type;
 using HomeManager.Data.Context;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
 //Add-Migration HomeManager.PutNameHere -Context HomeManagerContext -OutputDir "Migrations"
 
@@ -26,6 +27,31 @@ namespace HomeManager.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var cascadeFKs = modelBuilder.Model.GetEntityTypes()
+       .SelectMany(t => t.GetForeignKeys())
+       .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+
+            foreach (var fk in cascadeFKs)
+                fk.DeleteBehavior = DeleteBehavior.Restrict;
+
+            modelBuilder.Entity<Type>()
+            .Property(e => e.ExtraInput)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            modelBuilder.Entity<Payment>()
+            .Property(e => e.Description_Tax)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            modelBuilder.Entity<Payment>()
+            .Property(e => e.Amount_TaxList)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
             modelBuilder.Entity<Payment>().ToTable("Payments");
             modelBuilder.Entity<Type>().ToTable("Types");
             modelBuilder.Entity<Category>().ToTable("Categories");

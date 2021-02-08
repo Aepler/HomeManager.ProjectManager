@@ -29,11 +29,19 @@ namespace HomeManager.Data.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("fk_UserId");
 
                     b.ToTable("Categories");
 
@@ -92,8 +100,8 @@ namespace HomeManager.Data.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Amount_Extra")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("Amount_Extra")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Amount_Gross")
                         .HasColumnType("decimal(18,2)");
@@ -104,13 +112,23 @@ namespace HomeManager.Data.Migrations
                     b.Property<decimal>("Amount_Tax")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Amount_TaxList")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DataType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description_Extra")
@@ -119,8 +137,8 @@ namespace HomeManager.Data.Migrations
                     b.Property<string>("Description_Tax")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Invoice")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<byte[]>("Invoice")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<decimal>("Tax")
                         .HasColumnType("decimal(18,2)");
@@ -165,6 +183,9 @@ namespace HomeManager.Data.Migrations
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -218,6 +239,29 @@ namespace HomeManager.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f"),
+                            ConcurrencyStamp = "cc4e0669-e7ef-4edc-83d7-977ef284d407",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("c50e0c00-bf4a-4e6a-8b06-08d8ca5d9e57"),
+                            ConcurrencyStamp = "896e6ba7-5b4f-4231-bcc7-34aba5ca1e57",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = new Guid("626e5439-ac0e-423f-f10a-08d8cabafa0b"),
+                            ConcurrencyStamp = "714a5239-a8a3-4b42-af07-033481bd81e0",
+                            Name = "Test",
+                            NormalizedName = "TEST"
+                        });
                 });
 
             modelBuilder.Entity("HomeManager.Models.Status", b =>
@@ -228,6 +272,12 @@ namespace HomeManager.Data.Migrations
                         .UseIdentityColumn();
 
                     b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("EndPoint")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -243,24 +293,28 @@ namespace HomeManager.Data.Migrations
                         {
                             Id = 1,
                             Deleted = false,
+                            EndPoint = true,
                             Name = "Paid"
                         },
                         new
                         {
                             Id = 2,
                             Deleted = false,
+                            EndPoint = true,
                             Name = "Received"
                         },
                         new
                         {
                             Id = 3,
                             Deleted = false,
+                            EndPoint = false,
                             Name = "Pending"
                         },
                         new
                         {
                             Id = 4,
                             Deleted = false,
+                            EndPoint = false,
                             Name = "Fictitious"
                         });
                 });
@@ -272,18 +326,32 @@ namespace HomeManager.Data.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<bool>("Debit")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EndTaxType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExtraInput")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TaxType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("fk_StatusId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("fk_StatusId");
 
                     b.ToTable("Types");
 
@@ -291,37 +359,50 @@ namespace HomeManager.Data.Migrations
                         new
                         {
                             Id = 1,
+                            Debit = false,
                             Deleted = false,
+                            EndTaxType = "Net",
+                            ExtraInput = "Extra_Amount,TaxList",
                             Name = "Salary",
-                            TaxType = "Net"
+                            fk_StatusId = 2
                         },
                         new
                         {
                             Id = 2,
+                            Debit = true,
                             Deleted = false,
+                            EndTaxType = "Gross",
                             Name = "Monthly Expens",
-                            TaxType = "Gross"
+                            fk_StatusId = 1
                         },
                         new
                         {
                             Id = 3,
+                            Debit = true,
                             Deleted = false,
+                            EndTaxType = "Gross",
+                            ExtraInput = "Extra_Amount",
                             Name = "Expenditure",
-                            TaxType = "Gross"
+                            fk_StatusId = 1
                         },
                         new
                         {
                             Id = 4,
+                            Debit = false,
                             Deleted = false,
+                            EndTaxType = "Net",
+                            ExtraInput = "Extra_Amount",
                             Name = "Earnings",
-                            TaxType = "Gross"
+                            fk_StatusId = 2
                         },
                         new
                         {
                             Id = 5,
+                            Debit = false,
                             Deleted = false,
+                            EndTaxType = "None",
                             Name = "Start Balance",
-                            TaxType = "None"
+                            fk_StatusId = 2
                         });
                 });
 
@@ -389,6 +470,24 @@ namespace HomeManager.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "22ac1596-f950-40cc-ad84-92df87f8d892",
+                            Email = "Francesco.Aepler@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "FRANCESCO.AEPLER@GMAIL.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO",
+                            TwoFactorEnabled = false,
+                            UserName = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -471,6 +570,13 @@ namespace HomeManager.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"),
+                            RoleId = new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
@@ -492,30 +598,39 @@ namespace HomeManager.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("HomeManager.Models.Category", b =>
+                {
+                    b.HasOne("HomeManager.Models.User", "User")
+                        .WithMany("Categories")
+                        .HasForeignKey("fk_UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HomeManager.Models.Payment", b =>
                 {
                     b.HasOne("HomeManager.Models.Category", "Category")
                         .WithMany("Payments")
                         .HasForeignKey("fk_CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HomeManager.Models.Status", "Status")
                         .WithMany("Payments")
                         .HasForeignKey("fk_StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HomeManager.Models.Type", "Type")
                         .WithMany("Payments")
                         .HasForeignKey("fk_TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HomeManager.Models.User", "User")
                         .WithMany("Payments")
                         .HasForeignKey("fk_UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -532,19 +647,19 @@ namespace HomeManager.Data.Migrations
                     b.HasOne("HomeManager.Models.Category", "Category")
                         .WithMany("Payment_Templates")
                         .HasForeignKey("fk_CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HomeManager.Models.Type", "Type")
                         .WithMany("Payment_Templates")
                         .HasForeignKey("fk_TypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HomeManager.Models.User", "User")
                         .WithMany("Payment_Templates")
                         .HasForeignKey("fk_UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -552,6 +667,17 @@ namespace HomeManager.Data.Migrations
                     b.Navigation("Type");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Type", b =>
+                {
+                    b.HasOne("HomeManager.Models.Status", "Status")
+                        .WithMany("Types")
+                        .HasForeignKey("fk_StatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -615,6 +741,8 @@ namespace HomeManager.Data.Migrations
             modelBuilder.Entity("HomeManager.Models.Status", b =>
                 {
                     b.Navigation("Payments");
+
+                    b.Navigation("Types");
                 });
 
             modelBuilder.Entity("HomeManager.Models.Type", b =>
@@ -626,6 +754,8 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("HomeManager.Models.User", b =>
                 {
+                    b.Navigation("Categories");
+
                     b.Navigation("Payment_Templates");
 
                     b.Navigation("Payments");
