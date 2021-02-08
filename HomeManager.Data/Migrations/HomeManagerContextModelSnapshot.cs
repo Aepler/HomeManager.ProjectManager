@@ -487,6 +487,22 @@ namespace HomeManager.Data.Migrations
                             SecurityStamp = "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("c7e66c25-bb5d-41f2-c762-08d8cc11b158"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "05c6a9ba-80b0-4ee6-ab88-258cc2edbf09",
+                            Email = "ole@admin.gov",
+                            EmailConfirmed = true,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "OLE@ADMIN.GOV",
+                            NormalizedUserName = "OLE",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHTM1p5KXcvGwKk4muG28dmLnhAgR3spQVXORsKEw+IN36bupGX27DhsTNrwIymmQg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "VTPKISZMI2WKD6GNEHR223NRWDHGYRX6",
+                            TwoFactorEnabled = false,
+                            UserName = "Ole"
                         });
                 });
 
@@ -575,6 +591,11 @@ namespace HomeManager.Data.Migrations
                         new
                         {
                             UserId = new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"),
+                            RoleId = new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f")
+                        },
+                        new
+                        {
+                            UserId = new Guid("c7e66c25-bb5d-41f2-c762-08d8cc11b158"),
                             RoleId = new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f")
                         });
                 });

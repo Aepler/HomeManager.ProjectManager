@@ -25,7 +25,15 @@
                         </li>
                         <partial name="_AdminPartial" />
                     </ul>
-                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="toggleDarkMode">
+                                <label class="custom-control-label" for="toggleDarkMode">Toggle switch</label>
+                            </div>
+                        </li>
+                    </ul>
+                        <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
@@ -43,6 +51,7 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/lib/halfmoon/js/halfmoon.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

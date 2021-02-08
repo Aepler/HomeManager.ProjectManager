@@ -25,7 +25,6 @@ namespace HomeManager.Models.Identity.Account
     public class LoginInputModel
     {
         [Required]
-        [EmailAddress]
         public string Email { get; set; }
 
         [Required]
