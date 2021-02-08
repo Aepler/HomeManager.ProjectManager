@@ -322,7 +322,11 @@ namespace HomeManager.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"), 0, "22ac1596-f950-40cc-ad84-92df87f8d892", "Francesco.Aepler@gmail.com", true, true, null, "FRANCESCO.AEPLER@GMAIL.COM", "ADMIN", "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==", null, false, "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO", false, "Admin" });
+                values: new object[,]
+                {
+                    { new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"), 0, "22ac1596-f950-40cc-ad84-92df87f8d892", "Francesco.Aepler@gmail.com", true, true, null, "FRANCESCO.AEPLER@GMAIL.COM", "ADMIN", "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==", null, false, "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO", false, "Admin" },
+                    { new Guid("c7e66c25-bb5d-41f2-c762-08d8cc11b158"), 0, "05c6a9ba-80b0-4ee6-ab88-258cc2edbf09", "ole@admin.gov", true, true, null, "OLE@ADMIN.GOV", "OLE", "AQAAAAEAACcQAAAAEHTM1p5KXcvGwKk4muG28dmLnhAgR3spQVXORsKEw+IN36bupGX27DhsTNrwIymmQg==", null, false, "VTPKISZMI2WKD6GNEHR223NRWDHGYRX6", false, "Ole" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -352,7 +356,11 @@ namespace HomeManager.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f"), new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c") });
+                values: new object[,]
+                {
+                    { new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f"), new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c") },
+                    { new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f"), new Guid("c7e66c25-bb5d-41f2-c762-08d8cc11b158") }
+                });
 
             migrationBuilder.InsertData(
                 table: "Types",

@@ -69,6 +69,25 @@ namespace HomeManager.Data.Context
                 LockoutEnd = null,
                 LockoutEnabled = true,
                 AccessFailedCount = 0
+            },
+
+            new User
+            {
+                Id = Guid.Parse("C7E66C25-BB5D-41F2-C762-08D8CC11B158"),
+                UserName = "Ole",
+                NormalizedUserName = "OLE",
+                Email = "ole@admin.gov",
+                NormalizedEmail = "OLE@ADMIN.GOV",
+                EmailConfirmed = true,
+                PasswordHash = "AQAAAAEAACcQAAAAEHTM1p5KXcvGwKk4muG28dmLnhAgR3spQVXORsKEw+IN36bupGX27DhsTNrwIymmQg==",
+                SecurityStamp = "VTPKISZMI2WKD6GNEHR223NRWDHGYRX6",
+                ConcurrencyStamp = "05c6a9ba-80b0-4ee6-ab88-258cc2edbf09",
+                PhoneNumber = null,
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnd = null,
+                LockoutEnabled = true,
+                AccessFailedCount = 0
             });
         }
 
@@ -78,6 +97,12 @@ namespace HomeManager.Data.Context
             new IdentityUserRole<Guid>
             {
                 UserId = Guid.Parse("1C30ADD5-C7A9-48E9-6BEB-08D8C9D5DC9C"),
+                RoleId = Guid.Parse("898DA44C-F5C4-45A4-7236-08D8C9FA7C8F")
+            },
+
+            new IdentityUserRole<Guid>
+            {
+                UserId = Guid.Parse("C7E66C25-BB5D-41F2-C762-08D8CC11B158"),
                 RoleId = Guid.Parse("898DA44C-F5C4-45A4-7236-08D8C9FA7C8F")
             });
         }
