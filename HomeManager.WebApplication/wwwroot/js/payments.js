@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
     //List();
+    document.body.setAttribute('data-theme', 'dark');
     CreatePayment()
 });
 

@@ -4,6 +4,12 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
+@{ 
+    var user = UserManager.GetUserAsync(User);
+
+    var t = user.
+}
+
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
