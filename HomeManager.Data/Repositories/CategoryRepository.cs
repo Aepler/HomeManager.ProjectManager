@@ -20,13 +20,13 @@ namespace HomeManager.Data.Repositories
 
         public async Task<Category> GetById(int id)
         {
-            Category category = await _context.Categories.Where(x => x.Id == id).FirstOrDefaultAsync();
+            Category category = await _context.Categories.Where(x => x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             return category;
         }
 
         public async Task<ICollection<Category>> GetAll()
         {
-            ICollection<Category> categories = await _context.Categories.ToListAsync();
+            ICollection<Category> categories = await _context.Categories.Where(x => x.Deleted == false).ToListAsync();
             return categories;
         }
 

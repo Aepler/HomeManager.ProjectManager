@@ -11,12 +11,14 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using HomeManager.Models.Identity;
-using HomeManager.Models.Identity.Admin;
+using HomeManager.Models.ViewModels;
+using HomeManager.Models.ViewModels.Admin;
 using Microsoft.AspNetCore.Authentication;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
+using HomeManager.Models.Interfaces;
+using Type = HomeManager.Models.Type;
 
 namespace HomeManager.WebApplication.Controllers
 {
@@ -26,15 +28,21 @@ namespace HomeManager.WebApplication.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<Role> _roleManager;
+        private readonly ITypeService _typeService;
+        private readonly IStatusService _statusService;
 
         public AdminController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            RoleManager<Role> roleManager)
+            RoleManager<Role> roleManager,
+            ITypeService typeService,
+            IStatusService statusService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _typeService = typeService;
+            _statusService = statusService;
         }
 
         public async Task<IActionResult> Index()
@@ -203,6 +211,135 @@ namespace HomeManager.WebApplication.Controllers
         public async Task<IActionResult> RemoveUserRole()
         {
             return View();
+        }
+
+        public async Task<IActionResult> Types()
+        {
+            var types = await _typeService.GetAll();
+            if (types == null)
+            {
+                return NotFound($"Unable to load roles");
+            }
+
+            ViewBag.Types = types;
+            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(true), "Id", "Name");
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateType(Type type)
+        {
+            if (ModelState.IsValid)
+            {
+                await _typeService.Add(type);
+                return RedirectToAction(nameof(Types));
+            }
+            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(true), "Id", "Name", type.fk_StatusId);
+            return View(type);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditTypes(int id, Type type)
+        {
+            if (id != type.Id)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _typeService.Update(type);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    bool exist = await TypeExists(type.Id);
+                    if (exist)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(true), "Id", "Name", type.fk_StatusId);
+            return View(type);
+        }
+
+        public async Task<IActionResult> Status()
+        {
+            var status = await _statusService.GetAll();
+            if (status == null)
+            {
+                return NotFound($"Unable to load roles");
+            }
+
+            ViewBag.Status = status;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateStatus(Status status)
+        {
+            if (ModelState.IsValid)
+            {
+                await _statusService.Add(status);
+                return RedirectToAction(nameof(Status));
+            }
+            return View(status);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditStatus(int id, Status status)
+        {
+            if (id != status.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _statusService.Update(status);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    bool exist = await StatusExists(status.Id);
+                    if (exist)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(status);
+        }
+
+        private async Task<bool> TypeExists(int id)
+        {
+            var types = await _typeService.GetAll();
+            return types.Any(e => e.Id == id);
+        }
+
+        private async Task<bool> StatusExists(int id)
+        {
+            var status = await _statusService.GetAll();
+            return status.Any(e => e.Id == id);
         }
     }
 }

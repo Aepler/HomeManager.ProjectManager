@@ -8,6 +8,11 @@ namespace HomeManager.Models
 {
     public class Payment_Template
     {
+        public Payment_Template()
+        {
+            this.Payments = new HashSet<Payments>();
+        }
+
         [Key]
         public int Id { get; set; }
 
@@ -31,5 +36,7 @@ namespace HomeManager.Models
         public int fk_CategoryId { get; set; }
         [ForeignKey("fk_CategoryId")]
         public Category Category { get; set; }
+
+        public ICollection<Payments> Payments { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace HomeManager.Models
     {
         public Category()
         {
-            this.Payments = new HashSet<Payment>();
+            this.Payments = new HashSet<Payments>();
             this.Payment_Templates = new HashSet<Payment_Template>();
         }
 
@@ -27,7 +27,7 @@ namespace HomeManager.Models
         public bool Deleted { get; set; }
         public DateTime? DeletedOn { get; set; }
 
-        public ICollection<Payment> Payments { get; set; }
+        public ICollection<Payments> Payments { get; set; }
         public ICollection<Payment_Template> Payment_Templates { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model HomeManager.Models.Payment
+﻿@model HomeManager.Models.Payments
 
 @{
     ViewData["Title"] = "Index";
@@ -9,6 +9,7 @@
 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreatePayment">New Payment</button>
 
 <form asp-action="Create" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="modal fade" id="modalCreatePayment" role="dialog" aria-labelledby="modalLabelCreatePayment" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -28,124 +29,64 @@
     </div>
 </form>
 
-<table class="table">
+<form id="formEditPayment" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalEditPayment" role="dialog" aria-labelledby="modalLabelEditPayment" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditPayment">Edit Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyEditPayment">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formDeletePayment" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalDeletePayment" role="dialog" aria-labelledby="modalLabelDeletePayment" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelDeletePayment">Delete Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyDeletePayment">
+                    <p>Are you sure you want to Delete this Payment?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<table id="tblIndexOverview" class="table table-striped table-bordered">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description_Extra)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description_Tax)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tax)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount_Tax)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount_Gross)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount_Net)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount_Extra)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Invoice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Deleted)
-            </th>
             <th></th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Amount</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in ViewBag.Payments)
-        {
-            <tr>
-                <td>
-                    @item.User.Id
-                </td>
-                <td>
-                    @item.Date
-                </td>
-                <td>
-                    @item.Description
-                </td>
-                <td>
-                    @item.Description_Extra
-                </td>
-                <td>
-                    @item.Description_Tax
-                </td>
-                <td>
-                    @item.Tax
-                </td>
-                <td>
-                    @item.Amount
-                </td>
-                <td>
-                    @item.Amount_Tax
-                </td>
-                <td>
-                    @item.Amount_Gross
-                </td>
-                <td>
-                    @item.Amount_Net
-                </td>
-                <td>
-                    @item.Amount_Extra
-                </td>
-                <td>
-                    @item.Invoice
-                </td>
-                <td>
-                    @item.Type.Name
-                </td>
-                <td>
-                    @item.Category.Name
-                </td>
-                <td>
-                    @item.Status.Name
-                </td>
-                <td>
-                    @item.Deleted
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
 
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/payments.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
 }

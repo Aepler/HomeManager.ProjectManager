@@ -20,13 +20,13 @@ namespace HomeManager.Data.Repositories
 
         public async Task<Type> GetById(int id)
         {
-            Type type = await _context.Types.Where(x => x.Id == id).FirstOrDefaultAsync();
+            Type type = await _context.Types.Where(x => x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             return type;
         }
 
         public async Task<ICollection<Type>> GetAll()
         {
-            ICollection<Type> types = await _context.Types.ToListAsync();
+            ICollection<Type> types = await _context.Types.Where(x => x.Deleted == false).ToListAsync();
             return types;
         }
 

@@ -19,7 +19,7 @@ namespace HomeManager.Data
         {
         }
 
-        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Payments> Payments { get; set; }
         public DbSet<Type> Types { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Status> Statuses { get; set; }
@@ -40,19 +40,19 @@ namespace HomeManager.Data
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
-            modelBuilder.Entity<Payment>()
+            modelBuilder.Entity<Payments>()
             .Property(e => e.Description_Tax)
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
-            modelBuilder.Entity<Payment>()
+            modelBuilder.Entity<Payments>()
             .Property(e => e.Amount_TaxList)
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
-            modelBuilder.Entity<Payment>().ToTable("Payments");
+            modelBuilder.Entity<Payments>().ToTable("Payments");
             modelBuilder.Entity<Type>().ToTable("Types");
             modelBuilder.Entity<Category>().ToTable("Categories");
             modelBuilder.Entity<Status>().ToTable("Statuses");

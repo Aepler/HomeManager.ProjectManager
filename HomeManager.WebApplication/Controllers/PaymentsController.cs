@@ -8,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using HomeManager.Data;
 using HomeManager.Models;
-using HomeManager.Services.Interfaces;
+using HomeManager.Models.ViewModels;
+using HomeManager.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using HomeManager.Models.Helpers;
@@ -24,14 +25,16 @@ namespace HomeManager.WebApplication.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
+        private readonly IPayment_TemplateService _payment_templateService;
 
-        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService)
+        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPayment_TemplateService payment_templateService)
         {
             _userManager = userManager;
             _paymentService = paymentService;
             _categoryService = categoryService;
             _typeService = typeService;
             _statusService = statusService;
+            _payment_templateService = payment_templateService;
         }
 
         // GET: Payments
@@ -44,11 +47,99 @@ namespace HomeManager.WebApplication.Controllers
 
             ViewData["Type"] = await _typeService.GetAll();
 
-            ViewData["fk_CategoryId"] = new SelectList(await _categoryService.GetAll(), "Id", "Name");
-            ViewData["fk_StatusId"] = new SelectList(await _statusService.GetAll(), "Id", "Name");
-            ViewData["fk_TypeId"] = new SelectList(await _typeService.GetAll(), "Id", "Name");
-
             return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetTableData()
+        {
+            try
+            {
+                var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
+                var startRec = Request.Form["start"].FirstOrDefault();
+                var pageSize = Request.Form["length"].FirstOrDefault();
+                var order = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
+                var orderDir = Request.Form["order[0][dir]"].FirstOrDefault();
+                var search = Request.Form["search[value]"].FirstOrDefault();
+                var user = await _userManager.GetUserAsync(User);
+                var payments = await _paymentService.GetAll(user);
+                int totalRecords = payments.Count;
+                if (!string.IsNullOrEmpty(search) &&
+                    !string.IsNullOrWhiteSpace(search))
+                {
+                    payments = payments.Where(p => p.Date.Date.ToString().Contains(search.ToLower()) ||
+                        p.Description.Contains(search.ToLower()) ||
+                        p.Amount.ToString().Contains(search.ToLower())
+                     ).ToList();
+                }
+                payments = SortTableData(order, orderDir, payments);
+                int recFilter = payments.Count;
+                payments = payments.Skip(Convert.ToInt32(startRec)).Take(Convert.ToInt32(pageSize)).ToList();
+                var modifiedData = payments.Select(d => new PaymentViewModel
+                    {
+                        Id = d.Id.ToString(),
+                        Date = d.Date.ToString("dd.MM.yyyy"),
+                        Description = d.Description,
+                        Description_Extra = d.Description_Extra,
+                        Description_Tax = d.Description_Tax,
+                        Tax = d.Tax.ToString(),
+                        Amount = d.Amount.ToString(),
+                        Amount_Tax = d.Amount_Tax.ToString(),
+                        Amount_Gross = d.Amount_Gross.ToString(),
+                        Amount_Net = d.Amount_Net.ToString(),
+                        Amount_Extra = d.Amount_Extra.ToString(),
+                        Amount_TaxList = d.Amount_TaxList,
+                        fk_TypeId = d.fk_TypeId.ToString(),
+                        Type = d.Type.Name,
+                        fk_CategoryId = d.fk_CategoryId.ToString(),
+                        Category = d.Category.Name,
+                        fk_StatusId = d.fk_StatusId.ToString(),
+                        Status = d.Status.Name
+                    }
+                    );
+                return Json(new { draw = Convert.ToInt32(draw), recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+            }
+            return Json(null);
+        }
+
+        private ICollection<Payments> SortTableData(string order, string orderDir, ICollection<Payments> data)
+        {
+            ICollection<Payments> lst = new List<Payments>();
+            try
+            {
+                switch (order)
+                {
+                    case "1":
+                        lst = orderDir.Equals("ASC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Date).ToList()
+                                                                                                 : data.OrderBy(p => p.Date).ToList();
+                        break;
+                    case "2":
+                        lst = orderDir.Equals("DESC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Description).ToList()
+                                                                                                 : data.OrderBy(p => p.Description).ToList();
+                        break;
+                    case "3":
+                        lst = orderDir.Equals("DESC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Type).ToList()
+                                                                                                   : data.OrderBy(p => p.Type).ToList();
+                        break;
+                    case "4":
+                        lst = orderDir.Equals("DESC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Amount).ToList()
+                                                                                                   : data.OrderBy(p => p.Amount).ToList();
+                        break;
+                    default:
+                        lst = orderDir.Equals("ASC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Date).ToList()
+                                                                                                 : data.OrderBy(p => p.Date).ToList();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+            }
+            return lst;
         }
 
         [HttpGet]
@@ -56,6 +147,14 @@ namespace HomeManager.WebApplication.Controllers
         {
             var types = await _typeService.GetAll();
             return Json(types);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetTemplate()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var payment_template = await _payment_templateService.GetAll(user);
+            return Json(payment_template);
         }
 
         [HttpGet]
@@ -68,8 +167,7 @@ namespace HomeManager.WebApplication.Controllers
         [HttpGet]
         public async Task<JsonResult> GetStatusListByType(int id)
         {
-            var status = await _statusService.GetAll();
-            status = status.Where(x => x.Id == id || x.EndPoint == false).ToList();
+            var status = await _statusService.GetPossibleStatus(id);
             return Json(status);
         }
 
@@ -78,29 +176,26 @@ namespace HomeManager.WebApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,fk_UserId,Date,Description,Description_Extra,Description_Tax,Tax,Amount,Amount_Tax,Amount_Gross,Amount_Net,Amount_Extra,Invoice,fk_TypeId,fk_CategoryId,fk_StatusId,Deleted")] Payment payment, IFormFile files)
+        public async Task<IActionResult> Create(Payments payment, IFormFile files)
         {
             if (ModelState.IsValid)
             {
-                if (files != null && FormFileExtensions.IsImage(files))
+                if (files != null && files.IsImage())
                 {
-                    if (files.IsImage())
+                    using (var target = new MemoryStream())
                     {
-                        using (var target = new MemoryStream())
-                        {
-                            files.CopyTo(target);
-                            payment.Invoice = target.ToArray();
-                            payment.DataType = Path.GetExtension(files.FileName);
-                        }
+                        files.CopyTo(target);
+                        payment.Invoice = target.ToArray();
+                        payment.DataType = files.ContentType;
                     }
-                    else if (files.IsPDF())
+                }
+                else if (files != null && files.IsPDF())
+                {
+                    using (var target = new MemoryStream())
                     {
-                        using (var target = new MemoryStream())
-                        {
-                            files.CopyTo(target);
-                            payment.Invoice = target.ToArray();
-                            payment.DataType = "PDF";
-                        }
+                        files.CopyTo(target);
+                        payment.Invoice = target.ToArray();
+                        payment.DataType = files.ContentType;
                     }
                 }
 
@@ -120,7 +215,7 @@ namespace HomeManager.WebApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,fk_UserId,Date,Description,Description_Extra,Description_Tax,Tax,Amount,Amount_Tax,Amount_Gross,Amount_Net,Amount_Extra,Invoice,fk_TypeId,fk_CategoryId,fk_StatusId,Deleted")] Payment payment)
+        public async Task<IActionResult> Edit(int id, Payments payment)
         {
             if (id != payment.Id)
             {

@@ -20,17 +20,27 @@ namespace HomeManager.Data.Repositories
 
         public async Task<Status> GetById(int id)
         {
-            Status status = await _context.Statuses.Where(x => x.Id == id).FirstOrDefaultAsync();
+            Status status = await _context.Statuses.Where(x => x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             return status;
         }
 
         public async Task<ICollection<Status>> GetAll()
         {
-            ICollection<Status> statuses = await _context.Statuses.ToListAsync();
+            ICollection<Status> statuses = await _context.Statuses.Where(x => x.Deleted == false).ToListAsync();
             return statuses;
         }
 
+        public async Task<ICollection<Status>> GetByEndPoint(bool endPoint)
+        {
+            ICollection<Status> statuses = await _context.Statuses.Where(x => x.EndPoint == endPoint && x.Deleted == false).ToListAsync();
+            return statuses;
+        }
 
+        public async Task<ICollection<Status>> GetPossibleStatus(int id)
+        {
+            ICollection<Status> statuses = await _context.Statuses.Where(x => x.EndPoint == false || x.Id == id && x.Deleted == false).ToListAsync();
+            return statuses;
+        }
 
         public async Task<bool> Add(Status status)
         {

@@ -18,27 +18,27 @@ namespace HomeManager.Data.Repositories
             _context = context;
         }
 
-        public async Task<Payment_Template> GetById(int id)
+        public async Task<Payment_Template> GetById(User user, int id)
         {
-            Payment_Template payment_Template = await _context.Payment_Templates.Where(x => x.Id == id).FirstOrDefaultAsync();
+            Payment_Template payment_Template = await _context.Payment_Templates.Where(x => x.fk_UserId == user.Id && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             return payment_Template;
         }
 
-        public async Task<ICollection<Payment_Template>> GetAll()
+        public async Task<ICollection<Payment_Template>> GetAll(User user)
         {
-            ICollection<Payment_Template> payment_Templates = await _context.Payment_Templates.ToListAsync();
+            ICollection<Payment_Template> payment_Templates = await _context.Payment_Templates.Where(x => x.fk_UserId == user.Id && x.Deleted == false).ToListAsync();
             return payment_Templates;
         }
 
-        public async Task<ICollection<Payment_Template>> GetByCategory(int fk_CategoryId)
+        public async Task<ICollection<Payment_Template>> GetByCategory(User user, int fk_CategoryId)
         {
-            ICollection<Payment_Template> payment_Templates = await _context.Payment_Templates.Where(x => x.fk_CategoryId == fk_CategoryId).ToListAsync();
+            ICollection<Payment_Template> payment_Templates = await _context.Payment_Templates.Where(x => x.fk_UserId == user.Id && x.fk_CategoryId == fk_CategoryId && x.Deleted == false).ToListAsync();
             return payment_Templates;
         }
 
-        public async Task<ICollection<Payment_Template>> GetByType(int fk_TypeId)
+        public async Task<ICollection<Payment_Template>> GetByType(User user, int fk_TypeId)
         {
-            ICollection<Payment_Template> payment_Templates = await _context.Payment_Templates.Where(x => x.fk_TypeId == fk_TypeId).ToListAsync();
+            ICollection<Payment_Template> payment_Templates = await _context.Payment_Templates.Where(x => x.fk_UserId == user.Id && x.fk_TypeId == fk_TypeId && x.Deleted == false).ToListAsync();
             return payment_Templates;
         }
 

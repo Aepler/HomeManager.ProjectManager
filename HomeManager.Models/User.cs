@@ -10,7 +10,9 @@ namespace HomeManager.Models
 {
     public class User : IdentityUser<Guid>
     {
-        public ICollection<Payment> Payments { get; set; }
+        public bool darkMode { get; set; }
+
+        public ICollection<Payments> Payments { get; set; }
         public ICollection<Payment_Template> Payment_Templates { get; set; }
         public ICollection<Category> Categories { get; set; }
     }

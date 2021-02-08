@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models;
-using HomeManager.Services.Interfaces;
+using HomeManager.Models.Interfaces;
 using HomeManager.Data.Repositories.Interfaces;
 
 namespace HomeManager.Services
@@ -18,7 +18,7 @@ namespace HomeManager.Services
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<bool> Add(User user, Payment payment)
+        public async Task<bool> Add(User user, Payments payment)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<ICollection<Payment>> GetAll(User user)
+        public async Task<ICollection<Payments>> GetAll(User user)
         {
             try
             {
@@ -38,35 +38,35 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<ICollection<Payment>> GetAllPending(User user)
+        public async Task<ICollection<Payments>> GetAllPending(User user)
         {
             try
             {
-                ICollection<Payment> payments = await _paymentRepository.GetAll(user);
+                ICollection<Payments> payments = await _paymentRepository.GetAll(user);
                 return payments;
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<ICollection<Payment>> GetBalanceForDate(User user, DateTime dateTime)
+        public async Task<ICollection<Payments>> GetBalanceForDate(User user, DateTime dateTime)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<Payment>> GetBalanceToday(User user)
+        public async Task<ICollection<Payments>> GetBalanceToday(User user)
         {
             try
             {
                 decimal result = 0;
 
-                ICollection<Payment> payments = await GetAll(user);
+                ICollection<Payments> payments = await GetAll(user);
 
                 foreach (var x in payments)
                 {
@@ -84,11 +84,11 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<ICollection<Payment>> GetByCategory(User user, int fk_CategoryId)
+        public async Task<ICollection<Payments>> GetByCategory(User user, int fk_CategoryId)
         {
             try
             {
@@ -96,11 +96,11 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<ICollection<Payment>> GetByDate(User user, DateTime dateTime)
+        public async Task<ICollection<Payments>> GetByDate(User user, DateTime dateTime)
         {
             try
             {
@@ -108,11 +108,11 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<ICollection<Payment>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
+        public async Task<ICollection<Payments>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
         {
             try
             {
@@ -120,11 +120,11 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<Payment> GetById(User user, int id)
+        public async Task<Payments> GetById(User user, int id)
         {
             try
             {
@@ -132,11 +132,11 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return new Payment();
+                return new Payments();
             }
         }
 
-        public async Task<ICollection<Payment>> GetByStatus(User user, int fk_StatusId)
+        public async Task<ICollection<Payments>> GetByStatus(User user, int fk_StatusId)
         {
             try
             {
@@ -144,11 +144,11 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<ICollection<Payment>> GetByType(User user, int fk_TypeId)
+        public async Task<ICollection<Payments>> GetByType(User user, int fk_TypeId)
         {
             try
             {
@@ -156,11 +156,11 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<ICollection<Payment>> GetByUser(User user, string searchUser)
+        public async Task<ICollection<Payments>> GetByUser(User user, string searchUser)
         {
             try
             {
@@ -168,37 +168,37 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<ICollection<Payment>> GetRealCompleted(User user)
+        public async Task<ICollection<Payments>> GetRealCompleted(User user)
         {
             try
             {
-                ICollection<Payment> payments = await _paymentRepository.GetAll(user);
+                ICollection<Payments> payments = await _paymentRepository.GetAll(user);
                 return payments.Where(x => x.fk_StatusId == 1 && x.fk_StatusId == 2).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<ICollection<Payment>> GetRealPending(User user)
+        public async Task<ICollection<Payments>> GetRealPending(User user)
         {
             try
             {
-                ICollection<Payment> payments = await _paymentRepository.GetAll(user);
+                ICollection<Payments> payments = await _paymentRepository.GetAll(user);
                 return payments.Where(x => x.fk_StatusId == 3 && x.Date > DateTime.Today).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                return new List<Payments>();
             }
         }
 
-        public async Task<bool> Update(User user, Payment payment)
+        public async Task<bool> Update(User user, Payments payment)
         {
             try
             {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models;
-using HomeManager.Services.Interfaces;
+using HomeManager.Models.Interfaces;
 using HomeManager.Data.Repositories.Interfaces;
 
 namespace HomeManager.Services
@@ -51,6 +51,30 @@ namespace HomeManager.Services
             catch (Exception ex)
             {
                 return new Status();
+            }
+        }
+
+        public async Task<ICollection<Status>> GetByEndPoint(bool endPoint)
+        {
+            try
+            {
+                return await _statusRepository.GetByEndPoint(endPoint);
+            }
+            catch (Exception ex)
+            {
+                return new List<Status>();
+            }
+        }
+
+        public async Task<ICollection<Status>> GetPossibleStatus(int id)
+        {
+            try
+            {
+                return await _statusRepository.GetPossibleStatus(id);
+            }
+            catch (Exception ex)
+            {
+                return new List<Status>();
             }
         }
 

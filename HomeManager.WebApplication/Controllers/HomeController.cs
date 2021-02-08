@@ -1,5 +1,5 @@
 ﻿using HomeManager.Models;
-using HomeManager.WebApplication.ViewModels;
+using HomeManager.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,7 +32,24 @@ namespace HomeManager.WebApplication.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserDarkMode(bool darkModeBool, string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            user.darkMode = darkModeBool;
+
+            try
+            {
+                await _userManager.UpdateAsync(user);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+            [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

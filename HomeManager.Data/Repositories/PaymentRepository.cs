@@ -18,57 +18,57 @@ namespace HomeManager.Data.Repositories
             _context = context;
         }
 
-        public async Task<Payment> GetById(User user, int id)
+        public async Task<Payments> GetById(User user, int id)
         {
-            Payment payment = await _context.Payments.Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Where(x => x.fk_UserId == user.Id && x.Id == id).FirstOrDefaultAsync();
+            Payments payment = await _context.Payments.Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).Where(x => x.fk_UserId == user.Id && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             return payment;
         }
 
-        public async Task<ICollection<Payment>> GetAll(User user)
+        public async Task<ICollection<Payments>> GetAll(User user)
         {
-            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
+            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
             return payments;
         }
 
-        public async Task<ICollection<Payment>> GetByCategory(User user, int fk_CategoryId)
+        public async Task<ICollection<Payments>> GetByCategory(User user, int fk_CategoryId)
         {
-            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_CategoryId == fk_CategoryId).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
+            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_CategoryId == fk_CategoryId && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
             return payments;
         }
 
-        public async Task<ICollection<Payment>> GetByDate(User user, DateTime dateTime)
+        public async Task<ICollection<Payments>> GetByDate(User user, DateTime dateTime)
         {
-            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.Date == dateTime).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
+            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.Date == dateTime && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
             return payments;
         }
 
-        public async Task<ICollection<Payment>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
+        public async Task<ICollection<Payments>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
         {
-            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.Date >= dateTimeStart && x.Date <= dateTimeEnd).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
+            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.Date >= dateTimeStart && x.Date <= dateTimeEnd && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
             return payments;
         }
 
-        public async Task<ICollection<Payment>> GetByStatus(User user, int fk_StatusId)
+        public async Task<ICollection<Payments>> GetByStatus(User user, int fk_StatusId)
         {
-            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_StatusId == fk_StatusId).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
+            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_StatusId == fk_StatusId && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
             return payments;
         }
 
-        public async Task<ICollection<Payment>> GetByType(User user, int fk_TypeId)
+        public async Task<ICollection<Payments>> GetByType(User user, int fk_TypeId)
         {
-            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_TypeId == fk_TypeId).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
+            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_TypeId == fk_TypeId && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
             return payments;
         }
 
-        public async Task<ICollection<Payment>> GetByUser(User user, string searchUser)
+        public async Task<ICollection<Payments>> GetByUser(User user, string searchUser)
         {
-            ICollection<Payment> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_UserId == Guid.Parse(searchUser)).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToListAsync();
+            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_UserId == Guid.Parse(searchUser) && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
             return payments;
         }
 
 
 
-        public async Task<bool> Add(User user, Payment payment)
+        public async Task<bool> Add(User user, Payments payment)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Update(User user, Payment payment)
+        public async Task<bool> Update(User user, Payments payment)
         {
             try
             {

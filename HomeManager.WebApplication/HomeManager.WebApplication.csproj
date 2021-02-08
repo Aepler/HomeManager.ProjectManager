@@ -250,6 +250,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Factories\" />
     <Folder Include="wwwroot\lib\qrcode\" />
   </ItemGroup>
 

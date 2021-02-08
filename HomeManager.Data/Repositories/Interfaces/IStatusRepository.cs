@@ -11,6 +11,8 @@ namespace HomeManager.Data.Repositories.Interfaces
     {
         Task<Status> GetById(int id);
         Task<ICollection<Status>> GetAll();
+        Task<ICollection<Status>> GetByEndPoint(bool endPoint);
+        Task<ICollection<Status>> GetPossibleStatus(int id);
         Task<bool> Add(Status status);
         Task<bool> Update(Status status);
     }

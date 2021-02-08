@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using HomeManager.Data.Repositories;
 using HomeManager.Data.Repositories.Interfaces;
 using HomeManager.Services;
-using HomeManager.Services.Interfaces;
+using HomeManager.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using HomeManager.Models;
 

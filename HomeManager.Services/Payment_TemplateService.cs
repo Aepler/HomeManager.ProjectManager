@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models;
-using HomeManager.Services.Interfaces;
+using HomeManager.Models.Interfaces;
 using HomeManager.Data.Repositories.Interfaces;
 
 namespace HomeManager.Services
@@ -30,11 +30,11 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<ICollection<Payment_Template>> GetAll()
+        public async Task<ICollection<Payment_Template>> GetAll(User user)
         {
             try
             {
-                return await _payment_TemplateRepository.GetAll();
+                return await _payment_TemplateRepository.GetAll(user);
             }
             catch (Exception ex)
             {
@@ -42,11 +42,11 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<ICollection<Payment_Template>> GetByCategory(int fk_CategoryId)
+        public async Task<ICollection<Payment_Template>> GetByCategory(User user, int fk_CategoryId)
         {
             try
             {
-                return await _payment_TemplateRepository.GetByCategory(fk_CategoryId);
+                return await _payment_TemplateRepository.GetByCategory(user, fk_CategoryId);
             }
             catch (Exception ex)
             {
@@ -54,11 +54,11 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<Payment_Template> GetById(int id)
+        public async Task<Payment_Template> GetById(User user, int id)
         {
             try
             {
-                return await _payment_TemplateRepository.GetById(id);
+                return await _payment_TemplateRepository.GetById(user, id);
             }
             catch (Exception ex)
             {
@@ -66,11 +66,11 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<ICollection<Payment_Template>> GetByType(int fk_TypeId)
+        public async Task<ICollection<Payment_Template>> GetByType(User user, int fk_TypeId)
         {
             try
             {
-                return await _payment_TemplateRepository.GetByType(fk_TypeId);
+                return await _payment_TemplateRepository.GetByType(user, fk_TypeId);
             }
             catch (Exception ex)
             {

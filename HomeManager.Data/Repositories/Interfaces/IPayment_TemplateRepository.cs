@@ -9,10 +9,10 @@ namespace HomeManager.Data.Repositories.Interfaces
 {
     public interface IPayment_TemplateRepository
     {
-        Task<Payment_Template> GetById(int id);
-        Task<ICollection<Payment_Template>> GetAll();
-        Task<ICollection<Payment_Template>> GetByType(int fk_TypeId);
-        Task<ICollection<Payment_Template>> GetByCategory(int fk_CategoryId);
+        Task<Payment_Template> GetById(User user, int id);
+        Task<ICollection<Payment_Template>> GetAll(User user);
+        Task<ICollection<Payment_Template>> GetByType(User user, int fk_TypeId);
+        Task<ICollection<Payment_Template>> GetByCategory(User user, int fk_CategoryId);
         Task<bool> Add(Payment_Template payment_Template);
         Task<bool> Update(Payment_Template payment_Template);
     }

@@ -1,6 +1,5 @@
 ﻿$(document).ready(function () {
-    //List();
-    document.body.setAttribute('data-theme', 'dark');
+    List();
     CreatePayment()
 });
 
@@ -30,10 +29,10 @@ function List() {
                 "data": null,
                 "defaultContent": '<button class="btn btn-primary" type="button">+</button>'
             }
-            , { "data": "Date" }
-            , { "data": "Description" }
-            , { "data": "Type" }
-            , { "data": "Amount" }
+            , { "data": "date" }
+            , { "data": "description" }
+            , { "data": "type" }
+            , { "data": "amount" }
         ]
     });
 
@@ -68,250 +67,74 @@ function ListExtra(overview) {
 
 function ListFormat(d) {
     var data = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-    if (d.Type == "Salary") {
-        data = data + '<tr>' +
-            '<td>Date:</td>' +
-            '<td>' + d.Date + '</td>' +
-            '</tr>';
-        data = data + '<tr>' +
-            '<td>Description:</td>' +
-            '<td>' + d.Description + '</td>' +
-            '</tr>';
-        if (d.Description_Extra != null) {
-            data = data + '<tr>' +
-                '<td>Description_Extra:</td>' +
-                '<td>' + d.Description_Extra + '</td>' +
-                '</tr>';
-        }
-        if (d.Description_Tax_Extra != null) {
-            data = data + '<tr>' +
-                '<td>Description_Tax_Extra:</td>' +
-                '<td>' + d.Description_Tax_Extra + '</td>' +
-                '</tr>';
-        }
-        if (d.Tax != "0") {
-            data = data + '<tr>' +
-                '<td>Tax:</td>' +
-                '<td>' + d.Tax + '</td>' +
-                '</tr>';
-        }
-        if (d.Tax_Extra != null) {
-            data = data + '<tr>' +
-                '<td>Tax_Extra:</td>' +
-                '<td>' + d.Tax_Extra + '</td>' +
-                '</tr>';
-        }
-        data = data + '<tr>' +
-            '<td>Amount:</td>' +
-            '<td style="color:green">+' + d.Amount + ' €</td>' +
-            '</tr>';
-        if (d.Tax != "0") {
-            data = data + '<tr>' +
-                '<td>Amount_Tax:</td>' +
-                '<td>' + d.Amount_Tax + '</td>' +
-                '</tr>';
 
-            data = data + '<tr>' +
-                '<td>Amount_Gross:</td>' +
-                '<td>' + d.Amount_Gross + '</td>' +
-                '</tr>';
+    var date = '<tr>' +
+        '<td>Date:</td>' +
+        '<td>' + d.date + '</td>' +
+        '</tr>';
 
-            if (d.Amount_Net != d.Amount) {
-                data = data + '<tr>' +
-                    '<td>Amount_Net:</td>' +
-                    '<td>' + d.Amount_Net + '</td>' +
-                    '</tr>';
-            }
-        }
-        if (d.Amount_Extra != null) {
-            data = data + '<tr>' +
-                '<td>Amount_Extra:</td>' +
-                '<td>' + d.Amount_Extra + '</td>' +
-                '</tr>';
-        }
-        if (d.Amount_Tax_Extra != null) {
-            data = data + '<tr>' +
-                '<td>Amount_Tax_Extra:</td>' +
-                '<td>' + d.Amount_Tax_Extra + '</td>' +
-                '</tr>';
-        }
-        if (d.Invoice != null) {
-            data = data + '<tr>' +
-                '<td>Invoice:</td>' +
-                '<td>' + d.Invoice + '</td>' +
-                '</tr>';
-        }
-        data = data + '<tr>' +
-            '<td>Status:</td>' +
-            '<td>' + d.Status + '</td>' +
-            '</tr>';
-    }
-    if (d.Type == "Monthly Expens") {
-        data = data + '<tr>' +
-            '<td>Date:</td>' +
-            '<td>' + d.Date + '</td>' +
-            '</tr>';
-        data = data + '<tr>' +
-            '<td>Description:</td>' +
-            '<td>' + d.Description + '</td>' +
-            '</tr>';
-        if (d.Description_Extra != null) {
-            data = data + '<tr>' +
-                '<td>Description_Extra:</td>' +
-                '<td>' + d.Description_Extra + '</td>' +
-                '</tr>';
-        }
-        if (d.Tax != "0") {
-            data = data + '<tr>' +
-                '<td>Tax:</td>' +
-                '<td>' + d.Tax + ' €</td>' +
-                '</tr>';
-        }
-        data = data + '<tr>' +
-            '<td>Amount:</td>' +
-            '<td style="color:red">-' + d.Amount + ' €</td>' +
-            '</tr>';
-        if (d.Tax != "0") {
-            data = data + '<tr>' +
-                '<td>Amount_Tax:</td>' +
-                '<td>' + d.Amount_Tax + '</td>' +
-                '</tr>';
-            if (d.Amount_Gross != d.Amount) {
-                data = data + '<tr>' +
-                    '<td>Amount_Gross:</td>' +
-                    '<td>' + d.Amount_Gross + '</td>' +
-                    '</tr>';
-            }
+    var description = '<tr>' +
+        '<td>Description:</td>' +
+        '<td>' + d.description + '</td>' +
+        '</tr>';
 
-            data = data + '<tr>' +
-                '<td>Amount_Net:</td>' +
-                '<td>' + d.Amount_Net + '</td>' +
-                '</tr>';
-        }
-        if (d.Amount_Extra != null) {
-            data = data + '<tr>' +
-                '<td>Amount_Extra:</td>' +
-                '<td>' + d.Amount_Extra + '</td>' +
-                '</tr>';
-        }
-        if (d.Invoice != null) {
-            data = data + '<tr>' +
-                '<td>Invoice:</td>' +
-                '<td>' + d.Invoice + '</td>' +
-                '</tr>';
-        }
-        data = data + '<tr>' +
-            '<td>Status:</td>' +
-            '<td>' + d.Status + '</td>' +
-            '</tr>';
-    }
-    if (d.Type == "Expenditures") {
-        data = data + '<tr>' +
-            '<td>Date:</td>' +
-            '<td>' + d.Date + '</td>' +
-            '</tr>';
-        data = data + '<tr>' +
-            '<td>Description:</td>' +
-            '<td>' + d.Description + '</td>' +
-            '</tr>';
-        if (d.Description_Extra != null) {
-            data = data + '<tr>' +
-                '<td>Description_Extra:</td>' +
-                '<td>' + d.Description_Extra + '</td>' +
-                '</tr>';
-        }
-        if (d.Tax != "0") {
-            data = data + '<tr>' +
-                '<td>Tax:</td>' +
-                '<td>' + d.Tax + '</td>' +
-                '</tr>';
-        }
-        data = data + '<tr>' +
-            '<td>Amount:</td>' +
-            '<td style="color:red">-' + d.Amount + ' €</td>' +
-            '</tr>';
-        if (d.Tax != "0") {
-            data = data + '<tr>' +
-                '<td>Amount_Tax:</td>' +
-                '<td>' + d.Amount_Tax + '</td>' +
-                '</tr>';
+    var description_extra = '<tr>' +
+        '<td>Description_Extra:</td>' +
+        '<td>' + d.description_Extra + '</td>' +
+        '</tr>';
 
-            if (d.Amount_Gross != d.Amount) {
-                data = data + '<tr>' +
-                    '<td>Amount_Gross:</td>' +
-                    '<td>' + d.Amount_Gross + '</td>' +
-                    '</tr>';
-            }
+    var description_tax = '<tr>' +
+        '<td>Description_Tax:</td>' +
+        '<td>' + d.description_Tax + '</td>' +
+        '</tr>';
 
-            data = data + '<tr>' +
-                '<td>Amount_Net:</td>' +
-                '<td>' + d.Amount_Net + '</td>' +
-                '</tr>';
-        }
-        if (d.Amount_Extra != null) {
-            data = data + '<tr>' +
-                '<td>Amount_Extra:</td>' +
-                '<td>' + d.Amount_Extra + '</td>' +
-                '</tr>';
-        }
-        if (d.Invoice != null) {
-            data = data + '<tr>' +
-                '<td>Invoice:</td>' +
-                '<td>' + d.Invoice + '</td>' +
-                '</tr>';
-        }
-        data = data + '<tr>' +
-            '<td>Status:</td>' +
-            '<td>' + d.Status + '</td>' +
-            '</tr>';
-    }
-    if (d.Type == "Earnings") {
-        data = data + '<tr>' +
-            '<td>Date:</td>' +
-            '<td>' + d.Date + '</td>' +
-            '</tr>';
-        data = data + '<tr>' +
-            '<td>Description:</td>' +
-            '<td>' + d.Description + '</td>' +
-            '</tr>';
-        if (d.Tax != "0") {
-            data = data + '<tr>' +
-                '<td>Tax:</td>' +
-                '<td>' + d.Tax + '</td>' +
-                '</tr>';
-        }
-        data = data + '<tr>' +
-            '<td>Amount:</td>' +
-            '<td style="color:green">+' + d.Amount + ' €</td>' +
-            '</tr>';
-        if (d.Tax != "0") {
-            data = data + '<tr>' +
-                '<td>Amount_Tax:</td>' +
-                '<td>' + d.Amount_Tax + '</td>' +
-                '</tr>';
+    var tax = '<tr>' +
+        '<td>Tax:</td>' +
+        '<td>' + d.tax + '</td>' +
+        '</tr>';
 
-            data = data + '<tr>' +
-                '<td>Amount_Gross:</td>' +
-                '<td>' + d.Amount_Gross + '</td>' +
-                '</tr>';
-            if (d.Amount_Net != d.Amount) {
-                data = data + '<tr>' +
-                    '<td>Amount_Net:</td>' +
-                    '<td>' + d.Amount_Net + '</td>' +
-                    '</tr>';
-            }
-        }
-        if (d.Invoice != null) {
-            data = data + '<tr>' +
-                '<td>Invoice:</td>' +
-                '<td>' + d.Invoice + '</td>' +
-                '</tr>';
-        }
-        data = data + '<tr>' +
-            '<td>Status:</td>' +
-            '<td>' + d.Status + '</td>' +
-            '</tr>';
-    }
+    var amount_taxList = '<tr>' +
+        '<td>Tax_Extra:</td>' +
+        '<td>' + d.amount_TaxList + '</td>' +
+        '</tr>';
+
+    var amount = '<tr>' +
+        '<td>Amount:</td>' +
+        '<td style="color:green">+' + d.amount + ' €</td>' +
+        '</tr>';
+
+    var amount_tax = '<tr>' +
+        '<td>Amount_Tax:</td>' +
+        '<td>' + d.amount_Tax + '</td>' +
+        '</tr>';
+
+    var amount_gross = '<tr>' +
+        '<td>Amount_Gross:</td>' +
+        '<td>' + d.amount_Gross + '</td>' +
+        '</tr>';
+
+    var amount_net = '<tr>' +
+        '<td>Amount_Net:</td>' +
+        '<td>' + d.amount_Net + '</td>' +
+        '</tr>';
+
+    var amount_extra = '<tr>' +
+        '<td>Amount_Extra:</td>' +
+        '<td>' + d.amount_Extra + '</td>' +
+        '</tr>';
+
+    var category = '<tr>' +
+        '<td>Category:</td>' +
+        '<td>' + d.category + '</td>' +
+        '</tr>';
+
+    var status = '<tr>' +
+        '<td>Status:</td>' +
+        '<td>' + d.status + '</td>' +
+        '</tr>';
+
+    data = data + date + description + amount + amount_net + amount_gross + tax + amount_tax + category + status;
+
     data = data + '</table>';
     return data
 }
@@ -321,44 +144,16 @@ function ListFormat(d) {
 // Edit Entry ==================================================================
 //==============================================================================
 
-function EditSalary(id) {
-    $('#formEditSalary').attr('action', "/Payments/EditSalary/" + id);
-    $('#editIDSalary').val(id);
-};
-
-function EditMonthlyExpenses(id) {
-    $('#formEditSalary').attr('action', "/Payments/EditMonthlyExpenses/" + id);
-    $('#editIDSalary').val(id);
-};
-
-function EditExpenditure(id) {
-    $('#formEditSalary').attr('action', "/Payments/EditExpenditure/" + id);
-    $('#editIDSalary').val(id);
-};
-
-function EditEarnings(id) {
-    $('#formEditSalary').attr('action', "/Payments/EditEarnings/" + id);
-    $('#editIDSalary').val(id);
+function EditPayment(id) {
+    $('#formEditPayment').attr('action', "/Payments/Edit/" + id);
 };
 
 //==============================================================================
 // Delete Entry ================================================================
 //==============================================================================
 
-function DeleteSalary(id) {
-    $('#formDeleteSalary').attr('action', "/Payments/DeleteSalary/" + id);
-};
-
-function DeleteMonthlyExpenses(id) {
-    $('#formDeleteSalary').attr('action', "/Payments/DeleteMonthlyExpenses/" + id);
-};
-
-function DeleteExpenditure(id) {
-    $('#formDeleteSalary').attr('action', "/Payments/DeleteExpenditure/" + id);
-};
-
-function DeleteEarnings(id) {
-    $('#formDeleteSalary').attr('action', "/Payments/DeleteEarnings/" + id);
+function DeletePayment(id) {
+    $('#formDeletePayment').attr('action', "/Payments/Delete/" + id);
 };
 
 //==============================================================================
@@ -384,7 +179,7 @@ function CreatePayment() {
         var inputFields = $("#dropdownTypeCreatePayment option:selected").attr("inputfields");
 
         var date = '<br class="created" />' +
-            '<div class="form-group form-floating  created">' + 
+            '<div class="form-group form-floating  created">' +
             '<input name="Date" placeholder="Date" class="form-control" type="date"  id="datepickerDateCreatePayment" />' +
             '<label for="Date" class="control-label">Date</label>' +
             '</div>';
@@ -400,7 +195,7 @@ function CreatePayment() {
             '</div>';
         var tax = '<br class="created" />' +
             '<div class="row g-3 form-group created">' +
-            '<div class="col form-floating created">' +            
+            '<div class="col form-floating created">' +
             '<input name="Tax" placeholder="Tax" class="form-control" id="inputTaxCreatePayment" />' +
             '<label for="Tax" class="control-label">Tax</label>' +
             '</div>' +
@@ -410,7 +205,7 @@ function CreatePayment() {
             '</div>' +
             '</div>';
         var amount = '<br class="created" />' +
-            '<div class="form-group form-floating created">' +            
+            '<div class="form-group form-floating created">' +
             '<input name="Amount" placeholder="Amount" class="form-control" id="inputAmountCreatePayment" />' +
             '<label for="Amount" class="control-label">Total Amount</label>' +
             '</div>';
@@ -423,22 +218,22 @@ function CreatePayment() {
             '<label for="Amount_Net" class="control-label">Amount Net</label>' +
             '</div>';
         var amount_extra = '<br class="created" />' +
-            '<div class="form-group form-floating created">' +            
+            '<div class="form-group form-floating created">' +
             '<input name="Amount_Extra" placeholder="Amount_Extra" class="form-control" id="inputAmountExtraCreatePayment" />' +
             '<label for="Amount_Extra" class="control-label">Amount Extra</label>' +
             '</div>';
         var files = '<br class="created" />' +
-            '<div class="form-group created">' +            
+            '<div class="form-group created">' +
             '<label class="control-label" for="files">Upload Invoice</label>' +
             '<input class="form-control" name="files" type="file" id="uploadFilesCreatePayment" />' +
             '</div>';
         var category = '<br class="created" />' +
-            '<div class="form-group form-floating created">' +            
+            '<div class="form-group form-floating created">' +
             '<select name="fk_CategoryId" class ="form-control" id="dropdownCategoryCreatePayment"></select>' +
             '<label for="fk_CategoryId" class="control-label">Category</label>' +
             '</div>';
         var status = '<br class="created" />' +
-            '<div class="form-group form-floating created">' +            
+            '<div class="form-group form-floating created">' +
             '<select name="fk_StatusId" class ="form-control" id="dropdownStatusCreatePayment"></select>' +
             '<label for="fk_StatusId" class="control-label">Status</label>' +
             '</div>';
@@ -511,7 +306,7 @@ function AdvancedTax() {
     if (count == 1) {
         $('.advancedTax').remove();
         $('#linkAdvancedTaxCreatePayment').attr("value", 0);
-    }   
+    }
 }
 
 function AddTax() {
