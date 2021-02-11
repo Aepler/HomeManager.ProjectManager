@@ -32,6 +32,7 @@ namespace HomeManager.Models
         public string[] Description_Tax { get; set; }
 
         public decimal Tax { get; set; }
+        public string[] TaxList { get; set; }
 
         [Required]
         [Display(Name = "Total Amount")]
@@ -67,9 +68,8 @@ namespace HomeManager.Models
         [ForeignKey("fk_TypeId")]
         public Type Type { get; set; }
 
-        [Required]
         [Display(Name = "Category")]
-        public int fk_CategoryId { get; set; }
+        public int? fk_CategoryId { get; set; }
         [ForeignKey("fk_CategoryId")]
         public Category Category { get; set; }
 

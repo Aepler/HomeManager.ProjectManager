@@ -18,35 +18,11 @@ namespace HomeManager.Services
             _statusRepository = statusRepository;
         }
 
-        public async Task<bool> Add(Status status)
+        public async Task<Status> GetById(User user, int id)
         {
             try
             {
-                return await _statusRepository.Add(status);
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public async Task<ICollection<Status>> GetAll()
-        {
-            try
-            {
-                return await _statusRepository.GetAll();
-            }
-            catch (Exception ex)
-            {
-                return new List<Status>();
-            }
-        }
-
-        public async Task<Status> GetById(int id)
-        {
-            try
-            {
-                return await _statusRepository.GetById(id);
+                return await _statusRepository.GetById(user, id);
             }
             catch (Exception ex)
             {
@@ -54,11 +30,11 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<ICollection<Status>> GetByEndPoint(bool endPoint)
+        public async Task<ICollection<Status>> GetAll(User user)
         {
             try
             {
-                return await _statusRepository.GetByEndPoint(endPoint);
+                return await _statusRepository.GetAll(user);
             }
             catch (Exception ex)
             {
@@ -66,11 +42,11 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<ICollection<Status>> GetPossibleStatus(int id)
+        public async Task<ICollection<Status>> GetByUser(User user)
         {
             try
             {
-                return await _statusRepository.GetPossibleStatus(id);
+                return await _statusRepository.GetByUser(user);
             }
             catch (Exception ex)
             {
@@ -78,15 +54,63 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<bool> Update(Status status)
+        public async Task<ICollection<Status>> GetByEndPoint(User user, bool endPoint)
         {
             try
             {
-                return await _statusRepository.Update(status);
+                return await _statusRepository.GetByEndPoint(user, endPoint);
             }
             catch (Exception ex)
             {
-                return false;
+                return new List<Status>();
+            }
+        }
+
+        public async Task<ICollection<Status>> GetPossibleStatus(User user, int id)
+        {
+            try
+            {
+                return await _statusRepository.GetPossibleStatus(user, id);
+            }
+            catch (Exception ex)
+            {
+                return new List<Status>();
+            }
+        }
+
+        public async Task<bool> Add(User user, Status status)
+        {
+            try
+            {
+                return await _statusRepository.Add(user, status);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Update(User user, Status status)
+        {
+            try
+            {
+                return await _statusRepository.Update(user, status);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Delete(User user, Status status)
+        {
+            try
+            {
+                return await _statusRepository.Delete(user, status);
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

@@ -33,7 +33,7 @@ namespace HomeManager.Models
         [ForeignKey("fk_TypeId")]
         public Type Type { get; set; }
 
-        public int fk_CategoryId { get; set; }
+        public int? fk_CategoryId { get; set; }
         [ForeignKey("fk_CategoryId")]
         public Category Category { get; set; }
 

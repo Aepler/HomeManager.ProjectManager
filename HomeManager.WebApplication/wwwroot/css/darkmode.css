@@ -612,6 +612,12 @@
         border-color: #333 !important;
     }
 
+    [data-theme="dark"] .table-hover > tbody > tr.no-hover:hover {
+        --bs-table-hover-color: #fff !important;
+        --bs-table-hover-bg: #181818 !important;
+    }
+
+
 
 
 

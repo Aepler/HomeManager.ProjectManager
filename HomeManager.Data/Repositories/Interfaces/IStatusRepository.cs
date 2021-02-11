@@ -9,11 +9,13 @@ namespace HomeManager.Data.Repositories.Interfaces
 {
     public interface IStatusRepository
     {
-        Task<Status> GetById(int id);
-        Task<ICollection<Status>> GetAll();
-        Task<ICollection<Status>> GetByEndPoint(bool endPoint);
-        Task<ICollection<Status>> GetPossibleStatus(int id);
-        Task<bool> Add(Status status);
-        Task<bool> Update(Status status);
+        Task<Status> GetById(User user, int id);
+        Task<ICollection<Status>> GetAll(User user);
+        Task<ICollection<Status>> GetByUser(User user);
+        Task<ICollection<Status>> GetByEndPoint(User user, bool endPoint);
+        Task<ICollection<Status>> GetPossibleStatus(User user, int id);
+        Task<bool> Add(User user, Status status);
+        Task<bool> Update(User user, Status status);
+        Task<bool> Delete(User user, Status status);
     }
 }

@@ -18,15 +18,15 @@ namespace HomeManager.Services
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<bool> Add(User user, Payments payment)
+        public async Task<Payments> GetById(User user, int id)
         {
             try
             {
-                return await _paymentRepository.Add(user, payment);
+                return await _paymentRepository.GetById(user, id);
             }
             catch (Exception ex)
             {
-                return false;
+                return new Payments();
             }
         }
 
@@ -35,19 +35,6 @@ namespace HomeManager.Services
             try
             {
                 return await _paymentRepository.GetAll(user);
-            }
-            catch (Exception ex)
-            {
-                return new List<Payments>();
-            }
-        }
-
-        public async Task<ICollection<Payments>> GetAllPending(User user)
-        {
-            try
-            {
-                ICollection<Payments> payments = await _paymentRepository.GetAll(user);
-                return payments;
             }
             catch (Exception ex)
             {
@@ -124,18 +111,6 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<Payments> GetById(User user, int id)
-        {
-            try
-            {
-                return await _paymentRepository.GetById(user, id);
-            }
-            catch (Exception ex)
-            {
-                return new Payments();
-            }
-        }
-
         public async Task<ICollection<Payments>> GetByStatus(User user, int fk_StatusId)
         {
             try
@@ -160,11 +135,12 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<ICollection<Payments>> GetByUser(User user, string searchUser)
+        public async Task<ICollection<Payments>> GetCompleted(User user)
         {
             try
             {
-                return await _paymentRepository.GetByUser(user, searchUser);
+                ICollection<Payments> payments = await _paymentRepository.GetAll(user);
+                return payments.Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today).ToList();
             }
             catch (Exception ex)
             {
@@ -172,12 +148,12 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<ICollection<Payments>> GetRealCompleted(User user)
+        public async Task<ICollection<Payments>> GetPending(User user)
         {
             try
             {
                 ICollection<Payments> payments = await _paymentRepository.GetAll(user);
-                return payments.Where(x => x.fk_StatusId == 1 && x.fk_StatusId == 2).ToList();
+                return payments.Where(x => x.Status.EndPoint == false && x.Date > DateTime.Today).ToList();
             }
             catch (Exception ex)
             {
@@ -185,16 +161,15 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<ICollection<Payments>> GetRealPending(User user)
+        public async Task<bool> Add(User user, Payments payment)
         {
             try
             {
-                ICollection<Payments> payments = await _paymentRepository.GetAll(user);
-                return payments.Where(x => x.fk_StatusId == 3 && x.Date > DateTime.Today).ToList();
+                return await _paymentRepository.Add(user, payment);
             }
             catch (Exception ex)
             {
-                return new List<Payments>();
+                throw;
             }
         }
 
@@ -206,7 +181,19 @@ namespace HomeManager.Services
             }
             catch (Exception ex)
             {
-                return false;
+                throw;
+            }
+        }
+
+        public async Task<bool> Delete(User user, Payments payment)
+        {
+            try
+            {
+                return await _paymentRepository.Delete(user, payment);
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

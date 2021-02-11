@@ -18,35 +18,11 @@ namespace HomeManager.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<bool> Add(Category category)
+        public async Task<Category> GetById(User user, int id)
         {
             try
             {
-                return await _categoryRepository.Add(category);
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public async Task<ICollection<Category>> GetAll()
-        {
-            try
-            {
-                return await _categoryRepository.GetAll();
-            }
-            catch (Exception ex)
-            {
-                return new List<Category>();
-            }
-        }
-
-        public async Task<Category> GetById(int id)
-        {
-            try
-            {
-                return await _categoryRepository.GetById(id);
+                return await _categoryRepository.GetById(user, id);
             }
             catch (Exception ex)
             {
@@ -54,15 +30,63 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<bool> Update(Category category)
+        public async Task<ICollection<Category>> GetAll(User user)
         {
             try
             {
-                return await _categoryRepository.Update(category);
+                return await _categoryRepository.GetAll(user);
             }
             catch (Exception ex)
             {
-                return false;
+                return new List<Category>();
+            }
+        }
+
+        public async Task<ICollection<Category>> GetByUser(User user)
+        {
+            try
+            {
+                return await _categoryRepository.GetByUser(user);
+            }
+            catch (Exception ex)
+            {
+                return new List<Category>();
+            }
+        }
+
+        public async Task<bool> Add(User user, Category category)
+        {
+            try
+            {
+                return await _categoryRepository.Add(user, category);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Update(User user, Category category)
+        {
+            try
+            {
+                return await _categoryRepository.Update(user, category);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Delete(User user, Category category)
+        {
+            try
+            {
+                return await _categoryRepository.Delete(user, category);
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

@@ -54,14 +54,13 @@ namespace HomeManager.WebApplication.Controllers
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            model.Username = userName;
+            model.Username = user.UserName;
 
             model.Input = new IndexInputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = user.PhoneNumber,
+                Name = user.Name,
+                Lastname = user.Lastname
             };
 
             return View(model);

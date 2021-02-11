@@ -1,28 +1,72 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using HomeManager.Models 
+@using HomeManager.Models
 
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
+@{
+    var darkMode = false;
+    var user = UserManager.GetUserAsync(User).Result;
+    if (user != null)
+    {
+        darkMode = user.Darkmode;
+    }
+}
+
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a id="manage" class="nav-link" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link" id="register" asp-controller="Account" asp-action="Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" id="login" asp-controller="Account" asp-action="Login">Login</a>
-    </li>
-}
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <div id="dropdownMenuProfile" class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonProfile" data-bs-toggle="dropdown" aria-expanded="false">
+                    Profile
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButtonProfile">
+                    <li><span class="dropdown-item-text">@user.Name @user.Lastname</span></li>
+                    <li><span class="dropdown-item-text">@user.Email</span></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a id="manage" class="dropdown-item" asp-controller="Manage" asp-action="Index" title="Manage">Manage Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        @if (darkMode)
+                        {
+                            <span class="dropdown-item-text">
+                                <label id="switch" class="switch">
+                                    <input type="checkbox" id="darkmodeSwitch" checked>
+                                    <span class="slider round"></span>
+                                </label>
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="dropdown-item-text">
+                                <label id="switch" class="switch">
+                                    <input type="checkbox" id="darkmodeSwitch">
+                                    <span class="slider round"></span>
+                                </label>
+                            </span>
+                        }
+                        <form id="logoutForm" class="form-inline" asp-controller="Account" asp-action="Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button id="logout" type="submit" class="dropdown-item">Logout</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <label id="switch" class="switch">
+                <input type="checkbox" id="darkmodeSwitch">
+                <span class="slider round"></span>
+            </label>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="register" asp-controller="Account" asp-action="Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="login" asp-controller="Account" asp-action="Login">Login</a>
+        </li>
+    }
 </ul>

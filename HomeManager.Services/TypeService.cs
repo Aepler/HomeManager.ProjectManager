@@ -19,35 +19,11 @@ namespace HomeManager.Services
             _typeRepository = typeRepository;
         }
 
-        public async Task<bool> Add(Type type)
+        public async Task<Type> GetById(User user, int id)
         {
             try
             {
-                return await _typeRepository.Add(type);
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-        public async Task<ICollection<Type>> GetAll()
-        {
-            try
-            {
-                return await _typeRepository.GetAll();
-            }
-            catch (Exception ex)
-            {
-                return new List<Type>();
-            }
-        }
-
-        public async Task<Type> GetById(int id)
-        {
-            try
-            {
-                return await _typeRepository.GetById(id);
+                return await _typeRepository.GetById(user, id);
             }
             catch (Exception ex)
             {
@@ -55,15 +31,63 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<bool> Update(Type type)
+        public async Task<ICollection<Type>> GetAll(User user)
         {
             try
             {
-                return await _typeRepository.Update(type);
+                return await _typeRepository.GetAll(user);
             }
             catch (Exception ex)
             {
-                return false;
+                return new List<Type>();
+            }
+        }
+
+        public async Task<ICollection<Type>> GetByUser(User user)
+        {
+            try
+            {
+                return await _typeRepository.GetByUser(user);
+            }
+            catch (Exception ex)
+            {
+                return new List<Type>();
+            }
+        }
+
+        public async Task<bool> Add(User user, Type type)
+        {
+            try
+            {
+                return await _typeRepository.Add(user, type);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Update(User user, Type type)
+        {
+            try
+            {
+                return await _typeRepository.Update(user, type);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Delete(User user, Type type)
+        {
+            try
+            {
+                return await _typeRepository.Delete(user, type);
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

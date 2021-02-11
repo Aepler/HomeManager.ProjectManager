@@ -10,9 +10,11 @@ namespace HomeManager.Models.Interfaces
 {
     public interface ITypeService
     {
-        Task<Type> GetById(int id);
-        Task<ICollection<Type>> GetAll();
-        Task<bool> Add(Type type);
-        Task<bool> Update(Type type);
+        Task<Type> GetById(User user, int id);
+        Task<ICollection<Type>> GetAll(User user);
+        Task<ICollection<Type>> GetByUser(User user);
+        Task<bool> Add(User user, Type type);
+        Task<bool> Update(User user, Type type);
+        Task<bool> Delete(User user, Type type);
     }
 }

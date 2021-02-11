@@ -17,6 +17,18 @@
             </div>
             <br />
             <div class="form-group form-floating">
+                <input asp-for="Input.Name" placeholder="Name" class="form-control" />
+                <label asp-for="Input.Name"></label>
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group form-floating">
+                <input asp-for="Input.Lastname" placeholder="Lastname" class="form-control" />
+                <label asp-for="Input.Lastname"></label>
+                <span asp-validation-for="Input.Lastname" class="text-danger"></span>
+            </div>
+            <br />
+            <div class="form-group form-floating">
                 <input asp-for="Input.PhoneNumber" placeholder="PhoneNumber" class="form-control" />
                 <label asp-for="Input.PhoneNumber"></label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>

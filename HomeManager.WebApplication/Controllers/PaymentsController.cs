@@ -45,8 +45,6 @@ namespace HomeManager.WebApplication.Controllers
 
             ViewBag.Payments = payments;
 
-            ViewData["Type"] = await _typeService.GetAll();
-
             return View();
         }
 
@@ -60,43 +58,50 @@ namespace HomeManager.WebApplication.Controllers
                 var pageSize = Request.Form["length"].FirstOrDefault();
                 var order = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
                 var orderDir = Request.Form["order[0][dir]"].FirstOrDefault();
-                var search = Request.Form["search[value]"].FirstOrDefault();
+                var search = Request.Form["search[value]"].FirstOrDefault().ToLower().Trim();
                 var user = await _userManager.GetUserAsync(User);
-                var payments = await _paymentService.GetAll(user);
+                var payments = await _paymentService.GetCompleted(user);
                 int totalRecords = payments.Count;
+
+
+                var modifiedData = payments.Select(d => new PaymentViewModel
+                {
+                    Id = d.Id.ToString(),
+                    Date = d.Date.ToString("dd.MM.yyyy"),
+                    Description = d.Description,
+                    Description_Extra = d.Description_Extra,
+                    Description_Tax = d.Description_Tax,
+                    Tax = d.Tax.ToString(),
+                    Amount = d.Amount.ToString(),
+                    Amount_Tax = d.Amount_Tax.ToString(),
+                    Amount_Gross = d.Amount_Gross.ToString(),
+                    Amount_Net = d.Amount_Net.ToString(),
+                    Amount_Extra = d.Amount_Extra.ToString(),
+                    Amount_TaxList = d.Amount_TaxList,
+                    fk_TypeId = d.fk_TypeId.ToString(),
+                    Type = d.Type.Name,
+                    fk_CategoryId = d.fk_CategoryId.ToString(),
+                    Category = d.fk_CategoryId != null ? d.Category.Name : d.Type.Name,
+                    fk_StatusId = d.fk_StatusId.ToString(),
+                    Status = d.Status.Name
+                }
+                    );
+
                 if (!string.IsNullOrEmpty(search) &&
                     !string.IsNullOrWhiteSpace(search))
                 {
-                    payments = payments.Where(p => p.Date.Date.ToString().Contains(search.ToLower()) ||
-                        p.Description.Contains(search.ToLower()) ||
-                        p.Amount.ToString().Contains(search.ToLower())
+                    modifiedData = modifiedData.Where(p => p.Date.Contains(search) ||
+                        p.Description.ToLower().Contains(search) ||
+                        p.Amount.Contains(search) ||
+                        p.Type.ToLower().Contains(search) ||
+                        p.Category.ToLower().Contains(search)
                      ).ToList();
                 }
-                payments = SortTableData(order, orderDir, payments);
-                int recFilter = payments.Count;
-                payments = payments.Skip(Convert.ToInt32(startRec)).Take(Convert.ToInt32(pageSize)).ToList();
-                var modifiedData = payments.Select(d => new PaymentViewModel
-                    {
-                        Id = d.Id.ToString(),
-                        Date = d.Date.ToString("dd.MM.yyyy"),
-                        Description = d.Description,
-                        Description_Extra = d.Description_Extra,
-                        Description_Tax = d.Description_Tax,
-                        Tax = d.Tax.ToString(),
-                        Amount = d.Amount.ToString(),
-                        Amount_Tax = d.Amount_Tax.ToString(),
-                        Amount_Gross = d.Amount_Gross.ToString(),
-                        Amount_Net = d.Amount_Net.ToString(),
-                        Amount_Extra = d.Amount_Extra.ToString(),
-                        Amount_TaxList = d.Amount_TaxList,
-                        fk_TypeId = d.fk_TypeId.ToString(),
-                        Type = d.Type.Name,
-                        fk_CategoryId = d.fk_CategoryId.ToString(),
-                        Category = d.Category.Name,
-                        fk_StatusId = d.fk_StatusId.ToString(),
-                        Status = d.Status.Name
-                    }
-                    );
+
+                modifiedData = SortTableData(order, orderDir, modifiedData);
+                int recFilter = modifiedData.Count();
+                modifiedData = modifiedData.Skip(Convert.ToInt32(startRec)).Take(Convert.ToInt32(pageSize)).ToList();
+
                 return Json(new { draw = Convert.ToInt32(draw), recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
             }
             catch (Exception ex)
@@ -106,9 +111,9 @@ namespace HomeManager.WebApplication.Controllers
             return Json(null);
         }
 
-        private ICollection<Payments> SortTableData(string order, string orderDir, ICollection<Payments> data)
+        private IEnumerable<PaymentViewModel> SortTableData(string order, string orderDir, IEnumerable<PaymentViewModel> data)
         {
-            ICollection<Payments> lst = new List<Payments>();
+            IEnumerable<PaymentViewModel> lst = new List<PaymentViewModel>();
             try
             {
                 switch (order)
@@ -143,9 +148,18 @@ namespace HomeManager.WebApplication.Controllers
         }
 
         [HttpGet]
+        public async Task<JsonResult> GetPayment(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var payment = await _paymentService.GetById(user, id);
+            return Json(payment);
+        }
+
+        [HttpGet]
         public async Task<JsonResult> GetTypeList()
         {
-            var types = await _typeService.GetAll();
+            var user = await _userManager.GetUserAsync(User);
+            var types = await _typeService.GetAll(user);
             return Json(types);
         }
 
@@ -160,14 +174,16 @@ namespace HomeManager.WebApplication.Controllers
         [HttpGet]
         public async Task<JsonResult> GetCategoryList()
         {
-            var categories = await _categoryService.GetAll();
+            var user = await _userManager.GetUserAsync(User);
+            var categories = await _categoryService.GetAll(user);
             return Json(categories);
         }
 
         [HttpGet]
         public async Task<JsonResult> GetStatusListByType(int id)
         {
-            var status = await _statusService.GetPossibleStatus(id);
+            var user = await _userManager.GetUserAsync(User);
+            var status = await _statusService.GetPossibleStatus(user, id);
             return Json(status);
         }
 
@@ -176,8 +192,9 @@ namespace HomeManager.WebApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Payments payment, IFormFile files)
+        public async Task<JsonResult> Create(Payments payment, IFormFile files)
         {
+            var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
                 if (files != null && files.IsImage())
@@ -199,15 +216,18 @@ namespace HomeManager.WebApplication.Controllers
                     }
                 }
 
-                var user = await _userManager.GetUserAsync(User);
-                payment.fk_UserId = user.Id;
-                await _paymentService.Add(user, payment);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _paymentService.Add(user, payment);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                
+                return Json(null);
             }
-            ViewData["fk_CategoryId"] = new SelectList(await _categoryService.GetAll(), "Id", "Name", payment.fk_CategoryId);
-            ViewData["fk_StatusId"] = new SelectList(await _statusService.GetAll(), "Id", "Name", payment.fk_StatusId);
-            ViewData["fk_TypeId"] = new SelectList(await _typeService.GetAll(), "Id", "Name", payment.fk_TypeId);
-            return View(payment);
+            return Json(null);
         }
 
         // POST: Payments/Edit/5
@@ -215,39 +235,51 @@ namespace HomeManager.WebApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Payments payment)
+        public async Task<JsonResult> Edit(int id, Payments payment)
         {
+            var user = await _userManager.GetUserAsync(User);
             if (id != payment.Id)
             {
-                return NotFound();
+                return Json(null);
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var user = await _userManager.GetUserAsync(User);
-                    payment.fk_UserId = user.Id;
                     await _paymentService.Update(user, payment);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    bool exist = await PaymentExistsAsync(payment.Id);
-                    if (!exist)
+                    throw;
+                }
+                return Json(null);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var payment = await _paymentService.GetById(user, id);
+                    if (payment != null)
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        await _paymentService.Delete(user, payment);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
             }
-            ViewData["fk_CategoryId"] = new SelectList(await _categoryService.GetAll(), "Id", "Name", payment.fk_CategoryId);
-            ViewData["fk_StatusId"] = new SelectList(await _statusService.GetAll(), "Id", "Name", payment.fk_StatusId);
-            ViewData["fk_TypeId"] = new SelectList(await _typeService.GetAll(), "Id", "Name", payment.fk_TypeId);
-            return View(payment);
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> PaymentExistsAsync(int id)

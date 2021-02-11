@@ -1,35 +1,33 @@
-const darkmodeSwitch = document.getElementById('darkModeSwitch');
+const darkmodeSwitch = document.getElementById('darkmodeSwitch');
+const manage = document.getElementById('manage');
 
 
 $(document).ready(function () {
-    if (darkmodeSwitch) {
-        if ($('#gloableUserId').val() == "") {
-            initTheme();
-        }
+    if (!manage) {
+        initTheme();
     }
-    $('#darkModeSwitch').change(function () {
+    $('#darkmodeSwitch').change(function () {
         switchTheme()
-        var bool = document.getElementById('darkModeSwitch').checked;
-        var userId = $('#gloableUserId').val();
-        if (userId != "") {
-            UpdateUserDarkMode(bool, userId);
+        var bool = darkmodeSwitch.checked;
+        if (manage) {
+            UpdateUserDarkmode(bool);
         }
     });
 });
 
-function UpdateUserDarkMode(bool, userId) {
+function UpdateUserDarkmode(bool) {
     $.ajax({
         cache: false,
         type: "POST",
-        url: "Home/UpdateUserDarkMode",
-        data: { darkModeBool: bool, userId: userId },
+        url: "Home/UpdateUserDarkmode",
+        data: { darkmodeBool: bool },
     });
 };
 
 function initTheme() {
     const darkThemeSelected =
-        localStorage.getItem('darkModeSwitch') !== null &&
-        localStorage.getItem('darkModeSwitch') === 'dark';
+        localStorage.getItem('darkmodeSwitch') !== null &&
+        localStorage.getItem('darkmodeSwitch') === 'dark';
     darkmodeSwitch.checked = darkThemeSelected;
     darkThemeSelected ? document.body.setAttribute('data-theme', 'dark') :
         document.body.removeAttribute('data-theme');
@@ -41,6 +39,6 @@ function switchTheme() {
         localStorage.setItem('darkModeSwitch', 'dark');
     } else {
         document.body.removeAttribute('data-theme');
-        localStorage.removeItem('darkModeSwitch');
+        localStorage.removeItem('darkmodeSwitch');
     }
 }

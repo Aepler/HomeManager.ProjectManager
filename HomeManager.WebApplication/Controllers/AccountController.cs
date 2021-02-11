@@ -474,7 +474,7 @@ namespace HomeManager.WebApplication.Controllers
             model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Input.UserName, Email = model.Input.Email };
+                var user = new User { UserName = model.Input.UserName, Email = model.Input.Email, Name = model.Input.Name, Lastname = model.Input.Lastname };
                 var result = await _userManager.CreateAsync(user, model.Input.Password);
                 if (result.Succeeded)
                 {

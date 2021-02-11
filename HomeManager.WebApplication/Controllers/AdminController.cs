@@ -215,14 +215,15 @@ namespace HomeManager.WebApplication.Controllers
 
         public async Task<IActionResult> Types()
         {
-            var types = await _typeService.GetAll();
+            var user = await _userManager.GetUserAsync(User);
+            var types = await _typeService.GetAll(user);
             if (types == null)
             {
                 return NotFound($"Unable to load roles");
             }
 
             ViewBag.Types = types;
-            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(true), "Id", "Name");
+            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name");
 
             return View();
         }
@@ -231,12 +232,13 @@ namespace HomeManager.WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateType(Type type)
         {
+            var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
-                await _typeService.Add(type);
+                await _typeService.Add(user, type);
                 return RedirectToAction(nameof(Types));
             }
-            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(true), "Id", "Name", type.fk_StatusId);
+            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name", type.fk_StatusId);
             return View(type);
         }
 
@@ -244,6 +246,7 @@ namespace HomeManager.WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditTypes(int id, Type type)
         {
+            var user = await _userManager.GetUserAsync(User);
             if (id != type.Id)
             {
                 return BadRequest();
@@ -253,7 +256,7 @@ namespace HomeManager.WebApplication.Controllers
             {
                 try
                 {
-                    await _typeService.Update(type);
+                    await _typeService.Update(user, type);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -269,13 +272,14 @@ namespace HomeManager.WebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(true), "Id", "Name", type.fk_StatusId);
+            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name", type.fk_StatusId);
             return View(type);
         }
 
         public async Task<IActionResult> Status()
         {
-            var status = await _statusService.GetAll();
+            var user = await _userManager.GetUserAsync(User);
+            var status = await _statusService.GetAll(user);
             if (status == null)
             {
                 return NotFound($"Unable to load roles");
@@ -290,9 +294,10 @@ namespace HomeManager.WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateStatus(Status status)
         {
+            var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
-                await _statusService.Add(status);
+                await _statusService.Add(user, status);
                 return RedirectToAction(nameof(Status));
             }
             return View(status);
@@ -302,6 +307,7 @@ namespace HomeManager.WebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditStatus(int id, Status status)
         {
+            var user = await _userManager.GetUserAsync(User);
             if (id != status.Id)
             {
                 return NotFound();
@@ -311,7 +317,7 @@ namespace HomeManager.WebApplication.Controllers
             {
                 try
                 {
-                    await _statusService.Update(status);
+                    await _statusService.Update(user, status);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -332,13 +338,15 @@ namespace HomeManager.WebApplication.Controllers
 
         private async Task<bool> TypeExists(int id)
         {
-            var types = await _typeService.GetAll();
+            var user = await _userManager.GetUserAsync(User);
+            var types = await _typeService.GetAll(user);
             return types.Any(e => e.Id == id);
         }
 
         private async Task<bool> StatusExists(int id)
         {
-            var status = await _statusService.GetAll();
+            var user = await _userManager.GetUserAsync(User);
+            var status = await _statusService.GetAll(user);
             return status.Any(e => e.Id == id);
         }
     }

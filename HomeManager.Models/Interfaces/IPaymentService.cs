@@ -17,13 +17,12 @@ namespace HomeManager.Models.Interfaces
         Task<ICollection<Payments>> GetByStatus(User user, int fk_StatusId);
         Task<ICollection<Payments>> GetByDate(User user, DateTime dateTime);
         Task<ICollection<Payments>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd);
-        Task<ICollection<Payments>> GetByUser(User user, string searchUser);
-        Task<ICollection<Payments>> GetRealCompleted(User user);
-        Task<ICollection<Payments>> GetRealPending(User user);
-        Task<ICollection<Payments>> GetAllPending(User user);
+        Task<ICollection<Payments>> GetCompleted(User user);
+        Task<ICollection<Payments>> GetPending(User user);
         Task<ICollection<Payments>> GetBalanceToday(User user);
         Task<ICollection<Payments>> GetBalanceForDate(User user, DateTime dateTime);
         Task<bool> Add(User user, Payments payment);
         Task<bool> Update(User user, Payments payment);
+        Task<bool> Delete(User user, Payments payment);
     }
 }

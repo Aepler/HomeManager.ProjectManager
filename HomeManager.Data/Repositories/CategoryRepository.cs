@@ -18,24 +18,29 @@ namespace HomeManager.Data.Repositories
             _context = context;
         }
 
-        public async Task<Category> GetById(int id)
+        public async Task<Category> GetById(User user, int id)
         {
-            Category category = await _context.Categories.Where(x => x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
+            Category category = await _context.Categories.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             return category;
         }
 
-        public async Task<ICollection<Category>> GetAll()
+        public async Task<ICollection<Category>> GetAll(User user)
         {
-            ICollection<Category> categories = await _context.Categories.Where(x => x.Deleted == false).ToListAsync();
+            ICollection<Category> categories = await _context.Categories.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).ToListAsync();
             return categories;
         }
 
+        public async Task<ICollection<Category>> GetByUser(User user)
+        {
+            ICollection<Category> categories = await _context.Categories.Where(x => x.fk_UserId == user.Id && x.Deleted == false).ToListAsync();
+            return categories;
+        }
 
-
-        public async Task<bool> Add(Category category)
+        public async Task<bool> Add(User user, Category category)
         {
             try
             {
+                category.fk_UserId = user.Id;
                 _context.Categories.Add(category);
                 await _context.SaveChangesAsync();
 
@@ -43,22 +48,50 @@ namespace HomeManager.Data.Repositories
             }
             catch (Exception ex)
             {
-                return false;
+                throw;
             }
         }
 
-        public async Task<bool> Update(Category category)
+        public async Task<bool> Update(User user, Category category)
         {
             try
             {
-                _context.Categories.Update(category);
-                await _context.SaveChangesAsync();
+                var realCategory = await _context.Categories.AsNoTracking().FirstAsync(x => x.Id == category.Id);
+                if (realCategory != null && realCategory.fk_UserId == user.Id)
+                {
+                    category.fk_UserId = user.Id;
+                    _context.Categories.Update(category);
+                    await _context.SaveChangesAsync();
 
-                return true;
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
+                throw;
+            }
+        }
+
+        public async Task<bool> Delete(User user, Category category)
+        {
+            try
+            {
+                var realCategory = await _context.Categories.FindAsync(category.Id);
+                if (realCategory != null && realCategory.fk_UserId == user.Id)
+                {
+                    category.Deleted = true;
+                    category.DeletedOn = DateTime.Today;
+                    _context.Categories.Update(category);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
                 return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

@@ -15,16 +15,16 @@ namespace HomeManager.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.3")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("HomeManager.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -95,7 +95,7 @@ namespace HomeManager.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -115,7 +115,7 @@ namespace HomeManager.Data.Migrations
                     b.Property<string>("Invoice")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("fk_CategoryId")
+                    b.Property<int?>("fk_CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("fk_TypeId")
@@ -140,7 +140,7 @@ namespace HomeManager.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -188,7 +188,10 @@ namespace HomeManager.Data.Migrations
                     b.Property<decimal>("Tax")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("fk_CategoryId")
+                    b.Property<string>("TaxList")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("fk_CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("fk_StatusId")
@@ -274,7 +277,7 @@ namespace HomeManager.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -289,7 +292,12 @@ namespace HomeManager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("fk_UserId");
 
                     b.ToTable("Statuses");
 
@@ -329,7 +337,7 @@ namespace HomeManager.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("Debit")
                         .HasColumnType("bit");
@@ -354,9 +362,14 @@ namespace HomeManager.Data.Migrations
                     b.Property<int>("fk_StatusId")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("fk_StatusId");
+
+                    b.HasIndex("fk_UserId");
 
                     b.ToTable("Types");
 
@@ -399,15 +412,6 @@ namespace HomeManager.Data.Migrations
                             ExtraInput = "Extra_Amount",
                             Name = "Earnings",
                             fk_StatusId = 2
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Debit = false,
-                            Deleted = false,
-                            EndTaxType = "None",
-                            Name = "Start Balance",
-                            fk_StatusId = 2
                         });
                 });
 
@@ -424,6 +428,12 @@ namespace HomeManager.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Darkmode")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("DataType")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -431,11 +441,17 @@ namespace HomeManager.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Lastname")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -454,8 +470,14 @@ namespace HomeManager.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<byte[]>("Picture")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("StartBalance")
+                        .HasColumnType("float");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -463,9 +485,6 @@ namespace HomeManager.Data.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("darkMode")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -485,34 +504,40 @@ namespace HomeManager.Data.Migrations
                             Id = new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"),
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "22ac1596-f950-40cc-ad84-92df87f8d892",
+                            Darkmode = true,
                             Email = "Francesco.Aepler@gmail.com",
                             EmailConfirmed = true,
+                            Lastname = "Aepler",
                             LockoutEnabled = true,
+                            Name = "Francesco",
                             NormalizedEmail = "FRANCESCO.AEPLER@GMAIL.COM",
-                            NormalizedUserName = "ADMIN",
+                            NormalizedUserName = "FRANCESCO",
                             PasswordHash = "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO",
+                            StartBalance = 0.0,
                             TwoFactorEnabled = false,
-                            UserName = "Admin",
-                            darkMode = false
+                            UserName = "Francesco"
                         },
                         new
                         {
                             Id = new Guid("c7e66c25-bb5d-41f2-c762-08d8cc11b158"),
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "05c6a9ba-80b0-4ee6-ab88-258cc2edbf09",
+                            Darkmode = true,
                             Email = "ole@admin.gov",
                             EmailConfirmed = true,
+                            Lastname = "Eggersmann",
                             LockoutEnabled = true,
+                            Name = "Ole",
                             NormalizedEmail = "OLE@ADMIN.GOV",
                             NormalizedUserName = "OLE",
                             PasswordHash = "AQAAAAEAACcQAAAAEHTM1p5KXcvGwKk4muG28dmLnhAgR3spQVXORsKEw+IN36bupGX27DhsTNrwIymmQg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VTPKISZMI2WKD6GNEHR223NRWDHGYRX6",
+                            StartBalance = 0.0,
                             TwoFactorEnabled = false,
-                            UserName = "Ole",
-                            darkMode = false
+                            UserName = "Ole"
                         });
                 });
 
@@ -521,7 +546,7 @@ namespace HomeManager.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -544,7 +569,7 @@ namespace HomeManager.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -642,9 +667,7 @@ namespace HomeManager.Data.Migrations
                 {
                     b.HasOne("HomeManager.Models.Category", "Category")
                         .WithMany("Payment_Templates")
-                        .HasForeignKey("fk_CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("fk_CategoryId");
 
                     b.HasOne("HomeManager.Models.Type", "Type")
                         .WithMany("Payment_Templates")
@@ -669,9 +692,7 @@ namespace HomeManager.Data.Migrations
                 {
                     b.HasOne("HomeManager.Models.Category", "Category")
                         .WithMany("Payments")
-                        .HasForeignKey("fk_CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("fk_CategoryId");
 
                     b.HasOne("HomeManager.Models.Status", "Status")
                         .WithMany("Payments")
@@ -706,6 +727,15 @@ namespace HomeManager.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("HomeManager.Models.Status", b =>
+                {
+                    b.HasOne("HomeManager.Models.User", "User")
+                        .WithMany("statuses")
+                        .HasForeignKey("fk_UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HomeManager.Models.Type", b =>
                 {
                     b.HasOne("HomeManager.Models.Status", "Status")
@@ -714,7 +744,13 @@ namespace HomeManager.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("HomeManager.Models.User", "User")
+                        .WithMany("types")
+                        .HasForeignKey("fk_UserId");
+
                     b.Navigation("Status");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -801,6 +837,10 @@ namespace HomeManager.Data.Migrations
                     b.Navigation("Payment_Templates");
 
                     b.Navigation("Payments");
+
+                    b.Navigation("statuses");
+
+                    b.Navigation("types");
                 });
 #pragma warning restore 612, 618
         }

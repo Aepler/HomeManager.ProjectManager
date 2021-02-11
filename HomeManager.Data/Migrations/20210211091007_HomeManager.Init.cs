@@ -26,7 +26,12 @@ namespace HomeManager.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    darkMode = table.Column<bool>(type: "bit", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Lastname = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Darkmode = table.Column<bool>(type: "bit", nullable: false),
+                    Picture = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    DataType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartBalance = table.Column<double>(type: "float", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -45,22 +50,6 @@ namespace HomeManager.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Statuses",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EndPoint = table.Column<bool>(type: "bit", nullable: false),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Statuses", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -192,6 +181,29 @@ namespace HomeManager.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Statuses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EndPoint = table.Column<bool>(type: "bit", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    fk_UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Statuses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Statuses_AspNetUsers_fk_UserId",
+                        column: x => x.fk_UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Types",
                 columns: table => new
                 {
@@ -203,11 +215,18 @@ namespace HomeManager.Data.Migrations
                     ExtraInput = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     fk_StatusId = table.Column<int>(type: "int", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    fk_UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Types", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Types_AspNetUsers_fk_UserId",
+                        column: x => x.fk_UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Types_Statuses_fk_StatusId",
                         column: x => x.fk_StatusId,
@@ -230,7 +249,7 @@ namespace HomeManager.Data.Migrations
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     fk_TypeId = table.Column<int>(type: "int", nullable: false),
-                    fk_CategoryId = table.Column<int>(type: "int", nullable: false)
+                    fk_CategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -267,6 +286,7 @@ namespace HomeManager.Data.Migrations
                     Description_Extra = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description_Tax = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Tax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TaxList = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Amount_Tax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Amount_Gross = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -277,7 +297,7 @@ namespace HomeManager.Data.Migrations
                     DataType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     fk_TemplateId = table.Column<int>(type: "int", nullable: true),
                     fk_TypeId = table.Column<int>(type: "int", nullable: false),
-                    fk_CategoryId = table.Column<int>(type: "int", nullable: false),
+                    fk_CategoryId = table.Column<int>(type: "int", nullable: true),
                     fk_StatusId = table.Column<int>(type: "int", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
                     DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -329,11 +349,11 @@ namespace HomeManager.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "darkMode" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Darkmode", "DataType", "Email", "EmailConfirmed", "Lastname", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "SecurityStamp", "StartBalance", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"), 0, "22ac1596-f950-40cc-ad84-92df87f8d892", "Francesco.Aepler@gmail.com", true, true, null, "FRANCESCO.AEPLER@GMAIL.COM", "ADMIN", "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==", null, false, "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO", false, "Admin", false },
-                    { new Guid("c7e66c25-bb5d-41f2-c762-08d8cc11b158"), 0, "05c6a9ba-80b0-4ee6-ab88-258cc2edbf09", "ole@admin.gov", true, true, null, "OLE@ADMIN.GOV", "OLE", "AQAAAAEAACcQAAAAEHTM1p5KXcvGwKk4muG28dmLnhAgR3spQVXORsKEw+IN36bupGX27DhsTNrwIymmQg==", null, false, "VTPKISZMI2WKD6GNEHR223NRWDHGYRX6", false, "Ole", false }
+                    { new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"), 0, "22ac1596-f950-40cc-ad84-92df87f8d892", true, null, "Francesco.Aepler@gmail.com", true, "Aepler", true, null, "Francesco", "FRANCESCO.AEPLER@GMAIL.COM", "FRANCESCO", "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==", null, false, null, "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO", 0.0, false, "Francesco" },
+                    { new Guid("c7e66c25-bb5d-41f2-c762-08d8cc11b158"), 0, "05c6a9ba-80b0-4ee6-ab88-258cc2edbf09", true, null, "ole@admin.gov", true, "Eggersmann", true, null, "Ole", "OLE@ADMIN.GOV", "OLE", "AQAAAAEAACcQAAAAEHTM1p5KXcvGwKk4muG28dmLnhAgR3spQVXORsKEw+IN36bupGX27DhsTNrwIymmQg==", null, false, null, "VTPKISZMI2WKD6GNEHR223NRWDHGYRX6", 0.0, false, "Ole" }
                 });
 
             migrationBuilder.InsertData(
@@ -352,13 +372,13 @@ namespace HomeManager.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Statuses",
-                columns: new[] { "Id", "Deleted", "DeletedOn", "EndPoint", "Name" },
+                columns: new[] { "Id", "Deleted", "DeletedOn", "EndPoint", "Name", "fk_UserId" },
                 values: new object[,]
                 {
-                    { 1, false, null, true, "Paid" },
-                    { 2, false, null, true, "Received" },
-                    { 3, false, null, false, "Pending" },
-                    { 4, false, null, false, "Fictitious" }
+                    { 1, false, null, true, "Paid", null },
+                    { 2, false, null, true, "Received", null },
+                    { 3, false, null, false, "Pending", null },
+                    { 4, false, null, false, "Fictitious", null }
                 });
 
             migrationBuilder.InsertData(
@@ -372,14 +392,13 @@ namespace HomeManager.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Types",
-                columns: new[] { "Id", "Debit", "Deleted", "DeletedOn", "EndTaxType", "ExtraInput", "Name", "fk_StatusId" },
+                columns: new[] { "Id", "Debit", "Deleted", "DeletedOn", "EndTaxType", "ExtraInput", "Name", "fk_StatusId", "fk_UserId" },
                 values: new object[,]
                 {
-                    { 2, true, false, null, "Gross", null, "Monthly Expens", 1 },
-                    { 3, true, false, null, "Gross", "Extra_Amount", "Expenditure", 1 },
-                    { 1, false, false, null, "Net", "Extra_Amount,TaxList", "Salary", 2 },
-                    { 4, false, false, null, "Net", "Extra_Amount", "Earnings", 2 },
-                    { 5, false, false, null, "None", null, "Start Balance", 2 }
+                    { 2, true, false, null, "Gross", null, "Monthly Expens", 1, null },
+                    { 3, true, false, null, "Gross", "Extra_Amount", "Expenditure", 1, null },
+                    { 1, false, false, null, "Net", "Extra_Amount,TaxList", "Salary", 2, null },
+                    { 4, false, false, null, "Net", "Extra_Amount", "Earnings", 2, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -467,9 +486,19 @@ namespace HomeManager.Data.Migrations
                 column: "fk_UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Statuses_fk_UserId",
+                table: "Statuses",
+                column: "fk_UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Types_fk_StatusId",
                 table: "Types",
                 column: "fk_StatusId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Types_fk_UserId",
+                table: "Types",
+                column: "fk_UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -505,10 +534,10 @@ namespace HomeManager.Data.Migrations
                 name: "Types");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Statuses");
 
             migrationBuilder.DropTable(
-                name: "Statuses");
+                name: "AspNetUsers");
         }
     }
 }

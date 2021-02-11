@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     List();
-    CreatePayment()
+    CreatePayment();
+    EditLoader()
 });
 
 //==============================================================================
@@ -9,31 +10,59 @@
 
 function List() {
     var overview = $("#tblIndexOverview").DataTable({
-        "dom": 'Pfrtip',
         "processing": true,
         "serverSide": true,
         "filter": true,
         "orderMulti": false,
         "destroy": true,
         "ordering": true,
-        "order": [[1, "ASC"]],
+        "order": [[0, "ASC"]],
         "ajax": {
             "url": '/Payments/GetTableData',
             "type": "POST",
             "datatype": "json"
         },
+        "rowId": 'id',
         "columns": [
-            {
-                "className": 'details-control',
-                "orderable": false,
-                "data": null,
-                "defaultContent": '<button class="btn btn-primary" type="button">+</button>'
-            }
-            , { "data": "date" }
+            { "data": "date" }
             , { "data": "description" }
             , { "data": "type" }
+            , { "data": "category" }
             , { "data": "amount" }
         ]
+    });
+
+    $('#tblIndexOverview tbody').on('click', '.buttonDeletePayment', function () {
+        var id = $(this).val();
+        if (id != null) {
+            $('#buttonModalDeletePayment').val(id);
+        }
+    });
+
+    $('#modalFooterDeletePayment').on('click', '#buttonModalDeletePayment', function () {
+        var id = $(this).val();
+        if (id != null) {
+            DeletePaymentPost(id, overview);
+        }
+    });
+
+    $('#modalFooterEditPayment').on('click', '#buttonModalEditPayment', function () {
+        var id = $(this).val();
+        if (id != null) {
+            EditPaymentPost(id, overview);
+        }
+    });
+
+    $('#modalFooterCreatePayment').on('click', '#buttonModalCreatePayment', function () {
+        CreatePaymentPost(overview);
+    });
+
+    $('#tblIndexOverview tbody').on('click', '.buttonEditPayment', function () {
+        var id = $(this).val();
+        if (id != "") {
+            $('#buttonModalEditPayment').val(id);
+            GetPaymentEdit(id);
+        }
     });
 
     ListExtra(overview);
@@ -44,19 +73,18 @@ function List() {
 //==============================================================================
 
 function ListExtra(overview) {
-    $('#tblIndexOverview tbody').on('click', 'td.details-control', function () {
-        var tr = $(this).closest('tr');
-        var row = overview.row(tr);
-
-        if (row.child.isShown()) {
-            // This row is already open - close it
-            row.child.hide();
-            tr.removeClass('shown');
-        }
-        else {
-            // Open this row
-            row.child(ListFormat(row.data())).show();
-            tr.addClass('shown');
+    $('#tblIndexOverview tbody').on('click', 'tr', function () {
+        var row = overview.row(this);
+        if (row.data() != null) {
+            var id = row.data().id;
+            if (row.child.isShown()) {
+                row.child.hide();
+            }
+            else {
+                row.child(ListFormat(row.data())).show();
+                var details = $("#detailsIndexPayments" + id);
+                details.parent().parent().addClass("no-hover");
+            }
         }
     });
 }
@@ -66,95 +94,85 @@ function ListExtra(overview) {
 //==============================================================================
 
 function ListFormat(d) {
-    var data = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    var data = '<div id="detailsIndexPayments' + d.id + '" class="container-fluid">';
 
-    var date = '<tr>' +
-        '<td>Date:</td>' +
-        '<td>' + d.date + '</td>' +
-        '</tr>';
+    var date = '<div class="row">' +
+        '<div class="col">Date</div>' +
+        '<div class="col">' + d.date + '</div>' +
+        '</div>';
 
-    var description = '<tr>' +
-        '<td>Description:</td>' +
-        '<td>' + d.description + '</td>' +
-        '</tr>';
+    var description = '<div class="row">' +
+        '<div class="col">Description</div>' +
+        '<div class="col">' + d.description + '</div>' +
+        '</div>';
 
-    var description_extra = '<tr>' +
-        '<td>Description_Extra:</td>' +
-        '<td>' + d.description_Extra + '</td>' +
-        '</tr>';
+    var description_extra = '<div class="row">' +
+        '<div class="col">Description_Extra</div>' +
+        '<div class="col">' + d.description_Extra + '</div>' +
+        '</div>';
 
-    var description_tax = '<tr>' +
-        '<td>Description_Tax:</td>' +
-        '<td>' + d.description_Tax + '</td>' +
-        '</tr>';
+    var description_tax = '<div class="row">' +
+        '<div class="col">Description_Tax</div>' +
+        '<div class="col">' + d.description_Tax + '</div>' +
+        '</div>';
 
-    var tax = '<tr>' +
-        '<td>Tax:</td>' +
-        '<td>' + d.tax + '</td>' +
-        '</tr>';
+    var tax = '<div class="row">' +
+        '<div class="col">Tax</div>' +
+        '<div class="col">' + d.tax + '</div>' +
+        '</div>';
 
-    var amount_taxList = '<tr>' +
-        '<td>Tax_Extra:</td>' +
-        '<td>' + d.amount_TaxList + '</td>' +
-        '</tr>';
+    var amount_taxList = '<div class="row">' +
+        '<div class="col">Tax_Extra</div>' +
+        '<div class="col">' + d.amount_TaxList + '</div>' +
+        '</div>';
 
-    var amount = '<tr>' +
-        '<td>Amount:</td>' +
-        '<td style="color:green">+' + d.amount + ' €</td>' +
-        '</tr>';
+    var amount = '<div class="row">' +
+        '<div class="col">Amount</div>' +
+        '<div class="col">' + d.amount + '</div>' +
+        '</div>';
 
-    var amount_tax = '<tr>' +
-        '<td>Amount_Tax:</td>' +
-        '<td>' + d.amount_Tax + '</td>' +
-        '</tr>';
+    var amount_tax = '<div class="row">' +
+        '<div class="col">Amount_Tax</div>' +
+        '<div class="col">' + d.amount_Tax + '</div>' +
+        '</div>';
 
-    var amount_gross = '<tr>' +
-        '<td>Amount_Gross:</td>' +
-        '<td>' + d.amount_Gross + '</td>' +
-        '</tr>';
+    var amount_gross = '<div class="row">' +
+        '<div class="col">Amount_Gross</div>' +
+        '<div class="col">' + d.amount_Gross + '</div>' +
+        '</div>';
 
-    var amount_net = '<tr>' +
-        '<td>Amount_Net:</td>' +
-        '<td>' + d.amount_Net + '</td>' +
-        '</tr>';
+    var amount_net = '<div class="row">' +
+        '<div class="col">Amount_Net</div>' +
+        '<div class="col">' + d.amount_Net + '</div>' +
+        '</div>';
 
-    var amount_extra = '<tr>' +
-        '<td>Amount_Extra:</td>' +
-        '<td>' + d.amount_Extra + '</td>' +
-        '</tr>';
+    var amount_extra = '<div class="row">' +
+        '<div class="col">Amount_Extra</div>' +
+        '<div class="col">' + d.amount_Extra + '</div>' +
+        '</div>';
 
-    var category = '<tr>' +
-        '<td>Category:</td>' +
-        '<td>' + d.category + '</td>' +
-        '</tr>';
+    var category = '<div class="row">' +
+        '<div class="col">Category</div>' +
+        '<div class="col">' + d.category + '</div>' +
+        '</div>';
 
-    var status = '<tr>' +
-        '<td>Status:</td>' +
-        '<td>' + d.status + '</td>' +
-        '</tr>';
+    var status = '<div class="row">' +
+        '<div class="col">Status</div>' +
+        '<div class="col">' + d.status + '</div>' +
+        '</div>';
 
-    data = data + date + description + amount + amount_net + amount_gross + tax + amount_tax + category + status;
+    var button = '<div style="float:right">' +
+        '<button class="buttonEditPayment btn btn-outline-secondary" value="' + d.id + '" data-bs-toggle="modal" data-bs-target="#modalEditPayment">Edit</button>' +
+        ' | ' +
+        '<button class="buttonDeletePayment btn btn-outline-danger" value="' + d.id + '" data-bs-toggle="modal" data-bs-target="#modalDeletePayment">Delete</button>' +
+        '</div>';
 
-    data = data + '</table>';
+    data = data + date + description + amount + amount_net + amount_gross + tax + amount_tax + category + status + button;
+
+    data = data + '</div>';
     return data
 }
 
-
-//==============================================================================
-// Edit Entry ==================================================================
-//==============================================================================
-
-function EditPayment(id) {
-    $('#formEditPayment').attr('action', "/Payments/Edit/" + id);
-};
-
-//==============================================================================
-// Delete Entry ================================================================
-//==============================================================================
-
-function DeletePayment(id) {
-    $('#formDeletePayment').attr('action', "/Payments/Delete/" + id);
-};
 
 //==============================================================================
 // Create Entry ================================================================
@@ -168,16 +186,11 @@ function CreatePayment() {
 
     $("#modalBodyCreatePayment").append(init);
 
-    var dropdownCategory = $('#dropdownTypeCreatePayment');
+    var dropdownType = $('#dropdownTypeCreatePayment');
 
-    GetTypeList(dropdownCategory);
+    GetTypeList(dropdownType);
 
-    dropdownCategory.change(function () {
-        var type = $("#dropdownTypeCreatePayment option:selected").val;
-        var statusId = $("#dropdownTypeCreatePayment option:selected").attr("id");
-        var taxType = $("#dropdownTypeCreatePayment option:selected").attr("tax");
-        var inputFields = $("#dropdownTypeCreatePayment option:selected").attr("inputfields");
-
+    dropdownType.change(function () {
         var date = '<br class="created" />' +
             '<div class="form-group form-floating  created">' +
             '<input name="Date" placeholder="Date" class="form-control" type="date"  id="datepickerDateCreatePayment" />' +
@@ -238,9 +251,15 @@ function CreatePayment() {
             '<label for="fk_StatusId" class="control-label">Status</label>' +
             '</div>';
 
-        var advancedAmount = '<a href="#" class="link-dark created" id="linkAdvancedAmountCreatePayment" onclick="AdvancedAmount()" value="0" >Advanced</a>'
-        var advancedTax = '<a href="#" class="link-dark created" id="linkAdvancedTaxCreatePayment" onclick="AdvancedTax()" value="0">Advanced</a>'
-        var extraAmount = '<a href="#" class="link-dark created" id="linkExtraAmountCreatePayment" onclick="ExtraAmount()" value="0">Extra Cost</a>'
+        var advancedAmount = '<a href="#" class="link-dark created" id="linkAdvancedAmountCreatePayment" value="0" >Advanced</a>'
+        var advancedTax = '<a href="#" class="link-dark created" id="linkAdvancedTaxCreatePayment" value="0">Advanced</a>'
+        var extraAmount = '<a href="#" class="link-dark created" id="linkExtraAmountCreatePayment" value="0">Extra Cost</a>'
+
+
+        var type = $("#dropdownTypeCreatePayment option:selected").val;
+        var statusId = $("#dropdownTypeCreatePayment option:selected").attr("id");
+        var taxType = $("#dropdownTypeCreatePayment option:selected").attr("tax");
+        var inputFields = $("#dropdownTypeCreatePayment option:selected").attr("inputfields");
 
         var data = date + description + amount;
 
@@ -272,74 +291,216 @@ function CreatePayment() {
         GetStatusListByType(dropdownStatus, statusId);
     });
 
-    $('#inputAmountGrossCreatePayment').change(function () {
+    $('#modalBodyCreatePayment').on('change', '#inputAmountGrossCreatePayment', function () {
         var grossField = $('#inputAmountGrossCreatePayment');
         var netField = $('#inputAmountNetCreatePayment');
         var taxField = $('#inputAmountTaxCreatePayment');
 
         CalcNet(grossField, netField, taxField);
     });
+
+    $('#modalBodyCreatePayment').on('click', '#linkAdvancedTaxCreatePayment', function () {
+        AdvancedTax("Create");
+    });
+
+    $('#modalBodyCreatePayment').on('click', '#linkAdvancedAmountCreatePayment', function () {
+        AdvancedAmount("Create");
+    });
+
+    $('#modalBodyCreatePayment').on('click', '#linkAddTaxCreatePayment', function () {
+        AddTax("Create");
+    });
 }
 
 
-function AdvancedTax() {
-    var countString = $('#linkAdvancedTaxCreatePayment').attr("value");
-    var count = parseInt(countString);
-    if (count == 0) {
-        var advancedTax = '<a href="#" class="link-dark created advancedTax" id="linkAddTaxCreatePayment" onclick="AddTax()" value="1">Add Tax</a>'
-        $('#linkAdvancedTaxCreatePayment').after(advancedTax);
-        var data = '<br class="advancedTax created" />' +
-            '<div class="row g-3 form-group advancedTax created">' +
-            '<div class="col form-floating">' +
-            '<input name="Description_Tax" placeholder="Description_Tax" class="form-control" id="inputDescriptionTaxCreatePayment" />' +
-            '<label for="Description_Tax" class="control-label">Description</label>' +
-            '</div>' +
-            '<div class="col form-floating">' +
-            '<input name="Amount_TaxList" placeholder="Amount_TaxList" class="form-control" id="inputAmountTaxListCreatePayment" />' +
-            '<label for="Amount_TaxList" class="control-label">Amount</label>' +
-            '</div>' +
-            '</div>';
-        $('#linkAdvancedTaxCreatePayment').after(data);
-
-        $('#linkAdvancedTaxCreatePayment').attr("value", 1);
-    }
-    if (count == 1) {
-        $('.advancedTax').remove();
-        $('#linkAdvancedTaxCreatePayment').attr("value", 0);
-    }
-}
-
-function AddTax() {
-    var countString = $('#linkAddTaxCreatePayment').attr("value");
-    var count = parseInt(countString);
-    count += 1;
-    $('#linkAddTaxCreatePayment').attr("value", count);
-
-    var data = '<br class="created advancedTax" />' +
-        '<div class="row g-3 form-group created advancedTax">' +
-        '<div class="col form-floating">' +
-        '<input name="Description_Tax" placeholder="Description_Tax" class="form-control" id="inputDescriptionTaxCreatePayment" />' +
-        '<label for="Description_Tax" class="control-label">Description</label>' +
-        '</div>' +
-        '<div class="col form-floating">' +
-        '<input name="Amount_TaxList" placeholder="Amount_TaxList" class="form-control" id="inputAmountTaxListCreatePayment" />' +
-        '<label for="Amount_TaxList" class="control-label">Amount</label>' +
-        '</div>' +
-        '</div>';
-
-    $('#linkAddTaxCreatePayment').before(data);
-}
 
 
-function AdvancedAmount() {
-    $("#divAdvancedCreatePayment").toggle();
-}
 
 //==============================================================================
 // Edit Entry ==================================================================
 //==============================================================================
 
+function EditPayment(data) {
+    var type = '<div class="form-group form-floating created">' +
+        '<select name="fk_TypeId" class ="form-control" id="dropdownTypeEditPayment"></select>' +
+        '<label for="fk_TypeId" class="control-label">Type</label>' +
+        '</div >';
 
+    var date = '<br class="created" />' +
+        '<div class="form-group form-floating  created">' +
+        '<input name="Date" placeholder="Date" class="form-control" type="date"  id="datepickerDateEditPayment" value="' + data.date.substring(0, 10) + '" />' +
+        '<label for="Date" class="control-label">Date</label>' +
+        '</div>';
+    var description = '<br class="created" />' +
+        '<div class="form-group form-floating created">' +
+        '<input name="Description" placeholder="Description" class="form-control" id="inputDescriptionEditPayment" value="' + data.description + '" />' +
+        '<label for="Description">Description</label>' +
+        '</div>';
+    var description_extra = '<br class="created" />' +
+        '<div class="form-group form-floating created">' +
+        '<input name="Description_Extra" placeholder="Description_Extra" class="form-control" id="inputDescriptionExtraEditPayment" value="' + data.description_Extra + '" />' +
+        '<label for="Description_Extra" class="control-label">Description Extra</label>' +
+        '</div>';
+    var tax = '<br class="created" />' +
+        '<div class="row g-3 form-group created">' +
+        '<div class="col form-floating created">' +
+        '<input name="Tax" placeholder="Tax" class="form-control" id="inputTaxEditPayment" value="' + data.tax + '" />' +
+        '<label for="Tax" class="control-label">Tax</label>' +
+        '</div>' +
+        '<div class="col form-floating created">' +
+        '<input name="Amount_Tax" placeholder="Amount_Tax" class="form-control" id="inputAmountTaxEditPayment" value="' + data.amount_Tax + '" />' +
+        '<label for="Amount_Tax" class="control-label">Amount Tax</label>' +
+        '</div>' +
+        '</div>';
+    var amount = '<br class="created" />' +
+        '<div class="form-group form-floating created">' +
+        '<input name="Amount" placeholder="Amount" class="form-control" id="inputAmountEditPayment" value="' + data.amount + '" />' +
+        '<label for="Amount" class="control-label">Total Amount</label>' +
+        '</div>';
+    var amount_gross = '<div class="form-group form-floating created">' +
+        '<input name="Amount_Gross" placeholder="Amount_Gross" class="form-control" id="inputAmountGrossEditPayment" value="' + data.amount_Gross + '" />' +
+        '<label for="Amount_Gross" class="control-label">Amount Gross</label>' +
+        '</div>';
+    var amount_net = '<div class="form-group form-floating created">' +
+        '<input name="Amount_Net" placeholder="Amount_Net" class="form-control" id="inputAmountNetEditPayment" value="' + data.amount_Net + '" />' +
+        '<label for="Amount_Net" class="control-label">Amount Net</label>' +
+        '</div>';
+    var amount_extra = '<br class="created" />' +
+        '<div class="form-group form-floating created">' +
+        '<input name="Amount_Extra" placeholder="Amount_Extra" class="form-control" id="inputAmountExtraEditPayment" value="' + data.amount_Extra + '" />' +
+        '<label for="Amount_Extra" class="control-label">Amount Extra</label>' +
+        '</div>';
+    var files = '<br class="created" />' +
+        '<div class="form-group created">' +
+        '<label class="control-label" for="files">Upload Invoice</label>' +
+        '<input class="form-control" name="files" type="file" id="uploadFilesEditPayment" />' +
+        '</div>';
+    var category = '<br class="created" />' +
+        '<div class="form-group form-floating created">' +
+        '<select name="fk_CategoryId" class ="form-control" id="dropdownCategoryEditPayment"></select>' +
+        '<label for="fk_CategoryId" class="control-label">Category</label>' +
+        '</div>';
+    var status = '<br class="created" />' +
+        '<div class="form-group form-floating created">' +
+        '<select name="fk_StatusId" class ="form-control" id="dropdownStatusEditPayment"></select>' +
+        '<label for="fk_StatusId" class="control-label">Status</label>' +
+        '</div>';
+
+    var advancedAmount = '<a href="#" class="link-dark created" id="linkAdvancedAmountEditPayment" value="0" >Advanced</a>'
+    var advancedTax = '<a href="#" class="link-dark created" id="linkAdvancedTaxEditPayment" value="0">Advanced</a>'
+    var extraAmount = '<a href="#" class="link-dark created" id="linkExtraAmountEditPayment" value="0">Extra Cost</a>'
+
+    var html = type + date + description + amount;
+
+    if (data.type.extraInput.includes("Extra_Amount")) {
+        html += extraAmount;
+    }
+
+    html += advancedAmount;
+    if (data.type.endTaxType == "Gross") {
+        html += '<div class="created" id="divAdvancedEditPayment" style="display: none">' + amount_gross + '<br class="created" />' + amount_net + '</div>';
+    } else if (data.type.endTaxType == "Net") {
+        html += '<div class="created" id="divAdvancedEditPayment" style="display: none">' + amount_net + '<br class="created" />' + amount_gross + '</div>';
+    }
+
+    html += tax;
+
+    if (data.type.extraInput.includes("TaxList")) {
+        html += advancedTax;
+    }
+
+    html += category + status + files;
+
+    $(".created").remove();
+    $("#modalBodyEditPayment").append(html);
+
+    var dropdownType = $('#dropdownTypeEditPayment');
+    var dropdownCategory = $('#dropdownCategoryEditPayment');
+    var dropdownStatus = $('#dropdownStatusEditPayment'); 
+
+    GetTypeList(dropdownType, data.fk_TypeId);
+    GetCategoryList(dropdownCategory, data.fk_CategoryId);
+    GetStatusListByType(dropdownStatus, data.fk_StatusId, data.fk_StatusId);
+};
+
+function EditLoader() {
+    $('#modalBodyEditPayment').on('change', '#inputAmountGrossEditPayment', function () {
+        var grossField = $('#inputAmountGrossEditPayment');
+        var netField = $('#inputAmountNetEditPayment');
+        var taxField = $('#inputAmountTaxEditPayment');
+
+        CalcNet(grossField, netField, taxField);
+    });
+
+    $('#modalBodyEditPayment').on('click', '#linkAdvancedTaxEditPayment', function () {
+        AdvancedTax("Edit");
+    });
+
+    $('#modalBodyEditPayment').on('click', '#linkAdvancedAmountEditPayment', function () {
+        AdvancedAmount("Edit");
+    });
+
+    $('#modalBodyEditPayment').on('click', '#linkAddTaxEditPayment', function () {
+        AddTax("Edit");
+    });
+}
+
+//==============================================================================
+// Show more ===================================================================
+//==============================================================================
+
+function AdvancedTax(type) {
+    var countString = $('#linkAdvancedTax' + type + 'Payment').attr("value");
+    var count = parseInt(countString);
+    if (count == 0) {
+        var addTax = '<a href="#" class="link-dark created advancedTax" id="linkAddTax' + type + 'Payment" value="1">Add Tax</a>'
+        $('#linkAdvancedTax' + type + 'Payment').after(addTax);
+        var data = '<br class="advancedTax created" />' +
+            '<div class="row g-3 form-group advancedTax created">' +
+            '<div class="col form-floating">' +
+            '<input name="Description_Tax" placeholder="Description_Tax" class="form-control" id="inputDescriptionTax' + type + 'Payment" />' +
+            '<label for="Description_Tax" class="control-label">Description</label>' +
+            '</div>' +
+            '<div class="col form-floating">' +
+            '<input name="Amount_TaxList" placeholder="Amount_TaxList" class="form-control" id="inputAmountTaxList' + type + 'Payment" />' +
+            '<label for="Amount_TaxList" class="control-label">Amount</label>' +
+            '</div>' +
+            '</div>';
+        $('#linkAdvancedTax' + type + 'Payment').after(data);
+
+        $('#linkAdvancedTax' + type + 'Payment').attr("value", 1);
+    }
+    if (count == 1) {
+        $('.advancedTax').remove();
+        $('#linkAdvancedTax' + type + 'Payment').attr("value", 0);
+    }
+}
+
+function AddTax(type) {
+    var countString = $('#linkAddTax' + type + 'Payment').attr("value");
+    var count = parseInt(countString);
+    count += 1;
+    $('#linkAddTax' + type + 'Payment').attr("value", count);
+
+    var data = '<br class="created advancedTax" />' +
+        '<div class="row g-3 form-group created advancedTax">' +
+        '<div class="col form-floating">' +
+        '<input name="Description_Tax" placeholder="Description_Tax" class="form-control" id="inputDescriptionTax' + type + 'Payment" />' +
+        '<label for="Description_Tax" class="control-label">Description</label>' +
+        '</div>' +
+        '<div class="col form-floating">' +
+        '<input name="Amount_TaxList" placeholder="Amount_TaxList" class="form-control" id="inputAmountTaxList' + type + 'Payment" />' +
+        '<label for="Amount_TaxList" class="control-label">Amount</label>' +
+        '</div>' +
+        '</div>';
+
+    $('#linkAddTax' + type + 'Payment').before(data);
+}
+
+
+function AdvancedAmount(type) {
+    $('#divAdvanced' + type + 'Payment').toggle();
+}
 
 //==============================================================================
 // Calc ========================================================================
@@ -379,15 +540,37 @@ function CalcNet(grossField, netField, taxField) {
 // Ajax ========================================================================
 //==============================================================================
 
-function GetTypeList(dropDown) {
+function GetPaymentEdit(id) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "Payments/GetPayment/" + id,
+        success: function (data) {
+            EditPayment(data);
+            //$('#modalEditPayment').toggle();
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve payment.');
+        }
+    });
+};
+
+function GetTypeList(dropDown, selected) {
     $.ajax({
         cache: false,
         type: "GET",
         url: "Payments/GetTypeList",
         success: function (data) {
-            var s = '<option value="-1" disabled selected>Select a Type</option>';
+            var s = "";
+            if (selected == null) {
+                s = '<option value="-1" disabled selected>Select a Type</option>';
+            }
             for (var i = 0; i < data.length; i++) {
-                s += '<option value="' + data[i].id + '" id="' + data[i].fk_StatusId + '" tax="' + data[i].endTaxType + '" inputFields="' + data[i].extraInput + '">' + data[i].name + '</option>';
+                s += '<option value="' + data[i].id + '" id="' + data[i].fk_StatusId + '" tax="' + data[i].endTaxType + '" inputFields="' + data[i].extraInput + '"';
+                if (selected == data[i].id) {
+                    s += 'selected';
+                }
+                s += '>' + data[i].name + '</option>';
             }
             dropDown.html(s);
         },
@@ -397,15 +580,22 @@ function GetTypeList(dropDown) {
     });
 };
 
-function GetCategoryList(dropDown) {
+function GetCategoryList(dropDown, selected) {
     $.ajax({
         cache: false,
         type: "GET",
         url: "Payments/GetCategoryList",
         success: function (data) {
-            var s = '<option value="-1" disabled selected>Select a Category</option>';
+            var s = "";
+            if (selected == null) {
+                s = '<option value="-1" disabled selected>Select a Category</option>';
+            }
             for (var i = 0; i < data.length; i++) {
-                s += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                s += '<option value="' + data[i].id + '"';
+                if (selected == data[i].id) {
+                    s += 'selected';
+                }
+                s += '>' + data[i].name + '</option>';
             }
             dropDown.html(s);
         },
@@ -415,20 +605,72 @@ function GetCategoryList(dropDown) {
     });
 };
 
-function GetStatusListByType(dropDown, id) {
+function GetStatusListByType(dropDown, id, selected) {
     $.ajax({
         cache: false,
         type: "GET",
         url: "Payments/GetStatusListByType/" + id,
         success: function (data) {
-            var s = '<option value="-1" disabled selected>Select a Status</option>';
+            var s = "";
+            if (selected == null) {
+                s = '<option value="-1" disabled selected>Select a Status</option>';
+            }
             for (var i = 0; i < data.length; i++) {
-                s += '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                s += '<option value="' + data[i].id + '"';
+                if (selected == data[i].id) {
+                    s += 'selected';
+                }
+                s += '>' + data[i].name + '</option>';
             }
             dropDown.html(s);
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert('Failed to retrieve status.');
+        }
+    });
+};
+
+function CreatePaymentPost(table) {
+    $.ajax({
+        cache: false,
+        type: "Post",
+        url: "Payments/Create/",
+        data: $('#formCreatePayment').serialize(),
+        success: function () {
+            table.draw(false);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to create payment.');
+        }
+    });
+};
+
+function EditPaymentPost(id, table) {
+    $.ajax({
+        cache: false,
+        type: "Post",
+        url: "Payments/Edit/" + id,
+        data: $('#formEditPayment').serialize(),
+        success: function () {
+            table.draw(false);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to edit payment.');
+        }
+    });
+};
+
+function DeletePaymentPost(id, table) {
+    $.ajax({
+        cache: false,
+        type: "Post",
+        url: "Payments/Delete/" + id,
+        data: $('#formDeletePayment').serialize(),
+        success: function () {
+            table.draw(false);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to delete payment.');
         }
     });
 };

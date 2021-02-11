@@ -24,5 +24,11 @@ namespace HomeManager.Models.ViewModels.Manage
         [Phone]
         [Display(Name = "Phone number")]
         public string PhoneNumber { get; set; }
+
+        [Display(Name = "Name")]
+        public string Name { get; set; }
+
+        [Display(Name = "Last Name")]
+        public string Lastname { get; set; }
     }
 }

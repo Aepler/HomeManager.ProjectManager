@@ -1,14 +1,14 @@
 ﻿@model HomeManager.Models.Payments
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Payments";
 }
 
-<h1>Index</h1>
+<h1>Payments</h1>
 
 <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreatePayment">New Payment</button>
 
-<form asp-action="Create" enctype="multipart/form-data">
+<form id="formCreatePayment" asp-action="Create" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="modal fade" id="modalCreatePayment" role="dialog" aria-labelledby="modalLabelCreatePayment" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -20,16 +20,16 @@
                 <div class="modal-body" id="modalBodyCreatePayment">
 
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="modalFooterCreatePayment">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreatePayment" data-bs-dismiss="modal">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-<form id="formEditPayment" enctype="multipart/form-data">
+<form id="formEditPayment" asp-action="Edit" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="modal fade" id="modalEditPayment" role="dialog" aria-labelledby="modalLabelEditPayment" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -41,16 +41,16 @@
                 <div class="modal-body" id="modalBodyEditPayment">
 
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="modalFooterEditPayment">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditPayment" data-bs-dismiss="modal">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-<form id="formDeletePayment" method="post">
+<form id="formDeletePayment" asp-action="Delete">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="modal fade" id="modalDeletePayment" role="dialog" aria-labelledby="modalLabelDeletePayment" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -62,22 +62,23 @@
                 <div class="modal-body" id="modalBodyDeletePayment">
                     <p>Are you sure you want to Delete this Payment?</p>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="modalFooterDeletePayment">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeletePayment" data-bs-dismiss="modal">Delete Payment</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
+<br />
 
-<table id="tblIndexOverview" class="table table-striped table-bordered">
+<table id="tblIndexOverview" class="table table-hover">
     <thead>
         <tr>
-            <th></th>
             <th>Date</th>
             <th>Description</th>
             <th>Type</th>
+            <th>Category</th>
             <th>Amount</th>
         </tr>
     </thead>

@@ -33,10 +33,10 @@ namespace HomeManager.WebApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateUserDarkMode(bool darkModeBool, string userId)
+        public async Task<IActionResult> UpdateUserDarkmode(bool darkmodeBool)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            user.darkMode = darkModeBool;
+            var user = await _userManager.GetUserAsync(User);
+            user.Darkmode = darkmodeBool;
 
             try
             {

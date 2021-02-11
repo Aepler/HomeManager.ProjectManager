@@ -18,15 +18,15 @@ namespace HomeManager.Services
             _payment_TemplateRepository = payment_TemplateRepository;
         }
 
-        public async Task<bool> Add(Payment_Template payment_Template)
+        public async Task<Payment_Template> GetById(User user, int id)
         {
             try
             {
-                return await _payment_TemplateRepository.Add(payment_Template);
+                return await _payment_TemplateRepository.GetById(user, id);
             }
             catch (Exception ex)
             {
-                return false;
+                return new Payment_Template();
             }
         }
 
@@ -54,18 +54,6 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<Payment_Template> GetById(User user, int id)
-        {
-            try
-            {
-                return await _payment_TemplateRepository.GetById(user, id);
-            }
-            catch (Exception ex)
-            {
-                return new Payment_Template();
-            }
-        }
-
         public async Task<ICollection<Payment_Template>> GetByType(User user, int fk_TypeId)
         {
             try
@@ -78,15 +66,39 @@ namespace HomeManager.Services
             }
         }
 
-        public async Task<bool> Update(Payment_Template payment_Template)
+        public async Task<bool> Add(User user, Payment_Template payment_Template)
         {
             try
             {
-                return await _payment_TemplateRepository.Update(payment_Template);
+                return await _payment_TemplateRepository.Add(user, payment_Template);
             }
             catch (Exception ex)
             {
-                return false;
+                throw;
+            }
+        }
+
+        public async Task<bool> Update(User user, Payment_Template payment_Template)
+        {
+            try
+            {
+                return await _payment_TemplateRepository.Update(user, payment_Template);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> Delete(User user, Payment_Template payment_Template)
+        {
+            try
+            {
+                return await _payment_TemplateRepository.Delete(user, payment_Template);
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

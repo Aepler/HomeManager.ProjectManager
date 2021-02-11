@@ -44,7 +44,7 @@ namespace HomeManager.Data.Repositories
 
         public async Task<ICollection<Payments>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
         {
-            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.Date >= dateTimeStart && x.Date <= dateTimeEnd && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
+            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && (x.Date >= dateTimeStart || x.Date <= dateTimeEnd) && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
             return payments;
         }
 
@@ -60,18 +60,13 @@ namespace HomeManager.Data.Repositories
             return payments;
         }
 
-        public async Task<ICollection<Payments>> GetByUser(User user, string searchUser)
-        {
-            ICollection<Payments> payments = await _context.Payments.Where(x => x.fk_UserId == user.Id && x.fk_UserId == Guid.Parse(searchUser) && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
-            return payments;
-        }
-
 
 
         public async Task<bool> Add(User user, Payments payment)
         {
             try
             {
+                payment.fk_UserId = user.Id;
                 _context.Payments.Add(payment);
                 await _context.SaveChangesAsync();
 
@@ -79,7 +74,7 @@ namespace HomeManager.Data.Repositories
             }
             catch (Exception ex)
             {
-                return false;
+                throw;
             }
         }
 
@@ -87,14 +82,42 @@ namespace HomeManager.Data.Repositories
         {
             try
             {
-                _context.Payments.Update(payment);
-                await _context.SaveChangesAsync();
+                var realPayment = await _context.Payments.AsNoTracking().FirstAsync(x => x.Id == payment.Id);
+                if (realPayment != null && realPayment.fk_UserId == user.Id)
+                {
+                    payment.fk_UserId = user.Id;
+                    _context.Payments.Update(payment);
+                    await _context.SaveChangesAsync();
 
-                return true;
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
+                throw;
+            }
+        }
+
+        public async Task<bool> Delete(User user, Payments payment)
+        {
+            try
+            {
+                var realPayment = await _context.Payments.FindAsync(payment.Id);
+                if (realPayment != null && realPayment.fk_UserId == user.Id)
+                {
+                    payment.Deleted = true;
+                    payment.DeletedOn = DateTime.Today;
+                    _context.Payments.Update(payment);
+                    await _context.SaveChangesAsync();
+
+                    return true;
+                }
                 return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

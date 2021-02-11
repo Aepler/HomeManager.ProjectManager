@@ -52,6 +52,12 @@ namespace HomeManager.Data
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
+            modelBuilder.Entity<Payments>()
+            .Property(e => e.TaxList)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
             modelBuilder.Entity<Payments>().ToTable("Payments");
             modelBuilder.Entity<Type>().ToTable("Types");
             modelBuilder.Entity<Category>().ToTable("Categories");

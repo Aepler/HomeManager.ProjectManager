@@ -55,14 +55,17 @@ namespace HomeManager.Data.Context
             new User
             {
                 Id = Guid.Parse("1C30ADD5-C7A9-48E9-6BEB-08D8C9D5DC9C"),
-                UserName = "Admin",
-                NormalizedUserName = "ADMIN",
+                UserName = "Francesco",
+                NormalizedUserName = "FRANCESCO",
                 Email = "Francesco.Aepler@gmail.com",
                 NormalizedEmail = "FRANCESCO.AEPLER@GMAIL.COM",
+                Name = "Francesco",
+                Lastname = "Aepler",
                 EmailConfirmed = true,
                 PasswordHash = "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==",
                 SecurityStamp = "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO",
                 ConcurrencyStamp = "22ac1596-f950-40cc-ad84-92df87f8d892",
+                Darkmode = true,
                 PhoneNumber = null,
                 PhoneNumberConfirmed = false,
                 TwoFactorEnabled = false,
@@ -78,10 +81,13 @@ namespace HomeManager.Data.Context
                 NormalizedUserName = "OLE",
                 Email = "ole@admin.gov",
                 NormalizedEmail = "OLE@ADMIN.GOV",
+                Name = "Ole",
+                Lastname = "Eggersmann",
                 EmailConfirmed = true,
                 PasswordHash = "AQAAAAEAACcQAAAAEHTM1p5KXcvGwKk4muG28dmLnhAgR3spQVXORsKEw+IN36bupGX27DhsTNrwIymmQg==",
                 SecurityStamp = "VTPKISZMI2WKD6GNEHR223NRWDHGYRX6",
                 ConcurrencyStamp = "05c6a9ba-80b0-4ee6-ab88-258cc2edbf09",
+                Darkmode = true,
                 PhoneNumber = null,
                 PhoneNumberConfirmed = false,
                 TwoFactorEnabled = false,
@@ -170,15 +176,7 @@ namespace HomeManager.Data.Context
                 EndTaxType = "Net",
                 ExtraInput = new string[] { "Extra_Amount" },
                 fk_StatusId = 2
-            },
-            new Type
-            {
-                Id = 5,
-                Name = "Start Balance",
-                EndTaxType = "None",
-                fk_StatusId = 2
-            }
-            );
+            });
         }
 
         public static void SeedCategory(ModelBuilder modelBuilder)
