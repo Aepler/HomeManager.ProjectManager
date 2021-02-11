@@ -27,5 +27,10 @@ namespace HomeManager.Models
         public ICollection<Category> Categories { get; set; }
         public ICollection<Type> types { get; set; }
         public ICollection<Status> statuses { get; set; }
+
+        public ICollection<Tag> Tags { get; set; }
+        public ICollection<Recipe> Recipes { get; set; }
+
+        public ICollection<Ingredient> Ingredients { get; set; }
     }
 }
