@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace HomeManager.Models.ViewModels.Admin
 {
-    public class UserRolesModel
+    public class UserRoleViewModel
     {
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
         public string User { get; set; }
-        public Guid RoleId { get; set; }
+        public string RoleId { get; set; }
         public string Role { get; set; }
+
+        public string Buttons { get; set; }
     }
 }

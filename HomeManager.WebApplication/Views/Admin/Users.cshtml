@@ -7,23 +7,65 @@
 
 <h4>@ViewData["Title"]</h4>
 
-<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateUser">New User</button>
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateUserAdmin">New User</button>
 
-<form asp-action="CreateRole">
+<form id="formCreateUserAdmin" asp-action="CreateUser">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalCreateUser" role="dialog" aria-labelledby="modalLabelCreateUser" aria-hidden="true">
+    <div class="modal fade" id="modalCreateUserAdmin" role="dialog" aria-labelledby="modalLabelCreateUserAdmin" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelCreateUser">New User</h5>
+                    <h5 class="modal-title" id="modalLabelCreateUserAdmin">New User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="modalBodyCreateUserAdmin">
 
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="modalFooterCreateUserAdmin">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateUserAdmin" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formEditUserAdmin" asp-action="EditUser">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalEditUserAdmin" role="dialog" aria-labelledby="modalLabelEditUserAdmin" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditUserAdmin">Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyEditUserAdmin">
+
+                </div>
+                <div class="modal-footer" id="modalFooterEditUserAdmin">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditUserAdmin" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formDeleteUserAdmin" asp-action="DeleteUser">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalDeleteUserAdmin" role="dialog" aria-labelledby="modalLabelDeleteUserAdmin" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelDeleteUserAdmin">Delete User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyDeleteUserAdmin">
+                    <p>Are you sure you want to Delete this UserAdmin?</p>
+                </div>
+                <div class="modal-footer" id="modalFooterDeleteUserAdmin">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteUserAdmin" data-bs-dismiss="modal">Delete User</button>
                 </div>
             </div>
         </div>
@@ -31,30 +73,35 @@
 </form>
 
 
-<table class="table">
+<table id="tblUserAdmin" class="table table-hover">
     <thead>
         <tr>
             <th>
+                User Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
                 Name
+            </th>
+            <th>
+                Lastname
+            </th>
+            <th>
+                PhoneNumber
+            </th>
+            <th>
+                TwoFactor Enabled
             </th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in ViewBag.Users)
-        {
-            <tr>
-                <td>
-                    @item.UserName
-                </td>
-                <td>
-                    <a asp-action="EditUser" asp-route-id="@item.Id">Edit</a>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
 
 @section Scripts {
+    <script src="~/js/admin/user.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
     <partial name="_ValidationScriptsPartial" />
 }

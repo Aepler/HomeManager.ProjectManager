@@ -18,7 +18,9 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using HomeManager.Models.Interfaces;
+using System.Linq.Dynamic.Core;
 using Type = HomeManager.Models.Type;
+using HomeManager.Models.Factories;
 
 namespace HomeManager.WebApplication.Controllers
 {
@@ -52,134 +54,265 @@ namespace HomeManager.WebApplication.Controllers
 
         public async Task<IActionResult> Users()
         {
-            var users = await _userManager.Users.ToListAsync();
-            if (users == null)
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetUserTableData(DataTableModel model)
+        {
+            try
             {
-                return NotFound($"Unable to load users");
+                var users = await _userManager.Users.ToListAsync();
+                int totalRecords = users.Count;
+
+
+                var modifiedData = users.Select(d => new UserViewModel
+                {
+                    Id = d.Id.ToString(),
+                    UserName = d.UserName,
+                    Email = d.Email,
+                    Name = d.Name,
+                    Lastname = d.Lastname,
+                    PhoneNumber = d.PhoneNumber.ToString(),
+                    TwoFactorEnabled = d.TwoFactorEnabled.ToString(),
+                    Buttons = "<button class='buttonEditUserAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditUserAdmin'>Edit</button>" +
+                    " | " +
+                              "<button class='buttonDeleteUserAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalDeleteUserAdmin'>Delete</button>"
+                }
+                    );
+
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    modifiedData = modifiedData.Where(p => p.UserName.ToLower().Contains(model.search.value) ||
+                        p.Email.ToLower().Contains(model.search.value) ||
+                        p.Name.ToLower().Contains(model.search.value) ||
+                        p.Lastname.ToLower().Contains(model.search.value) ||
+                        p.PhoneNumber.ToLower().Contains(model.search.value) ||
+                        p.TwoFactorEnabled.ToLower().Contains(model.search.value)
+                     ).ToList();
+                }
+
+                string sortBy = "";
+                string sortDir = "";
+
+                if (model.order != null)
+                {
+                    // in this example we just default sort on the 1st column
+                    sortBy = model.columns[model.order[0].column].data;
+                    sortDir = model.order[0].dir.ToLower();
+                }
+
+                //int recFilter = test.Count();
+                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
+                //var test2 = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir);
+
+                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = 2, data = modifiedData });
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> CreateUser(User user, string userPassword)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _userManager.CreateAsync(user, userPassword);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
+                return Json(null);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> EditUser(string id, User user)
+        {
+            if (Guid.Parse(id) != user.Id)
+            {
+                return Json(null);
             }
 
-            ViewBag.Users = users;
-
-            return View();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _userManager.UpdateAsync(user);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                return Json(null);
+            }
+            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateUser()
+        public async Task<JsonResult> DeleteUser(string id)
         {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditUser()
-        {
-            return View();
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                if (user != null)
+                {
+                    await _userManager.DeleteAsync(user); ;
+                }
+                return Json(null);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> Roles()
         {
-            var roles = await _roleManager.Roles.ToListAsync();
-            if (roles == null)
-            {
-                return NotFound($"Unable to load roles");
-            }
-
-            ViewBag.Roles = roles;
-
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateRole(string name)
+        public async Task<JsonResult> GetRoleTableData(DataTableModel model)
         {
-            var roleExists = await _roleManager.RoleExistsAsync(name);
-            if (!roleExists)
+            try
             {
-                var role = new Role
+                var roles = await _roleManager.Roles.ToListAsync();
+                int totalRecords = roles.Count;
+
+
+                var modifiedData = roles.Select(d => new RoleViewModel
                 {
-                    Name = name,
-                    NormalizedName = name.ToUpper()
-                };
-                var setPhoneResult = await _roleManager.CreateAsync(role);
-                if (!setPhoneResult.Succeeded)
-                {
-                    return View();
+                    Id = d.Id.ToString(),
+                    Name = d.Name,
+                    NormalizedName = d.NormalizedName,
+                    ConcurrencyStamp = d.ConcurrencyStamp.ToString(),
+                    Buttons = "<button class='buttonEditRoleAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditRoleAdmin'>Edit</button>" +
+                    " | " +
+                              "<button class='buttonDeleteRoleAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalDeleteRoleAdmin'>Delete</button>"
                 }
+                    );
+
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value)
+                     ).ToList();
+                }
+
+                string sortBy = "";
+                string sortDir = "";
+
+                if (model.order != null)
+                {
+                    // in this example we just default sort on the 1st column
+                    sortBy = model.columns[model.order[0].column].data;
+                    sortDir = model.order[0].dir.ToLower();
+                }
+
+                int recFilter = modifiedData.Count();
+                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
+
+                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
             }
-            return RedirectToAction("Roles");
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+            }
+            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditRole(Guid Id, string Name)
+        public async Task<JsonResult> CreateRole(string name)
         {
-            var role = await _roleManager.FindByIdAsync(Convert.ToString(Id));
+            if (name != null)
+            {
+                var roleExists = await _roleManager.RoleExistsAsync(name);
+                if (!roleExists)
+                {
+                    var role = new Role
+                    {
+                        Name = name,
+                        NormalizedName = name.ToUpper()
+                    };
+                    try
+                    {
+                        await _roleManager.CreateAsync(role);
+                        return Json(null);
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                }
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> EditRole(string id, string Name)
+        {
+            var role = await _roleManager.FindByIdAsync(id);
             if (role == null)
             {
-                return NotFound($"Unable to load role with ID '{Id}'.");
+                return Json(null);
             }
 
             if (!ModelState.IsValid)
             {
-                return View(role);
-            }
+                role.Name = Name;
+                role.NormalizedName = Name.ToUpper();
 
-            role.Name = Name;
-            role.NormalizedName = Name.ToUpper();
-            var setPhoneResult = await _roleManager.UpdateAsync(role);
-            if (!setPhoneResult.Succeeded)
+                try
+                {
+                    await _roleManager.UpdateAsync(role);
+                    return Json(null);
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> DeleteRole(string id)
+        {
+            try
             {
-                //StatusMessage = "Unexpected error when trying to set phone number.";
-                return View();
+                var role = await _roleManager.FindByIdAsync(id);
+                if (role != null)
+                {
+                    await _roleManager.DeleteAsync(role); ;
+                }
+                return Json(null);
             }
-
-            return RedirectToAction("Roles");
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public async Task<IActionResult> UserRoles()
         {
-            var userRoles = new List<UserRolesModel>();
-
-            var users = await _userManager.Users.ToListAsync();
-
-            if (users == null)
-            {
-                return NotFound($"Unable to load users");
-            }
-
-            foreach (var user in users)
-            {
-                var roles = await _userManager.GetRolesAsync(user);
-
-                if (roles == null)
-                {
-                    return NotFound($"Unable to load roles");
-                }
-
-                foreach (var roleName in roles)
-                {
-                    var role = await _roleManager.FindByNameAsync(roleName);
-
-                    var userRole = new UserRolesModel
-                    {
-                        User = user.UserName,
-                        UserId = user.Id,
-                        Role = role.Name,
-                        RoleId = role.Id
-                    };
-
-                    userRoles.Add(userRole);
-                }
-            }
-
-            if (userRoles == null)
-            {
-                return NotFound($"Unable to load user roles");
-            }
-
-            ViewBag.UserRoles = userRoles;
             ViewData["UserId"] = new SelectList(await _userManager.Users.ToListAsync(), "Id", "UserName");
             ViewData["RoleId"] = new SelectList(await _roleManager.Roles.ToListAsync(), "Id", "Name");
 
@@ -187,154 +320,382 @@ namespace HomeManager.WebApplication.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateUserRole(UserRolesModel userRoles)
+        public async Task<JsonResult> GetUserRoleTableData(DataTableModel model)
         {
-            var user = await _userManager.FindByIdAsync(Convert.ToString(userRoles.UserId));
-            var role = await _roleManager.FindByIdAsync(Convert.ToString(userRoles.RoleId));
-            var result = await _userManager.AddToRoleAsync(user, role.Name);
-            if (!result.Succeeded)
+            try
             {
-                return View(userRoles);
-            }
+                var userRoles = new List<UserRoleViewModel>();
 
-            return RedirectToAction("UserRoles");
+                var users = await _userManager.Users.ToListAsync();
+
+                foreach (var user in users)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    if (roles == null)
+                    {
+                        return Json(null);
+                    }
+
+                    foreach (var roleName in roles)
+                    {
+                        var role = await _roleManager.FindByNameAsync(roleName);
+
+                        var userRole = new UserRoleViewModel
+                        {
+                            User = user.UserName,
+                            UserId = user.Id.ToString(),
+                            Role = role.Name,
+                            RoleId = role.Id.ToString()
+                        };
+
+                        userRoles.Add(userRole);
+                    }
+                }
+
+                int totalRecords = userRoles.Count;
+
+
+                var modifiedData = userRoles.Select(d => new UserRoleViewModel
+                {
+                    User = d.User,
+                    UserId = d.UserId,
+                    Role = d.Role,
+                    RoleId = d.RoleId,
+                    Buttons = "<button class='buttonDeleteUserRoleAdmin btn btn-outline-danger' value='" + d.UserId + "' role='" + d.Role + "' data-bs-toggle='modal' data-bs-target='#modalDeleteUserRoleAdmin'>Delete</button>"
+                }
+                    );
+
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    modifiedData = modifiedData.Where(p => p.User.ToLower().Contains(model.search.value) ||
+                        p.Role.ToLower().Contains(model.search.value)
+                     ).ToList();
+                }
+
+                string sortBy = "";
+                string sortDir = "";
+
+                if (model.order != null)
+                {
+                    // in this example we just default sort on the 1st column
+                    sortBy = model.columns[model.order[0].column].data;
+                    sortDir = model.order[0].dir.ToLower();
+                }
+
+                int recFilter = modifiedData.Count();
+                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
+
+                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+            }
+            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditUserRole(UserRolesModel userRoles)
+        public async Task<JsonResult> CreateUserRole(UserRoleViewModel userRoles)
         {
-            return View();
+            var user = await _userManager.FindByIdAsync(userRoles.UserId);
+            var role = await _roleManager.FindByIdAsync(userRoles.RoleId);
+            try
+            {
+                await _userManager.AddToRoleAsync(user, role.Name);
+                return Json(null);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-        public async Task<IActionResult> RemoveUserRole()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> DeleteUserRole(string userId, string role)
         {
-            return View();
+            if (userId != null && role != null)
+            {
+                try
+                {
+                    var user = await _userManager.FindByIdAsync(userId);
+                    if (user != null)
+                    {
+                        await _userManager.RemoveFromRoleAsync(user, role);
+                        return Json(null);
+                    }
+                    return Json(null);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+            return Json(null);
         }
 
         public async Task<IActionResult> Types()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var types = await _typeService.GetAll(user);
-            if (types == null)
-            {
-                return NotFound($"Unable to load roles");
-            }
-
-            ViewBag.Types = types;
-            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name");
-
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateType(Type type)
+        public async Task<JsonResult> GetTypeTableData(DataTableModel model)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (ModelState.IsValid)
+            try
             {
-                await _typeService.Add(user, type);
-                return RedirectToAction(nameof(Types));
+                var user = await _userManager.GetUserAsync(User);
+                var types = await _typeService.GetAll(user);
+                int totalRecords = types.Count;
+
+
+                var modifiedData = types.Select(d => new TypeViewModel
+                {
+                    Id = d.Id.ToString(),
+                    Name = d.Name,
+                    EndTaxType = d.EndTaxType,
+                    Debit = d.Debit.ToString(),
+                    ExtraInput = d.ExtraInput,
+                    fk_StatusId = d.fk_StatusId.ToString(),
+                    Status = d.Status.Name,
+                    Buttons = "<button class='buttonEditTypeAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditTypeAdmin'>Edit</button>" +
+                    " | " +
+                              "<button class='buttonDeleteTypeAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalLabelDeleteTypeAdmin'>Delete</button>"
+                }
+                    );
+
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value) ||
+                        p.EndTaxType.ToLower().Contains(model.search.value) ||
+                        p.Debit.ToLower().Contains(model.search.value) ||
+                        p.ExtraInput.Contains(model.search.value) ||
+                        p.Status.ToLower().Contains(model.search.value)
+                     ).ToList();
+                }
+
+                string sortBy = "";
+                string sortDir = "";
+
+                if (model.order != null)
+                {
+                    // in this example we just default sort on the 1st column
+                    sortBy = model.columns[model.order[0].column].data;
+                    sortDir = model.order[0].dir.ToLower();
+                }
+
+                int recFilter = modifiedData.Count();
+                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
+
+                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
             }
-            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name", type.fk_StatusId);
-            return View(type);
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+            }
+            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditTypes(int id, Type type)
+        public async Task<JsonResult> CreateType(Type type)
         {
-            var user = await _userManager.GetUserAsync(User);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    await _typeService.Add(user, type);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                return Json(null);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> EditType(int id, Type type)
+        {
             if (id != type.Id)
             {
-                return BadRequest();
+                return Json(null);
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
                     await _typeService.Update(user, type);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    bool exist = await TypeExists(type.Id);
-                    if (exist)
+                    throw;
+                }
+                return Json(null);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteType(int id)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var type = await _typeService.GetById(user, id);
+                    if (type != null)
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        await _typeService.Delete(user, type);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
             }
-            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name", type.fk_StatusId);
-            return View(type);
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Status()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var status = await _statusService.GetAll(user);
-            if (status == null)
-            {
-                return NotFound($"Unable to load roles");
-            }
-
-            ViewBag.Status = status;
-
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateStatus(Status status)
+        public async Task<JsonResult> GetStatusTableData(DataTableModel model)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (ModelState.IsValid)
+            try
             {
-                await _statusService.Add(user, status);
-                return RedirectToAction(nameof(Status));
+                var user = await _userManager.GetUserAsync(User);
+                var status = await _statusService.GetAll(user);
+                int totalRecords = status.Count;
+
+
+                var modifiedData = status.Select(d => new StatusViewModel
+                {
+                    Id = d.Id.ToString(),
+                    Name = d.Name,
+                    EndPoint = d.EndPoint.ToString(),
+                    Buttons = "<button class='buttonEditStatusAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditStatusAdmin'>Edit</button>" +
+                              " | " +
+                              "<button class='buttonDeleteStatusAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalDeleteStatusAdmin'>Delete</button>"
+                }
+                    );
+
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value) ||
+                        p.EndPoint.ToLower().Contains(model.search.value)
+                     ).ToList();
+                }
+
+                string sortBy = "";
+                string sortDir = "";
+
+                if (model.order != null)
+                {
+                    // in this example we just default sort on the 1st column
+                    sortBy = model.columns[model.order[0].column].data;
+                    sortDir = model.order[0].dir.ToLower();
+                }
+
+                int recFilter = modifiedData.Count();
+                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
+
+                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
             }
-            return View(status);
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+            }
+            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditStatus(int id, Status status)
+        public async Task<JsonResult> CreateStatus(Status status)
         {
-            var user = await _userManager.GetUserAsync(User);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    await _statusService.Add(user, status);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                return Json(null);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> EditStatus(int id, Status status)
+        {
             if (id != status.Id)
             {
-                return NotFound();
+                return Json(null);
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
                     await _statusService.Update(user, status);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    bool exist = await StatusExists(status.Id);
-                    if (exist)
+                    throw;
+                }
+                return Json(null);
+            }
+            return Json(null);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStatus(int id)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var status = await _statusService.GetById(user, id);
+                    if (status != null)
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        await _statusService.Delete(user, status);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
             }
-            return View(status);
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
+
 
         private async Task<bool> TypeExists(int id)
         {

@@ -12,8 +12,9 @@ using Microsoft.AspNetCore.Identity;
 using Type = HomeManager.Models.Type;
 using Microsoft.AspNetCore.Authorization;
 
-namespace HomeManager.WebApplication.Controllers
+namespace HomeManager.WebApplication.Areas.Finance.Controllers
 {
+    [Area("Finance")]
     [Authorize]
     public class CustomizeController : Controller
     {

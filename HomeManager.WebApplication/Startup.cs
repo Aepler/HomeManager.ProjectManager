@@ -16,6 +16,7 @@ using HomeManager.Services;
 using HomeManager.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using HomeManager.Models;
+using HomeManager.Models.Factories;
 
 namespace HomeManager.WebApplication
 {
@@ -82,6 +83,14 @@ namespace HomeManager.WebApplication
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                  name: "areas",
+                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
+            });
 
             app.UseEndpoints(endpoints =>
             {

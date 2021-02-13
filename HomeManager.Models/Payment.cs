@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HomeManager.Models
 {
-    public class Payments
+    public class Payment
     {
         [Key]
         public int Id { get; set; }

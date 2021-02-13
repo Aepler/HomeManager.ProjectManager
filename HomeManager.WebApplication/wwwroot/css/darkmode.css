@@ -216,7 +216,7 @@
 
     [data-theme="dark"] .dropdown-menu {
         color: #dee2e6 !important;
-        background-color: #343a40 !important;
+        background-color: rgba(32, 32, 32, 0.95) !important;
         border-color: rgba(0, 0, 0, 0.15) !important;
     }
 

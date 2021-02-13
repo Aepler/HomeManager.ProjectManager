@@ -14,9 +14,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using HomeManager.Models.Helpers;
 using System.IO;
+using System.Linq.Dynamic.Core;
+using HomeManager.Models.Factories;
 
-namespace HomeManager.WebApplication.Controllers
+namespace HomeManager.WebApplication.Areas.Finance.Controllers
 {
+    [Area("Finance")]
     [Authorize]
     public class PaymentsController : Controller
     {
@@ -49,16 +52,10 @@ namespace HomeManager.WebApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetTableData()
+        public async Task<JsonResult> GetTableData(DataTableModel model)
         {
             try
             {
-                var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
-                var startRec = Request.Form["start"].FirstOrDefault();
-                var pageSize = Request.Form["length"].FirstOrDefault();
-                var order = Request.Form["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"].FirstOrDefault();
-                var orderDir = Request.Form["order[0][dir]"].FirstOrDefault();
-                var search = Request.Form["search[value]"].FirstOrDefault().ToLower().Trim();
                 var user = await _userManager.GetUserAsync(User);
                 var payments = await _paymentService.GetCompleted(user);
                 int totalRecords = payments.Count;
@@ -87,64 +84,37 @@ namespace HomeManager.WebApplication.Controllers
                 }
                     );
 
-                if (!string.IsNullOrEmpty(search) &&
-                    !string.IsNullOrWhiteSpace(search))
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
                 {
-                    modifiedData = modifiedData.Where(p => p.Date.Contains(search) ||
-                        p.Description.ToLower().Contains(search) ||
-                        p.Amount.Contains(search) ||
-                        p.Type.ToLower().Contains(search) ||
-                        p.Category.ToLower().Contains(search)
+                    modifiedData = modifiedData.Where(p => p.Date.Contains(model.search.value) ||
+                        p.Description.ToLower().Contains(model.search.value) ||
+                        p.Amount.Contains(model.search.value) ||
+                        p.Type.ToLower().Contains(model.search.value) ||
+                        p.Category.ToLower().Contains(model.search.value)
                      ).ToList();
                 }
 
-                modifiedData = SortTableData(order, orderDir, modifiedData);
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.Skip(Convert.ToInt32(startRec)).Take(Convert.ToInt32(pageSize)).ToList();
+                string sortBy = "";
+                string sortDir = "";
 
-                return Json(new { draw = Convert.ToInt32(draw), recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
+                if (model.order != null)
+                {
+                    // in this example we just default sort on the 1st column
+                    sortBy = model.columns[model.order[0].column].data;
+                    sortDir = model.order[0].dir.ToLower();
+                }
+
+                int recFilter = modifiedData.Count();
+                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
+
+                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
             }
             catch (Exception ex)
             {
                 Console.Write(ex);
             }
             return Json(null);
-        }
-
-        private IEnumerable<PaymentViewModel> SortTableData(string order, string orderDir, IEnumerable<PaymentViewModel> data)
-        {
-            IEnumerable<PaymentViewModel> lst = new List<PaymentViewModel>();
-            try
-            {
-                switch (order)
-                {
-                    case "1":
-                        lst = orderDir.Equals("ASC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Date).ToList()
-                                                                                                 : data.OrderBy(p => p.Date).ToList();
-                        break;
-                    case "2":
-                        lst = orderDir.Equals("DESC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Description).ToList()
-                                                                                                 : data.OrderBy(p => p.Description).ToList();
-                        break;
-                    case "3":
-                        lst = orderDir.Equals("DESC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Type).ToList()
-                                                                                                   : data.OrderBy(p => p.Type).ToList();
-                        break;
-                    case "4":
-                        lst = orderDir.Equals("DESC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Amount).ToList()
-                                                                                                   : data.OrderBy(p => p.Amount).ToList();
-                        break;
-                    default:
-                        lst = orderDir.Equals("ASC", StringComparison.CurrentCultureIgnoreCase) ? data.OrderByDescending(p => p.Date).ToList()
-                                                                                                 : data.OrderBy(p => p.Date).ToList();
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.Write(ex);
-            }
-            return lst;
         }
 
         [HttpGet]
@@ -192,9 +162,8 @@ namespace HomeManager.WebApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> Create(Payments payment, IFormFile files)
+        public async Task<JsonResult> Create(Payment payment, IFormFile files)
         {
-            var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
                 if (files != null && files.IsImage())
@@ -218,6 +187,7 @@ namespace HomeManager.WebApplication.Controllers
 
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
                     await _paymentService.Add(user, payment);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -235,9 +205,8 @@ namespace HomeManager.WebApplication.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> Edit(int id, Payments payment)
+        public async Task<JsonResult> Edit(int id, Payment payment)
         {
-            var user = await _userManager.GetUserAsync(User);
             if (id != payment.Id)
             {
                 return Json(null);
@@ -247,6 +216,7 @@ namespace HomeManager.WebApplication.Controllers
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
                     await _paymentService.Update(user, payment);
                 }
                 catch (DbUpdateConcurrencyException)

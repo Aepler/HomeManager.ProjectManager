@@ -21,19 +21,19 @@ namespace HomeManager.Data.Repositories
 
         public async Task<Type> GetById(User user, int id)
         {
-            Type type = await _context.Types.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
+            Type type = await _context.Types.Include(x => x.Status).Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             return type;
         }
 
         public async Task<ICollection<Type>> GetAll(User user)
         {
-            ICollection<Type> types = await _context.Types.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).ToListAsync();
+            ICollection<Type> types = await _context.Types.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).Include(x => x.Status).ToListAsync();
             return types;
         }
 
         public async Task<ICollection<Type>> GetByUser(User user)
         {
-            ICollection<Type> types = await _context.Types.Where(x => x.fk_UserId == user.Id && x.Deleted == false).ToListAsync();
+            ICollection<Type> types = await _context.Types.Where(x => x.fk_UserId == user.Id && x.Deleted == false).Include(x => x.Status).ToListAsync();
             return types;
         }
 

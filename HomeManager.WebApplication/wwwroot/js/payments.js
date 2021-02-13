@@ -9,13 +9,12 @@
 //==============================================================================
 
 function List() {
-    var overview = $("#tblIndexOverview").DataTable({
+    var overview = $("#tblIndexPayments").DataTable({
         "processing": true,
         "serverSide": true,
         "filter": true,
-        "orderMulti": false,
+        "orderMulti": true,
         "destroy": true,
-        "ordering": true,
         "order": [[0, "ASC"]],
         "ajax": {
             "url": '/Payments/GetTableData',
@@ -32,7 +31,7 @@ function List() {
         ]
     });
 
-    $('#tblIndexOverview tbody').on('click', '.buttonDeletePayment', function () {
+    $('#tblIndexPayments tbody').on('click', '.buttonDeletePayment', function () {
         var id = $(this).val();
         if (id != null) {
             $('#buttonModalDeletePayment').val(id);
@@ -57,7 +56,7 @@ function List() {
         CreatePaymentPost(overview);
     });
 
-    $('#tblIndexOverview tbody').on('click', '.buttonEditPayment', function () {
+    $('#tblIndexPayments tbody').on('click', '.buttonEditPayment', function () {
         var id = $(this).val();
         if (id != "") {
             $('#buttonModalEditPayment').val(id);
@@ -73,7 +72,7 @@ function List() {
 //==============================================================================
 
 function ListExtra(overview) {
-    $('#tblIndexOverview tbody').on('click', 'tr', function () {
+    $('#tblIndexPayments tbody').on('click', 'tr', function () {
         var row = overview.row(this);
         if (row.data() != null) {
             var id = row.data().id;
@@ -631,11 +630,36 @@ function GetStatusListByType(dropDown, id, selected) {
 };
 
 function CreatePaymentPost(table) {
+    var form = $('#formCreatePayment').serialize();
+    var data = new FormData();
+    var formArray = form.split('&');
+
+    var elementArray = [];
+    $.each(formArray, function (index, value) {
+        elementArray[index] = value;
+    });
+
+    $.each(elementArray, function (index, value) {
+        var itemArray = value.split('=');
+        data.append(itemArray[0], itemArray[1]);
+    });
+
+    var fileUpload = $("#uploadFilesCreatePayment").get(0);
+    var files = fileUpload.files;
+
+    for (var i = 0; i < files.length; i++) {
+
+        data.append("files", files[i]);
+
+    } 
+
     $.ajax({
         cache: false,
         type: "Post",
         url: "Payments/Create/",
-        data: $('#formCreatePayment').serialize(),
+        processData: false,
+        contentType: false,
+        data: data,
         success: function () {
             table.draw(false);
         },

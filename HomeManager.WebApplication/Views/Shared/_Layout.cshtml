@@ -39,10 +39,10 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" id="navbarBody">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Payments" asp-action="Index">Payments</a>
+                            <a class="nav-link" asp-area="Finance" asp-controller="Payments" asp-action="Index">Payments</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Customize" asp-action="Index">Customize</a>
+                            <a class="nav-link" asp-area="Finance" asp-controller="Customize" asp-action="Index">Customize</a>
                         </li>
                         <partial name="_AdminPartial" />
                     </ul>
@@ -59,7 +59,7 @@
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/darkmode.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
