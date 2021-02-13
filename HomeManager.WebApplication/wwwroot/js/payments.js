@@ -17,7 +17,7 @@ function List() {
         "destroy": true,
         "order": [[0, "ASC"]],
         "ajax": {
-            "url": '/Payments/GetTableData',
+            "url": '/Finance/Payments/GetTableData',
             "type": "POST",
             "datatype": "json"
         },

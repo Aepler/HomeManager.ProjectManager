@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\Factories\" />
+    <Folder Include="Factories\" />
   </ItemGroup>
 
 </Project>

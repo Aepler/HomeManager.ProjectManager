@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-
+    List();
 });
 
 //==============================================================================
@@ -15,17 +15,19 @@ function List() {
         "destroy": true,
         "order": [[0, "ASC"]],
         "ajax": {
-            "url": '/Customize/GetCategoryTableData',
+            "url": '/Finance/Customize/GetCategoryTableData',
             "type": "POST",
             "datatype": "json"
         },
         "rowId": 'id',
         "columns": [
-            { "data": "date" }
-            , { "data": "description" }
-            , { "data": "type" }
-            , { "data": "category" }
-            , { "data": "amount" }
+            { "data": "name" }
+            , {
+                "className": 'details-control',
+                "orderable": false,
+                "data": "buttons",
+                "width": "150px"
+            }
         ]
     });
 

@@ -7,18 +7,18 @@
 
 <h4>@ViewData["Title"]</h4>
 
-<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateType">New Type</button>
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateTypeCustomize">New Type</button>
 
-<form asp-action="CreateType">
+<form id="formCreateTypeCustomize" asp-action="CreateType">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalCreateType" role="dialog" aria-labelledby="modalLabelCreateType" aria-hidden="true">
+    <div class="modal fade" id="modalCreateTypeCustomize" role="dialog" aria-labelledby="modalLabelCreateTypeCustomize" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelCreateType">New Type</h5>
+                    <h5 class="modal-title" id="modalLabelCreateTypeCustomize">New Type</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="modalBodyCreateTypeCustomize">
                     <div class="form-group form-floating">
                         <input asp-for="Name" placeholder="Name" class="form-control" />
                         <label asp-for="Name" class="control-label"></label>
@@ -50,9 +50,51 @@
                         <label asp-for="fk_StatusId" class="control-label">End Status</label>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="modalFooterCreateTypeCustomize">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateTypeCustomize" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formEditTypeCustomize" asp-action="EditType">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalEditTypeCustomize" role="dialog" aria-labelledby="modalLabelEditTypeCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditTypeCustomize">Edit Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyEditTypeCustomize">
+
+                </div>
+                <div class="modal-footer" id="modalFooterEditTypeCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditTypeCustomize" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formDeleteTypeCustomize" asp-action="DeleteType">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalLabelDeleteTypeCustomize" role="dialog" aria-labelledby="modalLabelDeleteTypeCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelDeleteTypeCustomize">Delete Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyDeleteTypeCustomize">
+                    <p>Are you sure you want to Delete this TypeCustomize?</p>
+                </div>
+                <div class="modal-footer" id="modalFooterDeleteTypeCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteTypeCustomize" data-bs-dismiss="modal">Delete Type</button>
                 </div>
             </div>
         </div>
@@ -60,7 +102,7 @@
 </form>
 
 
-<table class="table">
+<table id="tblTypeCustomize" class="table table-hover">
     <thead>
         <tr>
             <th>
@@ -81,31 +123,11 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in ViewBag.Types)
-        {
-        <tr>
-            <td>
-                @item.Name
-            </td>
-            <td>
-                @item.EndTaxType
-            </td>
-            <td>
-                @item.Debit
-            </td>
-            <td>
-                @item.ExtraInput
-            </td>
-            <td>
-                @item.Status.Name
-            </td>
-
-        </tr>
-        }
-    </tbody>
 </table>
 
 @section Scripts {
+    <script src="~/js/customize/type.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
     <partial name="_ValidationScriptsPartial" />
 }

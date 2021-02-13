@@ -6,54 +6,88 @@
     ViewData["ActivePage"] = ManageNavPages.Categories;
 }
 
-<h1>Index</h1>
+<h4>@ViewData["Title"]</h4>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateCategoryCustomize">New Category</button>
+
+<form id="formCreateCategoryCustomize" asp-action="CreateCategory">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalCreateCategoryCustomize" role="dialog" aria-labelledby="modalLabelCreateCategoryCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelCreateCategoryCustomize">New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyCreateCategoryCustomize">
+
+                </div>
+                <div class="modal-footer" id="modalFooterCreateCategoryCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateCategoryCustomize" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formEditCategoryCustomize" asp-action="EditCategory">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalEditCategoryCustomize" role="dialog" aria-labelledby="modalLabelEditCategoryCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditCategoryCustomize">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyEditCategoryCustomize">
+
+                </div>
+                <div class="modal-footer" id="modalFooterEditCategoryCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditCategoryCustomize" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formDeleteCategoryCustomize" asp-action="DeleteCategory">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalDeleteCategoryCustomize" role="dialog" aria-labelledby="modalLabelDeleteCategoryCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelDeleteCategoryCustomize">Delete Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyDeleteCategoryCustomize">
+                    <p>Are you sure you want to Delete this CategoryCustomize?</p>
+                </div>
+                <div class="modal-footer" id="modalFooterDeleteCategoryCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteCategoryCustomize" data-bs-dismiss="modal">Delete Category</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<table id="tblCategoryCustomize" class="table table-hover">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Deleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeletedOn)
+                Name
             </th>
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in ViewBag.Categories)
-        {
-            <tr>
-                <td>
-                    @if (item.fk_UserId != null)
-                    {
-                        @item.User.Id
-                    }
-                </td>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Deleted
-                </td>
-                <td>
-                    @item.DeletedOn
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
+
+@section Scripts {
+    <script src="~/js/customize/category.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
+    <partial name="_ValidationScriptsPartial" />
+}

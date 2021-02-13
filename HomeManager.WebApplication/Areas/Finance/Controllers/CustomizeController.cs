@@ -11,6 +11,8 @@ using HomeManager.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Type = HomeManager.Models.Type;
 using Microsoft.AspNetCore.Authorization;
+using HomeManager.Models.Interfaces.Factories;
+using HomeManager.Models.DataTableModels;
 
 namespace HomeManager.WebApplication.Areas.Finance.Controllers
 {
@@ -23,14 +25,16 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
         private readonly IPayment_TemplateService _payment_templateService;
+        private readonly IDataTableFactory _dataTableFactory;
 
-        public CustomizeController(UserManager<User> userManager, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPayment_TemplateService payment_templateService)
+        public CustomizeController(UserManager<User> userManager, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPayment_TemplateService payment_templateService, IDataTableFactory dataTableFactory)
         {
             _userManager = userManager;
             _categoryService = categoryService;
             _typeService = typeService;
             _statusService = statusService;
             _payment_templateService = payment_templateService;
+            _dataTableFactory = dataTableFactory;
         }
 
         public async Task<IActionResult> Index()
@@ -40,12 +44,24 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
         public async Task<IActionResult> Categories()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var categories = await _categoryService.GetByUser(user);
-
-            ViewBag.Categories = categories;
-
             return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetCategoryTableData(DataTableModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var categories = await _categoryService.GetAll(user);
+                var result = await _dataTableFactory.GetTableData(model, categories);
+
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -109,14 +125,28 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         public async Task<IActionResult> PaymentTemplates()
         {
             var user = await _userManager.GetUserAsync(User);
-            var payment_Templates = await _payment_templateService.GetAll(user);
-
-            ViewBag.Payment_Templates = payment_Templates;
 
             ViewData["fk_TypeId"] = new SelectList(await _statusService.GetAll(user), "Id", "Name");
             ViewData["fk_CategoryId"] = new SelectList(await _statusService.GetAll(user), "Id", "Name");
 
             return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetPaymentTemplateTableData(DataTableModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var paymentTemplates = await _payment_templateService.GetAll(user);
+                var result = await _dataTableFactory.GetTableData(model, paymentTemplates);
+
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -173,12 +203,27 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         public async Task<IActionResult> Types()
         {
             var user = await _userManager.GetUserAsync(User);
-            var types = await _typeService.GetByUser(user);
 
-            ViewBag.Types = types;
             ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name");
 
             return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetTypeTableData(DataTableModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var types = await _typeService.GetAll(user);
+                var result = await _dataTableFactory.GetTableData(model, types);
+
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]
@@ -231,12 +276,24 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
         public async Task<IActionResult> Status()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var status = await _statusService.GetByUser(user);
-
-            ViewBag.Status = status;
-
             return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetStatusTableData(DataTableModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var status = await _statusService.GetAll(user);
+                var result = await _dataTableFactory.GetTableData(model, status);
+
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         [HttpPost]

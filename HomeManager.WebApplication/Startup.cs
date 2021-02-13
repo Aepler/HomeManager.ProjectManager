@@ -16,7 +16,10 @@ using HomeManager.Services;
 using HomeManager.Models.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using HomeManager.Models;
-using HomeManager.Models.Factories;
+using Microsoft.AspNetCore.Http;
+using HomeManager.Models.Interfaces.Factories;
+using HomeManager.WebApplication.Factories;
+using HomeManager.Models.DataTableModels;
 
 namespace HomeManager.WebApplication
 {
@@ -53,6 +56,9 @@ namespace HomeManager.WebApplication
             services.AddScoped<ITypeService, TypeService>();
             services.AddScoped<IPayment_TemplateService, Payment_TemplateService>();
 
+            services.AddScoped<IDataTableFactory, DataTableFactory>();
+            services.AddScoped<IDataTableResultModel, DataTableResultModel>();
+
             services.AddControllersWithViews();
             services.AddMvc();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
@@ -83,6 +89,20 @@ namespace HomeManager.WebApplication
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            /*
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGet("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Register", true, true)));
+                endpoints.MapPost("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Register", true, true)));
+            });
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGet("/Identity/Account/Login", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Login", true, true)));
+                endpoints.MapPost("/Identity/Account/Login", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Login", true, true)));
+            });
+            */
 
             app.UseEndpoints(endpoints =>
             {

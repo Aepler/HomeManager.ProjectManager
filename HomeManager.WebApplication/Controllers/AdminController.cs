@@ -11,16 +11,15 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using HomeManager.Models.ViewModels;
-using HomeManager.Models.ViewModels.Admin;
 using Microsoft.AspNetCore.Authentication;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
 using HomeManager.Models.Interfaces;
+using HomeManager.Models.Interfaces.Factories;
 using System.Linq.Dynamic.Core;
 using Type = HomeManager.Models.Type;
-using HomeManager.Models.Factories;
+using HomeManager.Models.DataTableModels;
 
 namespace HomeManager.WebApplication.Controllers
 {
@@ -32,19 +31,22 @@ namespace HomeManager.WebApplication.Controllers
         private readonly RoleManager<Role> _roleManager;
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
+        private readonly IDataTableFactory _dataTableFactory;
 
         public AdminController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             RoleManager<Role> roleManager,
             ITypeService typeService,
-            IStatusService statusService)
+            IStatusService statusService,
+            IDataTableFactory dataTableFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _typeService = typeService;
             _statusService = statusService;
+            _dataTableFactory = dataTableFactory;
         }
 
         public async Task<IActionResult> Index()
@@ -63,57 +65,14 @@ namespace HomeManager.WebApplication.Controllers
             try
             {
                 var users = await _userManager.Users.ToListAsync();
-                int totalRecords = users.Count;
+                var result = await _dataTableFactory.GetTableData(model, users);
 
-
-                var modifiedData = users.Select(d => new UserViewModel
-                {
-                    Id = d.Id.ToString(),
-                    UserName = d.UserName,
-                    Email = d.Email,
-                    Name = d.Name,
-                    Lastname = d.Lastname,
-                    PhoneNumber = d.PhoneNumber.ToString(),
-                    TwoFactorEnabled = d.TwoFactorEnabled.ToString(),
-                    Buttons = "<button class='buttonEditUserAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditUserAdmin'>Edit</button>" +
-                    " | " +
-                              "<button class='buttonDeleteUserAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalDeleteUserAdmin'>Delete</button>"
-                }
-                    );
-
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
-                {
-                    modifiedData = modifiedData.Where(p => p.UserName.ToLower().Contains(model.search.value) ||
-                        p.Email.ToLower().Contains(model.search.value) ||
-                        p.Name.ToLower().Contains(model.search.value) ||
-                        p.Lastname.ToLower().Contains(model.search.value) ||
-                        p.PhoneNumber.ToLower().Contains(model.search.value) ||
-                        p.TwoFactorEnabled.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    // in this example we just default sort on the 1st column
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                //int recFilter = test.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-                //var test2 = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir);
-
-                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = 2, data = modifiedData });
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
             }
             catch (Exception ex)
             {
-                Console.Write(ex);
+                throw;
             }
-            return Json(null);
         }
 
         [HttpPost]
@@ -190,48 +149,14 @@ namespace HomeManager.WebApplication.Controllers
             try
             {
                 var roles = await _roleManager.Roles.ToListAsync();
-                int totalRecords = roles.Count;
+                var result = await _dataTableFactory.GetTableData(model, roles);
 
-
-                var modifiedData = roles.Select(d => new RoleViewModel
-                {
-                    Id = d.Id.ToString(),
-                    Name = d.Name,
-                    NormalizedName = d.NormalizedName,
-                    ConcurrencyStamp = d.ConcurrencyStamp.ToString(),
-                    Buttons = "<button class='buttonEditRoleAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditRoleAdmin'>Edit</button>" +
-                    " | " +
-                              "<button class='buttonDeleteRoleAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalDeleteRoleAdmin'>Delete</button>"
-                }
-                    );
-
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
-                {
-                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    // in this example we just default sort on the 1st column
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
             }
             catch (Exception ex)
             {
-                Console.Write(ex);
+                throw;
             }
-            return Json(null);
         }
 
         [HttpPost]
@@ -324,7 +249,7 @@ namespace HomeManager.WebApplication.Controllers
         {
             try
             {
-                var userRoles = new List<UserRoleViewModel>();
+                var userRoles = new List<UserRoleDataTableModel>();
 
                 var users = await _userManager.Users.ToListAsync();
 
@@ -341,7 +266,7 @@ namespace HomeManager.WebApplication.Controllers
                     {
                         var role = await _roleManager.FindByNameAsync(roleName);
 
-                        var userRole = new UserRoleViewModel
+                        var userRole = new UserRoleDataTableModel
                         {
                             User = user.UserName,
                             UserId = user.Id.ToString(),
@@ -353,52 +278,19 @@ namespace HomeManager.WebApplication.Controllers
                     }
                 }
 
-                int totalRecords = userRoles.Count;
+                var result = await _dataTableFactory.GetTableData(model, userRoles);
 
-
-                var modifiedData = userRoles.Select(d => new UserRoleViewModel
-                {
-                    User = d.User,
-                    UserId = d.UserId,
-                    Role = d.Role,
-                    RoleId = d.RoleId,
-                    Buttons = "<button class='buttonDeleteUserRoleAdmin btn btn-outline-danger' value='" + d.UserId + "' role='" + d.Role + "' data-bs-toggle='modal' data-bs-target='#modalDeleteUserRoleAdmin'>Delete</button>"
-                }
-                    );
-
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
-                {
-                    modifiedData = modifiedData.Where(p => p.User.ToLower().Contains(model.search.value) ||
-                        p.Role.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    // in this example we just default sort on the 1st column
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
             }
             catch (Exception ex)
             {
-                Console.Write(ex);
+                throw;
             }
-            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> CreateUserRole(UserRoleViewModel userRoles)
+        public async Task<JsonResult> CreateUserRole(UserRoleDataTableModel userRoles)
         {
             var user = await _userManager.FindByIdAsync(userRoles.UserId);
             var role = await _roleManager.FindByIdAsync(userRoles.RoleId);
@@ -450,55 +342,14 @@ namespace HomeManager.WebApplication.Controllers
             {
                 var user = await _userManager.GetUserAsync(User);
                 var types = await _typeService.GetAll(user);
-                int totalRecords = types.Count;
+                var result = await _dataTableFactory.GetTableData(model, types);
 
-
-                var modifiedData = types.Select(d => new TypeViewModel
-                {
-                    Id = d.Id.ToString(),
-                    Name = d.Name,
-                    EndTaxType = d.EndTaxType,
-                    Debit = d.Debit.ToString(),
-                    ExtraInput = d.ExtraInput,
-                    fk_StatusId = d.fk_StatusId.ToString(),
-                    Status = d.Status.Name,
-                    Buttons = "<button class='buttonEditTypeAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditTypeAdmin'>Edit</button>" +
-                    " | " +
-                              "<button class='buttonDeleteTypeAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalLabelDeleteTypeAdmin'>Delete</button>"
-                }
-                    );
-
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
-                {
-                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value) ||
-                        p.EndTaxType.ToLower().Contains(model.search.value) ||
-                        p.Debit.ToLower().Contains(model.search.value) ||
-                        p.ExtraInput.Contains(model.search.value) ||
-                        p.Status.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    // in this example we just default sort on the 1st column
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
             }
             catch (Exception ex)
             {
-                Console.Write(ex);
+                throw;
             }
-            return Json(null);
         }
 
         [HttpPost]
@@ -583,48 +434,14 @@ namespace HomeManager.WebApplication.Controllers
             {
                 var user = await _userManager.GetUserAsync(User);
                 var status = await _statusService.GetAll(user);
-                int totalRecords = status.Count;
+                var result = await _dataTableFactory.GetTableData(model, status);
 
-
-                var modifiedData = status.Select(d => new StatusViewModel
-                {
-                    Id = d.Id.ToString(),
-                    Name = d.Name,
-                    EndPoint = d.EndPoint.ToString(),
-                    Buttons = "<button class='buttonEditStatusAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditStatusAdmin'>Edit</button>" +
-                              " | " +
-                              "<button class='buttonDeleteStatusAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalDeleteStatusAdmin'>Delete</button>"
-                }
-                    );
-
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
-                {
-                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value) ||
-                        p.EndPoint.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    // in this example we just default sort on the 1st column
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
             }
             catch (Exception ex)
             {
-                Console.Write(ex);
+                throw;
             }
-            return Json(null);
         }
 
         [HttpPost]

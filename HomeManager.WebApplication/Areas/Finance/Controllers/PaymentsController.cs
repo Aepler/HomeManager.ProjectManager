@@ -6,16 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using HomeManager.Data;
 using HomeManager.Models;
-using HomeManager.Models.ViewModels;
 using HomeManager.Models.Interfaces;
+using HomeManager.Models.Interfaces.Factories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using HomeManager.Models.Helpers;
 using System.IO;
 using System.Linq.Dynamic.Core;
-using HomeManager.Models.Factories;
+using HomeManager.Models.DataTableModels;
 
 namespace HomeManager.WebApplication.Areas.Finance.Controllers
 {
@@ -29,8 +28,9 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
         private readonly IPayment_TemplateService _payment_templateService;
+        private readonly IDataTableFactory _dataTableFactory;
 
-        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPayment_TemplateService payment_templateService)
+        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPayment_TemplateService payment_templateService, IDataTableFactory dataTableFactory)
         {
             _userManager = userManager;
             _paymentService = paymentService;
@@ -38,6 +38,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             _typeService = typeService;
             _statusService = statusService;
             _payment_templateService = payment_templateService;
+            _dataTableFactory = dataTableFactory;
         }
 
         // GET: Payments
@@ -57,64 +58,15 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                var payments = await _paymentService.GetCompleted(user);
-                int totalRecords = payments.Count;
+                var payments = await _paymentService.GetAll(user);
+                var result = await _dataTableFactory.GetTableData(model, payments);
 
-
-                var modifiedData = payments.Select(d => new PaymentViewModel
-                {
-                    Id = d.Id.ToString(),
-                    Date = d.Date.ToString("dd.MM.yyyy"),
-                    Description = d.Description,
-                    Description_Extra = d.Description_Extra,
-                    Description_Tax = d.Description_Tax,
-                    Tax = d.Tax.ToString(),
-                    Amount = d.Amount.ToString(),
-                    Amount_Tax = d.Amount_Tax.ToString(),
-                    Amount_Gross = d.Amount_Gross.ToString(),
-                    Amount_Net = d.Amount_Net.ToString(),
-                    Amount_Extra = d.Amount_Extra.ToString(),
-                    Amount_TaxList = d.Amount_TaxList,
-                    fk_TypeId = d.fk_TypeId.ToString(),
-                    Type = d.Type.Name,
-                    fk_CategoryId = d.fk_CategoryId.ToString(),
-                    Category = d.fk_CategoryId != null ? d.Category.Name : d.Type.Name,
-                    fk_StatusId = d.fk_StatusId.ToString(),
-                    Status = d.Status.Name
-                }
-                    );
-
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
-                {
-                    modifiedData = modifiedData.Where(p => p.Date.Contains(model.search.value) ||
-                        p.Description.ToLower().Contains(model.search.value) ||
-                        p.Amount.Contains(model.search.value) ||
-                        p.Type.ToLower().Contains(model.search.value) ||
-                        p.Category.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    // in this example we just default sort on the 1st column
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                return Json(new { draw = model.draw, recordsTotal = totalRecords, recordsFiltered = recFilter, data = modifiedData });
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
             }
             catch (Exception ex)
             {
-                Console.Write(ex);
+                throw;
             }
-            return Json(null);
         }
 
         [HttpGet]
