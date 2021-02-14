@@ -23,16 +23,18 @@ function List() {
         "columns": [
             { "data": "name" }
             , {
-                "className": 'details-control',
                 "orderable": false,
-                "data": "buttons",
+                "data": null,
+                "defaultContent": "<button class='buttonEditRoleAdmin btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditRoleAdmin'>Edit</button>" +
+                    " | " +
+                    "<button class='buttonDeleteRoleAdmin btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeleteRoleAdmin'>Delete</button>",
                 "width": "150px"
             }
         ]
     });
 
     $('#tblRoleAdmin tbody').on('click', '.buttonDeleteRoleAdmin', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != null) {
             $('#buttonModalDeleteRoleAdmin').val(id);
         }
@@ -57,7 +59,7 @@ function List() {
     });
 
     $('#tblRoleAdmin tbody').on('click', '.buttonEditRoleAdmin', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != "") {
             $('#buttonModalEditRoleAdmin').val(id);
             GetRoleEdit(id);
@@ -76,6 +78,20 @@ function List() {
 //==============================================================================
 // Ajax ========================================================================
 //==============================================================================
+
+function GetRoleEdit(id) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "/Admin/GetRole/" + id,
+        success: function (data) {
+            $('#inputNameEditRoleAdmin').val(data.name);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve payment.');
+        }
+    });
+};
 
 function CreateRolePost(table) {
     $.ajax({

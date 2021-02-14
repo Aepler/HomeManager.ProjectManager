@@ -27,16 +27,18 @@ function List() {
             , { "data": "extraInput" }
             , { "data": "status" }
             , {
-                "className": 'details-control',
                 "orderable": false,
-                "data": "buttons",
+                "data": null,
+                "defaultContent": "<button class='buttonEditTypeAdmin btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditTypeAdmin'>Edit</button>" +
+                    " | " +
+                    "<button class='buttonDeleteTypeAdmin btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalLabelDeleteTypeAdmin'>Delete</button>",
                 "width": "150px"
             }
         ]
     });
 
     $('#tblTypeAdmin tbody').on('click', '.buttonDeleteTypeAdmin', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != null) {
             $('#buttonModalDeleteTypeAdmin').val(id);
         }
@@ -61,7 +63,7 @@ function List() {
     });
 
     $('#tblTypeAdmin tbody').on('click', '.buttonEditTypeAdmin', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != "") {
             $('#buttonModalEditTypeAdmin').val(id);
             GetTypeEdit(id);
@@ -80,6 +82,24 @@ function List() {
 //==============================================================================
 // Ajax ========================================================================
 //==============================================================================
+
+function GetTypeEdit(id) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "/Admin/GetType/" + id,
+        success: function (data) {
+            $('#inputNameEditTypeAdmin').val(data.name);
+            $('#inputEndTaxTypeEditTypeAdmin').val(data.endTaxType);
+            $('#inputDebitEditTypeAdmin').attr("checked", data.debit);
+            $('#inputExtraInputEditTypeAdmin').val(data.extraInput);
+            $('#dropdownStatusEditTypeAdmin').val(data.fk_StatusId);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve type.');
+        }
+    });
+};
 
 function CreateTypePost(table) {
     $.ajax({

@@ -36,11 +36,16 @@ namespace HomeManager.Data.Repositories
             return categories;
         }
 
-        public async Task<bool> Add(User user, Category category)
+        public async Task<ICollection<Category>> GetDefault()
+        {
+            ICollection<Category> categories = await _context.Categories.Where(x => x.fk_UserId == null && x.Deleted == false).ToListAsync();
+            return categories;
+        }
+
+        public async Task<bool> Add(Category category)
         {
             try
             {
-                category.fk_UserId = user.Id;
                 _context.Categories.Add(category);
                 await _context.SaveChangesAsync();
 
@@ -52,20 +57,13 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Update(User user, Category category)
+        public async Task<bool> Update(Category category)
         {
             try
             {
-                var realCategory = await _context.Categories.AsNoTracking().FirstAsync(x => x.Id == category.Id);
-                if (realCategory != null && realCategory.fk_UserId == user.Id)
-                {
-                    category.fk_UserId = user.Id;
-                    _context.Categories.Update(category);
-                    await _context.SaveChangesAsync();
-
-                    return true;
-                }
-                return false;
+                _context.Categories.Update(category);
+                await _context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
@@ -73,21 +71,14 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Delete(User user, Category category)
+        public async Task<bool> Delete(Category category)
         {
             try
             {
-                var realCategory = await _context.Categories.FindAsync(category.Id);
-                if (realCategory != null && realCategory.fk_UserId == user.Id)
-                {
-                    category.Deleted = true;
-                    category.DeletedOn = DateTime.Today;
-                    _context.Categories.Update(category);
-                    await _context.SaveChangesAsync();
+                _context.Categories.Update(category);
+                await _context.SaveChangesAsync();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
             catch (Exception ex)
             {

@@ -77,12 +77,25 @@ namespace HomeManager.Services
                 return new List<Status>();
             }
         }
+        public async Task<ICollection<Status>> GetDefault()
+        {
+            try
+            {
+                return await _statusRepository.GetDefault();
+            }
+            catch (Exception ex)
+            {
+                return new List<Status>();
+            }
+        }
+
 
         public async Task<bool> Add(User user, Status status)
         {
             try
             {
-                return await _statusRepository.Add(user, status);
+                status.fk_UserId = user.Id;
+                return await _statusRepository.Add(status);
             }
             catch (Exception ex)
             {
@@ -94,7 +107,13 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _statusRepository.Update(user, status);
+                var realStatus = await _statusRepository.GetById(user, status.Id);
+                if (realStatus != null && realStatus.fk_UserId == user.Id)
+                {
+                    status.fk_UserId = user.Id;
+                    return await _statusRepository.Update(status);
+                }
+                return false;  
             }
             catch (Exception ex)
             {
@@ -106,7 +125,68 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _statusRepository.Delete(user, status);
+                var realStatus = await _statusRepository.GetById(user, status.Id);
+                if (realStatus != null && realStatus.fk_UserId == user.Id)
+                {
+                    status.fk_UserId = user.Id;
+                    status.Deleted = true;
+                    status.DeletedOn = DateTime.Today;
+                    return await _statusRepository.Delete(status);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> AddDefault(IList<string> userRoles, Status status)
+        {
+            try
+            {
+                if (userRoles.Contains("Admin"))
+                {
+                    status.fk_UserId = null;
+                    return await _statusRepository.Add(status);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateDefault(IList<string> userRoles, Status status)
+        {
+            try
+            {
+                if (userRoles.Contains("Admin"))
+                {
+                    status.fk_UserId = null;
+                    return await _statusRepository.Update(status);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteDefault(IList<string> userRoles, Status status)
+        {
+            try
+            {
+                if (userRoles.Contains("Admin"))
+                {
+                    status.fk_UserId = null;
+                    status.Deleted = true;
+                    status.DeletedOn = DateTime.Today;
+                    return await _statusRepository.Update(status);
+                }
+                return false;
             }
             catch (Exception ex)
             {

@@ -546,7 +546,6 @@ function GetPaymentEdit(id) {
         url: "Payments/GetPayment/" + id,
         success: function (data) {
             EditPayment(data);
-            //$('#modalEditPayment').toggle();
         },
         error: function (xhr, ajaxOptions, thrownError) {
             alert('Failed to retrieve payment.');
@@ -565,7 +564,7 @@ function GetTypeList(dropDown, selected) {
                 s = '<option value="-1" disabled selected>Select a Type</option>';
             }
             for (var i = 0; i < data.length; i++) {
-                s += '<option value="' + data[i].id + '" id="' + data[i].fk_StatusId + '" tax="' + data[i].endTaxType + '" inputFields="' + data[i].extraInput + '"';
+                s += '<option value="' + data[i].id + '"';
                 if (selected == data[i].id) {
                     s += 'selected';
                 }

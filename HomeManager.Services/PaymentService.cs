@@ -165,7 +165,8 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _paymentRepository.Add(user, payment);
+                payment.fk_UserId = user.Id;
+                return await _paymentRepository.Add(payment);
             }
             catch (Exception ex)
             {
@@ -177,7 +178,13 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _paymentRepository.Update(user, payment);
+                var realPayment = await _paymentRepository.GetById(user, payment.Id);
+                if (realPayment != null && realPayment.fk_UserId == user.Id)
+                {
+                    payment.fk_UserId = user.Id;
+                    return await _paymentRepository.Update(payment);
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -189,7 +196,15 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _paymentRepository.Delete(user, payment);
+                var realPayment = await _paymentRepository.GetById(user, payment.Id);
+                if (realPayment != null && realPayment.fk_UserId == user.Id)
+                {
+                    payment.fk_UserId = user.Id;
+                    payment.Deleted = true;
+                    payment.DeletedOn = DateTime.Today;
+                    return await _paymentRepository.Delete(payment);
+                }
+                return false;
             }
             catch (Exception ex)
             {

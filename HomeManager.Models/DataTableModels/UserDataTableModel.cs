@@ -37,7 +37,5 @@ namespace HomeManager.Models.DataTableModels
         public string LockoutEnabled { get; set; }
 
         public string AccessFailedCount { get; set; }
-
-        public string Buttons { get; set; }
     }
 }

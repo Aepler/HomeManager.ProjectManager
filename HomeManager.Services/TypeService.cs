@@ -55,11 +55,24 @@ namespace HomeManager.Services
             }
         }
 
+        public async Task<ICollection<Type>> GetDefault()
+        {
+            try
+            {
+                return await _typeRepository.GetDefault();
+            }
+            catch (Exception ex)
+            {
+                return new List<Type>();
+            }
+        }
+
         public async Task<bool> Add(User user, Type type)
         {
             try
             {
-                return await _typeRepository.Add(user, type);
+                type.fk_UserId = user.Id;
+                return await _typeRepository.Add(type);
             }
             catch (Exception ex)
             {
@@ -71,7 +84,13 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _typeRepository.Update(user, type);
+                var realType = await _typeRepository.GetById(user, type.Id);
+                if (realType != null && realType.fk_UserId == user.Id)
+                {
+                    type.fk_UserId = user.Id;
+                    return await _typeRepository.Update(type);
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -83,7 +102,68 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _typeRepository.Delete(user, type);
+                var realType = await _typeRepository.GetById(user, type.Id);
+                if (realType != null && realType.fk_UserId == user.Id)
+                {
+                    type.fk_UserId = user.Id;
+                    type.Deleted = true;
+                    type.DeletedOn = DateTime.Today;
+                    return await _typeRepository.Delete(type);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> AddDefault(IList<string> userRoles, Type type)
+        {
+            try
+            {
+                if (userRoles.Contains("Admin"))
+                {
+                    type.fk_UserId = null;
+                    return await _typeRepository.Add(type);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateDefault(IList<string> userRoles, Type type)
+        {
+            try
+            {
+                if (userRoles.Contains("Admin"))
+                {
+                    type.fk_UserId = null;
+                    return await _typeRepository.Update(type);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteDefault(IList<string> userRoles, Type type)
+        {
+            try
+            {
+                if (userRoles.Contains("Admin"))
+                {
+                    type.fk_UserId = null;
+                    type.Deleted = true;
+                    type.DeletedOn = DateTime.Today;
+                    return await _typeRepository.Update(type);
+                }
+                return false;
             }
             catch (Exception ex)
             {

@@ -13,8 +13,9 @@ namespace HomeManager.Data.Repositories.Interfaces
         Task<Type> GetById(User user, int id);
         Task<ICollection<Type>> GetAll(User user);
         Task<ICollection<Type>> GetByUser(User user);
-        Task<bool> Add(User user, Type type);
-        Task<bool> Update(User user, Type type);
-        Task<bool> Delete(User user, Type type);
+        Task<ICollection<Type>> GetDefault();
+        Task<bool> Add(Type type);
+        Task<bool> Update(Type type);
+        Task<bool> Delete(Type type);
     }
 }

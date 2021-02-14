@@ -7,7 +7,7 @@
 //==============================================================================
 
 function List() {
-    var table = $("#tblStatusCustomize").DataTable({
+    var table = $("#tblCategoryAdmin").DataTable({
         "processing": true,
         "serverSide": true,
         "filter": true,
@@ -15,55 +15,54 @@ function List() {
         "destroy": true,
         "order": [[0, "ASC"]],
         "ajax": {
-            "url": '/Finance/Customize/GetStatusTableData',
+            "url": '/Admin/GetCategoryTableData',
             "type": "POST",
             "datatype": "json"
         },
         "rowId": 'id',
         "columns": [
             { "data": "name" }
-            , { "data": "endPoint" }
             , {
                 "orderable": false,
                 "data": null,
-                "defaultContent": "<button class='buttonEditStatusCustomize btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditStatusCustomize'>Edit</button>" +
+                "defaultContent": "<button class='buttonEditCategoryAdmin btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditCategoryAdmin'>Edit</button>" +
                     " | " +
-                    "<button class='buttonDeleteStatusCustomize btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeleteStatusCustomize'>Delete</button>",
+                    "<button class='buttonDeleteCategoryAdmin btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeleteCategoryAdmin'>Delete</button>",
                 "width": "150px"
             }
         ]
     });
 
-    $('#tblStatusCustomize tbody').on('click', '.buttonDeleteStatusCustomize', function () {
+    $('#tblCategoryAdmin tbody').on('click', '.buttonDeleteCategoryAdmin', function () {
         var id = $(this).parent().parent().attr("id");
         if (id != null) {
-            $('#buttonModalDeleteStatusCustomize').val(id);
+            $('#buttonModalDeleteCategoryAdmin').val(id);
         }
     });
 
-    $('#modalFooterDeleteStatusCustomize').on('click', '#buttonModalDeleteStatusCustomize', function () {
+    $('#modalFooterDeleteCategoryAdmin').on('click', '#buttonModalDeleteCategoryAdmin', function () {
         var id = $(this).val();
         if (id != null) {
-            DeleteStatusPost(id, table);
+            DeleteCategoryPost(id, table);
         }
     });
 
-    $('#modalFooterEditStatusCustomize').on('click', '#buttonModalEditStatusCustomize', function () {
+    $('#modalFooterEditCategoryAdmin').on('click', '#buttonModalEditCategoryAdmin', function () {
         var id = $(this).val();
         if (id != null) {
-            EditStatusPost(id, table);
+            EditCategoryPost(id, table);
         }
     });
 
-    $('#modalFooterCreateStatusCustomize').on('click', '#buttonModalCreateStatusCustomize', function () {
-        CreateStatusPost(table);
+    $('#modalFooterCreateCategoryAdmin').on('click', '#buttonModalCreateCategoryAdmin', function () {
+        CreateCategoryPost(table);
     });
 
-    $('#tblStatusCustomize tbody').on('click', '.buttonEditStatusCustomize', function () {
+    $('#tblCategoryAdmin tbody').on('click', '.buttonEditCategoryAdmin', function () {
         var id = $(this).parent().parent().attr("id");
         if (id != "") {
-            $('#buttonModalEditStatusCustomize').val(id);
-            GetStatusEdit(id);
+            $('#buttonModalEditCategoryAdmin').val(id);
+            GetCategoryEdit(id);
         }
     });
 }
@@ -80,62 +79,62 @@ function List() {
 // Ajax ========================================================================
 //==============================================================================
 
-function GetStatusEdit(id) {
+function GetCategoryEdit(id) {
     $.ajax({
         cache: false,
         type: "GET",
-        url: "/Finance/Customize/GetStatus/" + id,
+        url: "/Admin/GetCategory/" + id,
         success: function (data) {
-            $('#inputNameEditStatusCustomize').val(data.name);
-            $('#inputEndPointEditStatusCustomize').attr("checked", data.endPoint);
+            $('#inputNameEditCategoryAdmin').val(data.name);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert('Failed to retrieve status.');
+            alert('Failed to retrieve payment.');
         }
     });
 };
 
-function CreateStatusPost(table) {
+
+function CreateCategoryPost(table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "/Finance/Customize/CreateStatus/",
-        data: $('#formCreateStatusCustomize').serialize(),
+        url: "/Admin/CreateCategory/",
+        data: $('#formCreateCategoryAdmin').serialize(),
         success: function () {
             table.draw(false);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert('Failed to edit Status.');
+            alert('Failed to edit Category.');
         }
     });
 };
 
-function EditStatusPost(id, table) {
+function EditCategoryPost(id, table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "/Finance/Customize/EditStatus/" + id,
-        data: $('#formEditStatusCustomize').serialize(),
+        url: "/Admin/EditCategory/" + id,
+        data: $('#formEditCategoryAdmin').serialize(),
         success: function () {
             table.draw(false);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert('Failed to edit Status.');
+            alert('Failed to edit Category.');
         }
     });
 };
 
-function DeleteStatusPost(id, table) {
+function DeleteCategoryPost(id, table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "/Finance/Customize/DeleteStatus/" + id,
-        data: $('#formDeleteStatusCustomize').serialize(),
+        url: "/Admin/DeleteCategory/" + id,
+        data: $('#formDeleteCategoryAdmin').serialize(),
         success: function () {
             table.draw(false);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert('Failed to delete Status.');
+            alert('Failed to delete Category.');
         }
     });
 };

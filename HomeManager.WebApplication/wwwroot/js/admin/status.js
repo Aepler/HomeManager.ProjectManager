@@ -24,16 +24,18 @@ function List() {
             { "data": "name" }
             , { "data": "endPoint" }
             , {
-                "className": 'details-control',
                 "orderable": false,
-                "data": "buttons",
+                "data": null,
+                "defaultContent": "<button class='buttonEditStatusAdmin btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditStatusAdmin'>Edit</button>" +
+                    " | " +
+                    "<button class='buttonDeleteStatusAdmin btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeleteStatusAdmin'>Delete</button>",
                 "width": "150px"
             }
         ]
     });
 
     $('#tblStatusAdmin tbody').on('click', '.buttonDeleteStatusAdmin', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != null) {
             $('#buttonModalDeleteStatusAdmin').val(id);
         }
@@ -58,7 +60,7 @@ function List() {
     });
 
     $('#tblStatusAdmin tbody').on('click', '.buttonEditStatusAdmin', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != "") {
             $('#buttonModalEditStatusAdmin').val(id);
             GetStatusEdit(id);
@@ -77,6 +79,21 @@ function List() {
 //==============================================================================
 // Ajax ========================================================================
 //==============================================================================
+
+function GetStatusEdit(id) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "/Admin/GetStatus/" + id,
+        success: function (data) {
+            $('#inputNameEditStatusAdmin').val(data.name);
+            $('#inputEndPointEditStatusAdmin').attr("checked", data.endPoint);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve status.');
+        }
+    });
+};
 
 function CreateStatusPost(table) {
     $.ajax({

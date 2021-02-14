@@ -44,11 +44,10 @@ namespace HomeManager.Data.Repositories
 
 
 
-        public async Task<bool> Add(User user, Payment_Template payment_Template)
+        public async Task<bool> Add(Payment_Template payment_Template)
         {
             try
             {
-                payment_Template.fk_UserId = user.Id;
                 _context.Payment_Templates.Add(payment_Template);
                 await _context.SaveChangesAsync();
 
@@ -60,20 +59,14 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Update(User user, Payment_Template payment_Template)
+        public async Task<bool> Update(Payment_Template payment_Template)
         {
             try
             {
-                var realPaymentTemplates = await _context.Payment_Templates.AsNoTracking().FirstAsync(x => x.Id == payment_Template.Id);
-                if (realPaymentTemplates != null && realPaymentTemplates.fk_UserId == user.Id)
-                {
-                    payment_Template.fk_UserId = user.Id;
-                    _context.Payment_Templates.Update(payment_Template);
-                    await _context.SaveChangesAsync();
+                _context.Payment_Templates.Update(payment_Template);
+                await _context.SaveChangesAsync();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
             catch (Exception ex)
             {
@@ -81,21 +74,14 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Delete(User user, Payment_Template payment_Template)
+        public async Task<bool> Delete(Payment_Template payment_Template)
         {
             try
             {
-                var realPaymentTemplates = await _context.Payment_Templates.FindAsync(payment_Template.Id);
-                if (realPaymentTemplates != null && realPaymentTemplates.fk_UserId == user.Id)
-                {
-                    payment_Template.Deleted = true;
-                    payment_Template.DeletedOn = DateTime.Today;
-                    _context.Payment_Templates.Update(payment_Template);
-                    await _context.SaveChangesAsync();
+                _context.Payment_Templates.Update(payment_Template);
+                await _context.SaveChangesAsync();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
             catch (Exception ex)
             {

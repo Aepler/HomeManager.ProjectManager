@@ -11,7 +11,5 @@ namespace HomeManager.Models.DataTableModels
         public string Id { get; set; }
 
         public string Name { get; set; }
-
-        public string Buttons { get; set; }
     }
 }

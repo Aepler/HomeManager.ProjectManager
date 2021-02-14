@@ -20,7 +20,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modalBodyCreateCategoryCustomize">
-
+                    <div class="form-group form-floating">
+                        <input asp-for="Name" placeholder="Name" id="inputNameCreateCategoryCustomize" class="form-control" />
+                        <label asp-for="Name" class="control-label"></label>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
                 </div>
                 <div class="modal-footer" id="modalFooterCreateCategoryCustomize">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -41,7 +45,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modalBodyEditCategoryCustomize">
-
+                    <div class="form-group form-floating">
+                        <input asp-for="Name" placeholder="Name" id="inputNameEditCategoryCustomize" class="form-control" />
+                        <label asp-for="Name" class="control-label"></label>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
                 </div>
                 <div class="modal-footer" id="modalFooterEditCategoryCustomize">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -73,6 +81,7 @@
     </div>
 </form>
 
+<br />
 
 <table id="tblCategoryCustomize" class="table table-hover">
     <thead>

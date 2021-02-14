@@ -15,21 +15,11 @@ namespace HomeManager.WebApplication.Factories
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
-        private readonly IPaymentService _paymentService;
-        private readonly ICategoryService _categoryService;
-        private readonly ITypeService _typeService;
-        private readonly IStatusService _statusService;
-        private readonly IPayment_TemplateService _payment_templateService;
 
         public DataTableFactory(UserManager<User> userManager, RoleManager<Role> roleManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPayment_TemplateService payment_templateService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            _paymentService = paymentService;
-            _categoryService = categoryService;
-            _typeService = typeService;
-            _statusService = statusService;
-            _payment_templateService = payment_templateService;
         }
         public async Task<DataTableResultModel<RoleDataTableModel>> GetTableData(DataTableModel model, ICollection<Role> list)
         {
@@ -43,10 +33,7 @@ namespace HomeManager.WebApplication.Factories
                     Id = d.Id.ToString(),
                     Name = d.Name,
                     NormalizedName = d.NormalizedName,
-                    ConcurrencyStamp = d.ConcurrencyStamp.ToString(),
-                    Buttons = "<button class='buttonEditRoleAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditRoleAdmin'>Edit</button>" +
-                    " | " +
-                              "<button class='buttonDeleteRoleAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalDeleteRoleAdmin'>Delete</button>"
+                    ConcurrencyStamp = d.ConcurrencyStamp.ToString()
                 }
                     );
 
@@ -161,10 +148,7 @@ namespace HomeManager.WebApplication.Factories
                 var modifiedData = list.Select(d => new CategoryDataTableModel
                 {
                     Id = d.Id.ToString(),
-                    Name = d.Name,
-                    Buttons = "<button class='buttonEditTypeAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditTypeAdmin'>Edit</button>" +
-                    " | " +
-                              "<button class='buttonDeleteTypeAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalLabelDeleteTypeAdmin'>Delete</button>"
+                    Name = d.Name
                 }
                     );
 
@@ -217,10 +201,7 @@ namespace HomeManager.WebApplication.Factories
                     fk_TypeId = d.fk_TypeId.ToString(),
                     Type = d.Type.Name,
                     fk_CategoryId = d.fk_CategoryId.ToString(),
-                    Category = d.fk_CategoryId != null ? d.Category.Name : null,
-                    Buttons = "<button class='buttonEditTypeAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditTypeAdmin'>Edit</button>" +
-                    " | " +
-                              "<button class='buttonDeleteTypeAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalLabelDeleteTypeAdmin'>Delete</button>"
+                    Category = d.fk_CategoryId != null ? d.Category.Name : null
                 }
                     );
 
@@ -276,10 +257,7 @@ namespace HomeManager.WebApplication.Factories
                     Debit = d.Debit.ToString(),
                     ExtraInput = d.ExtraInput,
                     fk_StatusId = d.fk_StatusId.ToString(),
-                    Status = d.Status.Name,
-                    Buttons = "<button class='buttonEditTypeAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditTypeAdmin'>Edit</button>" +
-                    " | " +
-                              "<button class='buttonDeleteTypeAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalLabelDeleteTypeAdmin'>Delete</button>"
+                    Status = d.Status.Name
                 }
                     );
 
@@ -331,10 +309,7 @@ namespace HomeManager.WebApplication.Factories
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name,
-                    EndPoint = d.EndPoint.ToString(),
-                    Buttons = "<button class='buttonEditStatusAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditStatusAdmin'>Edit</button>" +
-                              " | " +
-                              "<button class='buttonDeleteStatusAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalDeleteStatusAdmin'>Delete</button>"
+                    EndPoint = d.EndPoint.ToString()
                 }
                     );
 
@@ -384,8 +359,7 @@ namespace HomeManager.WebApplication.Factories
                     User = d.User,
                     UserId = d.UserId,
                     Role = d.Role,
-                    RoleId = d.RoleId,
-                    Buttons = "<button class='buttonDeleteUserRoleAdmin btn btn-outline-danger' value='" + d.UserId + "' role='" + d.Role + "' data-bs-toggle='modal' data-bs-target='#modalDeleteUserRoleAdmin'>Delete</button>"
+                    RoleId = d.RoleId
                 }
                     );
 
@@ -438,10 +412,7 @@ namespace HomeManager.WebApplication.Factories
                     Name = d.Name,
                     Lastname = d.Lastname,
                     PhoneNumber = d.PhoneNumber != null ? d.PhoneNumber.ToString() : null,
-                    TwoFactorEnabled = d.TwoFactorEnabled.ToString(),
-                    Buttons = "<button class='buttonEditUserAdmin btn btn-outline-secondary' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalEditUserAdmin'>Edit</button>" +
-                    " | " +
-                              "<button class='buttonDeleteUserAdmin btn btn-outline-danger' value='" + d.Id + "' data-bs-toggle='modal' data-bs-target='#modalDeleteUserAdmin'>Delete</button>"
+                    TwoFactorEnabled = d.TwoFactorEnabled.ToString()
                 }
                     );
 

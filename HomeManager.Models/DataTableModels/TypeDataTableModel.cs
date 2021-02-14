@@ -15,7 +15,5 @@ namespace HomeManager.Models.DataTableModels
         public string[] ExtraInput { get; set; }
         public string fk_StatusId { get; set; }
         public string Status { get; set; }
-
-        public string Buttons { get; set; }
     }
 }

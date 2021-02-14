@@ -42,6 +42,38 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetCategory(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var category = await _categoryService.GetById(user, id);
+            return Json(category);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetPaymentTemplate(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var payment_Template = await _payment_templateService.GetById(user, id);
+            return Json(payment_Template);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetType(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var type = await _typeService.GetById(user, id);
+            return Json(type);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetStatus(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var status = await _statusService.GetById(user, id);
+            return Json(status);
+        }
+
         public async Task<IActionResult> Categories()
         {
             return View();
@@ -53,7 +85,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                var categories = await _categoryService.GetAll(user);
+                var categories = await _categoryService.GetByUser(user);
                 var result = await _dataTableFactory.GetTableData(model, categories);
 
                 return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
@@ -66,60 +98,72 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCategory([Bind("Id,fk_UserId,Name,Deleted,DeletedOn")] Category category)
+        public async Task<JsonResult> CreateCategory(Category category)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.GetUserAsync(User);
-                await _categoryService.Add(user, category);
-                return RedirectToAction(nameof(Types));
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    await _categoryService.Add(user, category);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                return Json(null);
             }
-            return View(category);
+            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCategory(int id, [Bind("Id,fk_UserId,Name,Deleted,DeletedOn")] Category category)
+        public async Task<JsonResult> EditCategory(int id, Category category)
         {
-            var user = await _userManager.GetUserAsync(User);
             if (id != category.Id)
             {
-                return BadRequest();
+                return Json(null);
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
                     await _categoryService.Update(user, category);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    bool exist = await CategoryExists(category.Id);
-                    if (exist)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
+                return Json(null);
             }
-
-            return View(category);
+            return Json(null);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            var category = await _categoryService.GetById(user, id);
-            await _categoryService.Delete(user, category);
-            return RedirectToAction(nameof(Categories));
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var category = await _categoryService.GetById(user, id);
+                    if (category != null)
+                    {
+                        await _categoryService.Delete(user, category);
+                    }
+                }
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> PaymentTemplates()
@@ -151,53 +195,72 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreatePaymentTemplate(Payment_Template payment_Template)
+        public async Task<JsonResult> CreatePaymentTemplate(Payment_Template payment_Template)
         {
-            var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
-                await _payment_templateService.Add(user, payment_Template);
-                return RedirectToAction(nameof(Types));
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    await _payment_templateService.Add(user, payment_Template);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                return Json(null);
             }
-            ViewData["fk_TypeId"] = new SelectList(await _statusService.GetAll(user), "Id", "Name", payment_Template.fk_TypeId);
-            ViewData["fk_CategoryId"] = new SelectList(await _statusService.GetAll(user), "Id", "Name", payment_Template.fk_CategoryId);
-            return View(payment_Template);
+            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditPaymentTemplate(int id, Payment_Template payment_Template)
+        public async Task<JsonResult> EditPaymentTemplate(int id, Payment_Template payment_Template)
         {
-            var user = await _userManager.GetUserAsync(User);
             if (id != payment_Template.Id)
             {
-                return BadRequest();
+                return Json(null);
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
                     await _payment_templateService.Update(user, payment_Template);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    bool exist = await TypeExists(payment_Template.Id);
-                    if (exist)
+                    throw;
+                }
+                return Json(null);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePaymentTemplate(int id)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var payment_Template = await _payment_templateService.GetById(user, id);
+                    if (payment_Template != null)
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        await _payment_templateService.Delete(user, payment_Template);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
             }
-            ViewData["fk_TypeId"] = new SelectList(await _statusService.GetAll(user), "Id", "Name", payment_Template.fk_TypeId);
-            ViewData["fk_CategoryId"] = new SelectList(await _statusService.GetAll(user), "Id", "Name", payment_Template.fk_CategoryId);
-            ViewData["fk_CategoryId"] = new SelectList(await _statusService.GetAll(user), "Id", "Name", payment_Template.fk_CategoryId);
-            return View(payment_Template);
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Types()
@@ -215,7 +278,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                var types = await _typeService.GetAll(user);
+                var types = await _typeService.GetByUser(user);
                 var result = await _dataTableFactory.GetTableData(model, types);
 
                 return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
@@ -228,50 +291,72 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateType(Type type)
+        public async Task<JsonResult> CreateType(Type type)
         {
-            var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
-                await _typeService.Add(user, type);
-                return RedirectToAction(nameof(Types));
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    await _typeService.Add(user, type);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                return Json(null);
             }
-            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name", type.fk_StatusId);
-            return View(type);
+            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditTypes(int id, Type type)
+        public async Task<JsonResult> EditType(int id, Type type)
         {
-            var user = await _userManager.GetUserAsync(User);
             if (id != type.Id)
             {
-                return BadRequest();
+                return Json(null);
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
                     await _typeService.Update(user, type);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    bool exist = await TypeExists(type.Id);
-                    if (exist)
+                    throw;
+                }
+                return Json(null);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteType(int id)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var type = await _typeService.GetById(user, id);
+                    if (type != null)
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        await _typeService.Delete(user, type);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
             }
-            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name", type.fk_StatusId);
-            return View(type);
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Status()
@@ -285,7 +370,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                var status = await _statusService.GetAll(user);
+                var status = await _statusService.GetByUser(user);
                 var result = await _dataTableFactory.GetTableData(model, status);
 
                 return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
@@ -298,48 +383,71 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateStatus(Status status)
+        public async Task<JsonResult> CreateStatus(Status status)
         {
-            var user = await _userManager.GetUserAsync(User);
             if (ModelState.IsValid)
             {
-                await _statusService.Add(user, status);
-                return RedirectToAction(nameof(Status));
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    await _statusService.Add(user, status);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                return Json(null);
             }
-            return View(status);
+            return Json(null);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditStatus(int id, Status status)
+        public async Task<JsonResult> EditStatus(int id, Status status)
         {
-            var user = await _userManager.GetUserAsync(User);
             if (id != status.Id)
             {
-                return NotFound();
+                return Json(null);
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
                     await _statusService.Update(user, status);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    bool exist = await StatusExists(status.Id);
-                    if (exist)
+                    throw;
+                }
+                return Json(null);
+            }
+            return Json(null);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStatus(int id)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var status = await _statusService.GetById(user, id);
+                    if (status != null)
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        await _statusService.Delete(user, status);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
             }
-            return View(status);
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> TypeExists(int id)

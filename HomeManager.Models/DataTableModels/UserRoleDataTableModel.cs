@@ -12,7 +12,5 @@ namespace HomeManager.Models.DataTableModels
         public string User { get; set; }
         public string RoleId { get; set; }
         public string Role { get; set; }
-
-        public string Buttons { get; set; }
     }
 }

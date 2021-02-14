@@ -15,7 +15,11 @@ namespace HomeManager.WebApplication.ViewModels.Admin
         public static string Users => "Users";
 
         public static string UserRoles => "User Roles";
+
+        public static string Categories => "Categories";
+
         public static string Types => "Types";
+
         public static string Status => "Status";
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
@@ -25,7 +29,11 @@ namespace HomeManager.WebApplication.ViewModels.Admin
         public static string UsersNavClass(ViewContext viewContext) => PageNavClass(viewContext, Users);
 
         public static string UserRolesNavClass(ViewContext viewContext) => PageNavClass(viewContext, UserRoles);
+
+        public static string CategoriesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Categories);
+
         public static string TypesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Types);
+
         public static string StatusNavClass(ViewContext viewContext) => PageNavClass(viewContext, Status);
 
         private static string PageNavClass(ViewContext viewContext, string page)

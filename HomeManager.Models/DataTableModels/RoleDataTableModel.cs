@@ -15,7 +15,5 @@ namespace HomeManager.Models.DataTableModels
         public string NormalizedName { get; set; }
 
         public string ConcurrencyStamp { get; set; }
-
-        public string Buttons { get; set; }
     }
 }

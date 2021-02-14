@@ -62,11 +62,10 @@ namespace HomeManager.Data.Repositories
 
 
 
-        public async Task<bool> Add(User user, Payment payment)
+        public async Task<bool> Add(Payment payment)
         {
             try
             {
-                payment.fk_UserId = user.Id;
                 _context.Payments.Add(payment);
                 await _context.SaveChangesAsync();
 
@@ -78,20 +77,14 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Update(User user, Payment payment)
+        public async Task<bool> Update(Payment payment)
         {
             try
             {
-                var realPayment = await _context.Payments.AsNoTracking().FirstAsync(x => x.Id == payment.Id);
-                if (realPayment != null && realPayment.fk_UserId == user.Id)
-                {
-                    payment.fk_UserId = user.Id;
-                    _context.Payments.Update(payment);
-                    await _context.SaveChangesAsync();
+                _context.Payments.Update(payment);
+                await _context.SaveChangesAsync();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
             catch (Exception ex)
             {
@@ -99,21 +92,14 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Delete(User user, Payment payment)
+        public async Task<bool> Delete(Payment payment)
         {
             try
             {
-                var realPayment = await _context.Payments.FindAsync(payment.Id);
-                if (realPayment != null && realPayment.fk_UserId == user.Id)
-                {
-                    payment.Deleted = true;
-                    payment.DeletedOn = DateTime.Today;
-                    _context.Payments.Update(payment);
-                    await _context.SaveChangesAsync();
+                _context.Payments.Update(payment);
+                await _context.SaveChangesAsync();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
             catch (Exception ex)
             {

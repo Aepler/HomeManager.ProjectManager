@@ -26,16 +26,18 @@ function List() {
             , { "data": "category" }
             , { "data": "amount" }
             , {
-                "className": 'details-control',
                 "orderable": false,
-                "data": "buttons",
+                "data": null,
+                "defaultContent": "<button class='buttonEditPaymentTemplateCustomize btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditPaymentTemplateCustomize'>Edit</button>" +
+                    " | " +
+                    "<button class='buttonDeletePaymentTemplateCustomize btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeletePaymentTemplateCustomize'>Delete</button>",
                 "width": "150px"
             }
         ]
     });
 
     $('#tblPaymentTemplateCustomize tbody').on('click', '.buttonDeletePaymentTemplateCustomize', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != null) {
             $('#buttonModalDeletePaymentTemplateCustomize').val(id);
         }
@@ -60,7 +62,7 @@ function List() {
     });
 
     $('#tblPaymentTemplateCustomize tbody').on('click', '.buttonEditPaymentTemplateCustomize', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != "") {
             $('#buttonModalEditPaymentTemplateCustomize').val(id);
             GetPaymentTemplateEdit(id);
@@ -80,12 +82,26 @@ function List() {
 // Ajax ========================================================================
 //==============================================================================
 
-function CreatePaymentTemplatePost(id, table) {
+function GetPaymentTemplateEdit(id) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "/Finance/Customize/GetPaymentTemplate/" + id,
+        success: function (data) {
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve payment.');
+        }
+    });
+};
+
+function CreatePaymentTemplatePost(table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "Customize/CreatePaymentTemplate/" + id,
-        data: $('#formCreatePaymentTemplate').serialize(),
+        url: "/Finance/Customize/CreatePaymentTemplate/",
+        data: $('#formCreatePaymentTemplateCustomize').serialize(),
         success: function () {
             table.draw(false);
         },
@@ -99,8 +115,8 @@ function EditPaymentTemplatePost(id, table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "Customize/EditPaymentTemplate/" + id,
-        data: $('#formEditPaymentTemplate').serialize(),
+        url: "/Finance/Customize/EditPaymentTemplate/" + id,
+        data: $('#formEditPaymentTemplateCustomize').serialize(),
         success: function () {
             table.draw(false);
         },
@@ -114,8 +130,8 @@ function DeletePaymentTemplatePost(id, table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "Customize/DeletePaymentTemplate/" + id,
-        data: $('#formDeletePaymentTemplate').serialize(),
+        url: "/Finance/Customize/DeletePaymentTemplate/" + id,
+        data: $('#formDeletePaymentTemplateCustomize').serialize(),
         success: function () {
             table.draw(false);
         },

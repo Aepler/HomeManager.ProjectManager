@@ -16,8 +16,8 @@ namespace HomeManager.Data.Repositories.Interfaces
         Task<ICollection<Payment>> GetByStatus(User user, int fk_StatusId);
         Task<ICollection<Payment>> GetByDate(User user, DateTime dateTime);
         Task<ICollection<Payment>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd);
-        Task<bool> Add(User user, Payment payment);
-        Task<bool> Update(User user, Payment payment);
-        Task<bool> Delete(User user, Payment payment);
+        Task<bool> Add(Payment payment);
+        Task<bool> Update(Payment payment);
+        Task<bool> Delete(Payment payment);
     }
 }

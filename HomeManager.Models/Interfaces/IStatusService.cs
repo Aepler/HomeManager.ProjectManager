@@ -14,8 +14,12 @@ namespace HomeManager.Models.Interfaces
         Task<ICollection<Status>> GetByUser(User user);
         Task<ICollection<Status>> GetByEndPoint(User user, bool endPoint);
         Task<ICollection<Status>> GetPossibleStatus(User user, int id);
+        Task<ICollection<Status>> GetDefault();
         Task<bool> Add(User user, Status status);
         Task<bool> Update(User user, Status status);
         Task<bool> Delete(User user, Status status);
+        Task<bool> AddDefault(IList<string> userRoles, Status status);
+        Task<bool> UpdateDefault(IList<string> userRoles, Status status);
+        Task<bool> DeleteDefault(IList<string> userRoles, Status status);
     }
 }

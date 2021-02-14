@@ -23,7 +23,5 @@ namespace HomeManager.Models.DataTableModels
         public string fk_CategoryId { get; set; }
 
         public string Category { get; set; }
-
-        public string Buttons { get; set; }
     }
 }

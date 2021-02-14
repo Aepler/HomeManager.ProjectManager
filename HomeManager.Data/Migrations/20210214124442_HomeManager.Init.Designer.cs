@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeManager.Data.Migrations
 {
     [DbContext(typeof(HomeManagerContext))]
-    [Migration("20210211091007_HomeManager.Init")]
+    [Migration("20210214124442_HomeManager.Init")]
     partial class HomeManagerInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,52 +92,7 @@ namespace HomeManager.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Payment_Template", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Invoice")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("fk_CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("fk_TypeId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("fk_UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("fk_CategoryId");
-
-                    b.HasIndex("fk_TypeId");
-
-                    b.HasIndex("fk_UserId");
-
-                    b.ToTable("Payment_Templates");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Payments", b =>
+            modelBuilder.Entity("HomeManager.Models.Payment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -221,6 +176,51 @@ namespace HomeManager.Data.Migrations
                     b.HasIndex("fk_UserId");
 
                     b.ToTable("Payments");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Payment_Template", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Invoice")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("fk_CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fk_TypeId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("fk_CategoryId");
+
+                    b.HasIndex("fk_TypeId");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("Payment_Templates");
                 });
 
             modelBuilder.Entity("HomeManager.Models.Role", b =>
@@ -503,6 +503,26 @@ namespace HomeManager.Data.Migrations
                     b.HasData(
                         new
                         {
+                            Id = new Guid("7084a204-330e-4b8e-0788-08d8d0e3f5d6"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "dc8cb136-9f75-46ee-8cae-72da0e35ff89",
+                            Darkmode = true,
+                            Email = "Admin@Admin.Admin",
+                            EmailConfirmed = true,
+                            Lastname = "Admin",
+                            LockoutEnabled = true,
+                            Name = "Admin",
+                            NormalizedEmail = "ADMIN@ADMIN.ADMIN",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJLDpQEhYHywkPUimXOLlP6w24hXDuQdI2wtLcSKIB0K3BPmeFV+nzAaNgRRU2eozA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "RRF4WT3IKFEA5BLYKDY5UJNCIAGATOAP",
+                            StartBalance = 0.0,
+                            TwoFactorEnabled = false,
+                            UserName = "Admin"
+                        },
+                        new
+                        {
                             Id = new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"),
                             AccessFailedCount = 0,
                             ConcurrencyStamp = "22ac1596-f950-40cc-ad84-92df87f8d892",
@@ -627,6 +647,11 @@ namespace HomeManager.Data.Migrations
                     b.HasData(
                         new
                         {
+                            UserId = new Guid("7084a204-330e-4b8e-0788-08d8d0e3f5d6"),
+                            RoleId = new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f")
+                        },
+                        new
+                        {
                             UserId = new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"),
                             RoleId = new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f")
                         },
@@ -665,32 +690,7 @@ namespace HomeManager.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Payment_Template", b =>
-                {
-                    b.HasOne("HomeManager.Models.Category", "Category")
-                        .WithMany("Payment_Templates")
-                        .HasForeignKey("fk_CategoryId");
-
-                    b.HasOne("HomeManager.Models.Type", "Type")
-                        .WithMany("Payment_Templates")
-                        .HasForeignKey("fk_TypeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("HomeManager.Models.User", "User")
-                        .WithMany("Payment_Templates")
-                        .HasForeignKey("fk_UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Type");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Payments", b =>
+            modelBuilder.Entity("HomeManager.Models.Payment", b =>
                 {
                     b.HasOne("HomeManager.Models.Category", "Category")
                         .WithMany("Payments")
@@ -723,6 +723,31 @@ namespace HomeManager.Data.Migrations
                     b.Navigation("Payment_Template");
 
                     b.Navigation("Status");
+
+                    b.Navigation("Type");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Payment_Template", b =>
+                {
+                    b.HasOne("HomeManager.Models.Category", "Category")
+                        .WithMany("Payment_Templates")
+                        .HasForeignKey("fk_CategoryId");
+
+                    b.HasOne("HomeManager.Models.Type", "Type")
+                        .WithMany("Payment_Templates")
+                        .HasForeignKey("fk_TypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HomeManager.Models.User", "User")
+                        .WithMany("Payment_Templates")
+                        .HasForeignKey("fk_UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("Type");
 

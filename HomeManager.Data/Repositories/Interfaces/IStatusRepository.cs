@@ -14,8 +14,9 @@ namespace HomeManager.Data.Repositories.Interfaces
         Task<ICollection<Status>> GetByUser(User user);
         Task<ICollection<Status>> GetByEndPoint(User user, bool endPoint);
         Task<ICollection<Status>> GetPossibleStatus(User user, int id);
-        Task<bool> Add(User user, Status status);
-        Task<bool> Update(User user, Status status);
-        Task<bool> Delete(User user, Status status);
+        Task<ICollection<Status>> GetDefault();
+        Task<bool> Add(Status status);
+        Task<bool> Update(Status status);
+        Task<bool> Delete(Status status);
     }
 }

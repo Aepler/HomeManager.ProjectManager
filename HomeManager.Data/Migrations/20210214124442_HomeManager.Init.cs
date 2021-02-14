@@ -342,9 +342,9 @@ namespace HomeManager.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f"), "cc4e0669-e7ef-4edc-83d7-977ef284d407", "Admin", "ADMIN" },
                     { new Guid("c50e0c00-bf4a-4e6a-8b06-08d8ca5d9e57"), "896e6ba7-5b4f-4231-bcc7-34aba5ca1e57", "User", "USER" },
-                    { new Guid("626e5439-ac0e-423f-f10a-08d8cabafa0b"), "714a5239-a8a3-4b42-af07-033481bd81e0", "Test", "TEST" }
+                    { new Guid("626e5439-ac0e-423f-f10a-08d8cabafa0b"), "714a5239-a8a3-4b42-af07-033481bd81e0", "Test", "TEST" },
+                    { new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f"), "cc4e0669-e7ef-4edc-83d7-977ef284d407", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -352,6 +352,7 @@ namespace HomeManager.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Darkmode", "DataType", "Email", "EmailConfirmed", "Lastname", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Picture", "SecurityStamp", "StartBalance", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
+                    { new Guid("7084a204-330e-4b8e-0788-08d8d0e3f5d6"), 0, "dc8cb136-9f75-46ee-8cae-72da0e35ff89", true, null, "Admin@Admin.Admin", true, "Admin", true, null, "Admin", "ADMIN@ADMIN.ADMIN", "ADMIN", "AQAAAAEAACcQAAAAEJLDpQEhYHywkPUimXOLlP6w24hXDuQdI2wtLcSKIB0K3BPmeFV+nzAaNgRRU2eozA==", null, false, null, "RRF4WT3IKFEA5BLYKDY5UJNCIAGATOAP", 0.0, false, "Admin" },
                     { new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c"), 0, "22ac1596-f950-40cc-ad84-92df87f8d892", true, null, "Francesco.Aepler@gmail.com", true, "Aepler", true, null, "Francesco", "FRANCESCO.AEPLER@GMAIL.COM", "FRANCESCO", "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==", null, false, null, "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO", 0.0, false, "Francesco" },
                     { new Guid("c7e66c25-bb5d-41f2-c762-08d8cc11b158"), 0, "05c6a9ba-80b0-4ee6-ab88-258cc2edbf09", true, null, "ole@admin.gov", true, "Eggersmann", true, null, "Ole", "OLE@ADMIN.GOV", "OLE", "AQAAAAEAACcQAAAAEHTM1p5KXcvGwKk4muG28dmLnhAgR3spQVXORsKEw+IN36bupGX27DhsTNrwIymmQg==", null, false, null, "VTPKISZMI2WKD6GNEHR223NRWDHGYRX6", 0.0, false, "Ole" }
                 });
@@ -361,13 +362,13 @@ namespace HomeManager.Data.Migrations
                 columns: new[] { "Id", "Deleted", "DeletedOn", "Name", "fk_UserId" },
                 values: new object[,]
                 {
-                    { 1, false, null, "Living", null },
-                    { 2, false, null, "Groceries", null },
-                    { 3, false, null, "Leisure", null },
-                    { 4, false, null, "Mobility", null },
+                    { 7, false, null, "Saving", null },
                     { 5, false, null, "Insurance", null },
+                    { 4, false, null, "Mobility", null },
+                    { 3, false, null, "Leisure", null },
+                    { 2, false, null, "Groceries", null },
                     { 6, false, null, "Loans", null },
-                    { 7, false, null, "Saving", null }
+                    { 1, false, null, "Living", null }
                 });
 
             migrationBuilder.InsertData(
@@ -386,6 +387,7 @@ namespace HomeManager.Data.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
+                    { new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f"), new Guid("7084a204-330e-4b8e-0788-08d8d0e3f5d6") },
                     { new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f"), new Guid("1c30add5-c7a9-48e9-6beb-08d8c9d5dc9c") },
                     { new Guid("898da44c-f5c4-45a4-7236-08d8c9fa7c8f"), new Guid("c7e66c25-bb5d-41f2-c762-08d8cc11b158") }
                 });

@@ -48,11 +48,16 @@ namespace HomeManager.Data.Repositories
             return statuses;
         }
 
-        public async Task<bool> Add(User user, Status status)
+        public async Task<ICollection<Status>> GetDefault()
+        {
+            ICollection<Status> statuses = await _context.Statuses.Where(x => x.fk_UserId == null && x.Deleted == false).ToListAsync();
+            return statuses;
+        }
+
+        public async Task<bool> Add(Status status)
         {
             try
             {
-                status.fk_UserId = user.Id;
                 _context.Statuses.Add(status);
                 await _context.SaveChangesAsync();
 
@@ -64,20 +69,14 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Update(User user, Status status)
+        public async Task<bool> Update(Status status)
         {
             try
             {
-                var realStatus = await _context.Statuses.AsNoTracking().FirstAsync(x => x.Id == status.Id);
-                if (realStatus != null && realStatus.fk_UserId == user.Id)
-                {
-                    status.fk_UserId = user.Id;
-                    _context.Statuses.Update(status);
-                    await _context.SaveChangesAsync();
+                _context.Statuses.Update(status);
+                await _context.SaveChangesAsync();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
             catch (Exception ex)
             {
@@ -85,21 +84,14 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Delete(User user, Status status)
+        public async Task<bool> Delete(Status status)
         {
             try
             {
-                var realStatus = await _context.Statuses.FindAsync(status.Id);
-                if (realStatus != null && realStatus.fk_UserId == user.Id)
-                {
-                    status.Deleted = true;
-                    status.DeletedOn = DateTime.Today;
-                    _context.Statuses.Update(status);
-                    await _context.SaveChangesAsync();
+                _context.Statuses.Update(status);
+                await _context.SaveChangesAsync();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
             catch (Exception ex)
             {

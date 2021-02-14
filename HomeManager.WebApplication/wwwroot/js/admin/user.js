@@ -28,16 +28,18 @@ function List() {
             , { "data": "phoneNumber" }
             , { "data": "twoFactorEnabled" }
             , {
-                "className": 'details-control',
                 "orderable": false,
-                "data": "buttons",
+                "data": null,
+                "defaultContent": "<button class='buttonEditUserAdmin btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditUserAdmin'>Edit</button>" +
+                    " | " +
+                    "<button class='buttonDeleteUserAdmin btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeleteUserAdmin'>Delete</button>",
                 "width": "150px"
             }
         ]
     });
 
     $('#tblUserAdmin tbody').on('click', '.buttonDeleteUserAdmin', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != null) {
             $('#buttonModalDeleteUserAdmin').val(id);
         }
@@ -59,7 +61,7 @@ function List() {
     });
 
     $('#modalFooterEditUserAdmin').on('click', '#buttonModalEditUserAdmin', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != null) {
             EditUserPost(id, table);
         }

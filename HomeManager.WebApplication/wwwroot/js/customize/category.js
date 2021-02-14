@@ -23,16 +23,18 @@ function List() {
         "columns": [
             { "data": "name" }
             , {
-                "className": 'details-control',
                 "orderable": false,
-                "data": "buttons",
+                "data": null,
+                "defaultContent": "<button class='buttonEditCategoryCustomize btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditCategoryCustomize'>Edit</button>" +
+                    " | " +
+                    "<button class='buttonDeleteCategoryCustomize btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeleteCategoryCustomize'>Delete</button>",
                 "width": "150px"
             }
         ]
     });
 
     $('#tblCategoryCustomize tbody').on('click', '.buttonDeleteCategoryCustomize', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != null) {
             $('#buttonModalDeleteCategoryCustomize').val(id);
         }
@@ -57,7 +59,7 @@ function List() {
     });
 
     $('#tblCategoryCustomize tbody').on('click', '.buttonEditCategoryCustomize', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != "") {
             $('#buttonModalEditCategoryCustomize').val(id);
             GetCategoryEdit(id);
@@ -77,12 +79,26 @@ function List() {
 // Ajax ========================================================================
 //==============================================================================
 
-function CreateCategoryPost(id, table) {
+function GetCategoryEdit(id) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "/Finance/Customize/GetCategory/" + id,
+        success: function (data) {
+            $('#inputNameEditCategoryCustomize').val(data.name);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve payment.');
+        }
+    });
+};
+
+function CreateCategoryPost(table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "Customize/CreateCategory/" + id,
-        data: $('#formCreateCategory').serialize(),
+        url: "/Finance/Customize/CreateCategory/",
+        data: $('#formCreateCategoryCustomize').serialize(),
         success: function () {
             table.draw(false);
         },
@@ -96,8 +112,8 @@ function EditCategoryPost(id, table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "Customize/EditCategory/" + id,
-        data: $('#formEditCategory').serialize(),
+        url: "/Finance/Customize/EditCategory/" + id,
+        data: $('#formEditCategoryCustomize').serialize(),
         success: function () {
             table.draw(false);
         },
@@ -111,8 +127,8 @@ function DeleteCategoryPost(id, table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "Customize/DeleteCategory/" + id,
-        data: $('#formDeleteCategory').serialize(),
+        url: "/Finance/Customize/DeleteCategory/" + id,
+        data: $('#formDeleteCategoryCustomize').serialize(),
         success: function () {
             table.draw(false);
         },

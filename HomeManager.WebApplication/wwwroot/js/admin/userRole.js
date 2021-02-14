@@ -23,9 +23,9 @@ function List() {
             { "data": "user" }
             , { "data": "role" }
             , {
-                "className": 'details-control',
                 "orderable": false,
-                "data": "buttons",
+                "data": null,
+                "defaultContent": "<button class='buttonDeleteUserRoleAdmin btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeleteUserRoleAdmin'>Delete</button>",
                 "width": "75px"
             }
         ]

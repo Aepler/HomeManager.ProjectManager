@@ -20,31 +20,31 @@
                 </div>
                 <div class="modal-body" id="modalBodyCreateTypeCustomize">
                     <div class="form-group form-floating">
-                        <input asp-for="Name" placeholder="Name" class="form-control" />
+                        <input asp-for="Name" placeholder="Name" id="inputNameCreateTypeCustomize" class="form-control" />
                         <label asp-for="Name" class="control-label"></label>
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <br />
                     <div class="form-group form-floating">
-                        <input asp-for="EndTaxType" placeholder="EndTaxType" class="form-control" />
+                        <input asp-for="EndTaxType" placeholder="EndTaxType" id="inputEndTaxTypeCreateTypeCustomize" class="form-control" />
                         <label asp-for="EndTaxType" class="control-label"></label>
                         <span asp-validation-for="EndTaxType" class="text-danger"></span>
                     </div>
                     <br />
                     <div class="form-group form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" asp-for="Debit" /> @Html.DisplayNameFor(model => model.Debit)
+                            <input class="form-check-input" asp-for="Debit" id="inputDebitCreateTypeCustomize" /> @Html.DisplayNameFor(model => model.Debit)
                         </label>
                     </div>
                     <br />
                     <div class="form-group form-floating">
-                        <input asp-for="ExtraInput" placeholder="ExtraInput" class="form-control" />
+                        <input asp-for="ExtraInput" placeholder="ExtraInput" id="inputExtraInputCreateTypeCustomize" class="form-control" />
                         <label asp-for="ExtraInput" class="control-label"></label>
                         <span asp-validation-for="ExtraInput" class="text-danger"></span>
                     </div>
                     <br />
                     <div class="form-group form-floating">
-                        <select asp-for="fk_StatusId" class="form-control" asp-items="ViewBag.Status">
+                        <select asp-for="fk_StatusId" id="dropdownStatusCreateTypeCustomize" class="form-control" asp-items="ViewBag.Status">
                             <option value="-1" disabled selected>Select a end Status</option>
                         </select>
                         <label asp-for="fk_StatusId" class="control-label">End Status</label>
@@ -69,7 +69,35 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modalBodyEditTypeCustomize">
-
+                    <div class="form-group form-floating">
+                        <input asp-for="Name" placeholder="Name" id="inputNameEditTypeCustomize" class="form-control" />
+                        <label asp-for="Name" class="control-label"></label>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-group form-floating">
+                        <input asp-for="EndTaxType" placeholder="EndTaxType" id="inputEndTaxTypeEditTypeCustomize" class="form-control" />
+                        <label asp-for="EndTaxType" class="control-label"></label>
+                        <span asp-validation-for="EndTaxType" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" id="inputDebitEditTypeCustomize" asp-for="Debit" /> @Html.DisplayNameFor(model => model.Debit)
+                        </label>
+                    </div>
+                    <br />
+                    <div class="form-group form-floating">
+                        <input asp-for="ExtraInput" placeholder="ExtraInput" id="inputExtraInputEditTypeCustomize" class="form-control" />
+                        <label asp-for="ExtraInput" class="control-label"></label>
+                        <span asp-validation-for="ExtraInput" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-group form-floating">
+                        <select asp-for="fk_StatusId"  id="dropdownStatusEditTypeCustomize" class="form-control" asp-items="ViewBag.Status">
+                        </select>
+                        <label asp-for="fk_StatusId" class="control-label">End Status</label>
+                    </div>
                 </div>
                 <div class="modal-footer" id="modalFooterEditTypeCustomize">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -101,6 +129,7 @@
     </div>
 </form>
 
+<br />
 
 <table id="tblTypeCustomize" class="table table-hover">
     <thead>
