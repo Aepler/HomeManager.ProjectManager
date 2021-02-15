@@ -24,6 +24,11 @@ namespace HomeManager.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<Payment_Template> Payment_Templates { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Ingredient> Ingredients{  get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<Favorites> Favorites { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,11 +63,22 @@ namespace HomeManager.Data
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
+
+            modelBuilder.Entity<Recipe>()
+            .Property(e => e.Instructions)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
             modelBuilder.Entity<Payment>().ToTable("Payments");
+
             modelBuilder.Entity<Type>().ToTable("Types");
             modelBuilder.Entity<Category>().ToTable("Categories");
             modelBuilder.Entity<Status>().ToTable("Statuses");
             modelBuilder.Entity<Payment_Template>().ToTable("Payment_Templates");
+            modelBuilder.Entity<Tag>().ToTable("Tags");
+            modelBuilder.Entity<Ingredient>().ToTable("Ingredients");
+            modelBuilder.Entity<Recipe>().ToTable("Recipes");
 
             modelBuilder.Seed();
 
