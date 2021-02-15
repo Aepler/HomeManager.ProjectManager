@@ -12,8 +12,9 @@ namespace HomeManager.Data.Repositories.Interfaces
         Task<Category> GetById(User user, int id);
         Task<ICollection<Category>> GetAll(User user);
         Task<ICollection<Category>> GetByUser(User user);
-        Task<bool> Add(User user, Category category);
-        Task<bool> Update(User user, Category category);
-        Task<bool> Delete(User user, Category category);
+        Task<ICollection<Category>> GetDefault();
+        Task<bool> Add(Category category);
+        Task<bool> Update(Category category);
+        Task<bool> Delete(Category category);
     }
 }

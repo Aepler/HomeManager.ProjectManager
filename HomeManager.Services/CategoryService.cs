@@ -54,11 +54,24 @@ namespace HomeManager.Services
             }
         }
 
+        public async Task<ICollection<Category>> GetDefault()
+        {
+            try
+            {
+                return await _categoryRepository.GetDefault();
+            }
+            catch (Exception ex)
+            {
+                return new List<Category>();
+            }
+        }
+
         public async Task<bool> Add(User user, Category category)
         {
             try
             {
-                return await _categoryRepository.Add(user, category);
+                category.fk_UserId = user.Id;
+                return await _categoryRepository.Add(category);
             }
             catch (Exception ex)
             {
@@ -70,7 +83,13 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _categoryRepository.Update(user, category);
+                var realCategory = await _categoryRepository.GetById(user, category.Id);
+                if (realCategory != null && realCategory.fk_UserId == user.Id)
+                {
+                    category.fk_UserId = user.Id;
+                    return await _categoryRepository.Update(category);
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -82,7 +101,70 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _categoryRepository.Delete(user, category);
+                var realCategory = await _categoryRepository.GetById(user, category.Id);
+                if (realCategory != null && realCategory.fk_UserId == user.Id)
+                {
+                    category.fk_UserId = user.Id;
+                    category.Deleted = true;
+                    category.DeletedOn = DateTime.Today;
+                    return await _categoryRepository.Delete(category);
+                }
+                return false;
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> AddDefault(IList<string> userRoles, Category category)
+        {
+            try
+            {
+
+                if (userRoles.Contains("Admin"))
+                {
+                    category.fk_UserId = null;
+                    return await _categoryRepository.Add(category);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateDefault(IList<string> userRoles, Category category)
+        {
+            try
+            {
+                if (userRoles.Contains("Admin"))
+                {
+                    category.fk_UserId = null;
+                    return await _categoryRepository.Update(category);
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteDefault(IList<string> userRoles, Category category)
+        {
+            try
+            {
+                if (userRoles.Contains("Admin"))
+                {
+                    category.fk_UserId = null;
+                    category.Deleted = true;
+                    category.DeletedOn = DateTime.Today;
+                    return await _categoryRepository.Update(category);
+                }
+                return false; 
             }
             catch (Exception ex)
             {

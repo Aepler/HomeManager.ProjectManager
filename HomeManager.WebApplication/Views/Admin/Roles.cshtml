@@ -7,34 +7,82 @@
 
 <h4>@ViewData["Title"]</h4>
 
-<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateRole">New Role</button>
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateRoleAdmin">New Role</button>
 
-<form asp-action="CreateRole">
+<form id="formCreateRoleAdmin" asp-action="CreateRole">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalCreateRole" role="dialog" aria-labelledby="modalLabelCreateRole" aria-hidden="true">
+    <div class="modal fade" id="modalCreateRoleAdmin" role="dialog" aria-labelledby="modalLabelCreateRoleAdmin" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelCreateRole">New Role</h5>
+                    <h5 class="modal-title" id="modalLabelCreateRoleAdmin">New Role</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="modalBodyCreateRoleAdmin">
                     <div class="form-group form-floating">
                         <input asp-for="Name" placeholder="Name" class="form-control" />
                         <label asp-for="Name" class="control-label"></label>
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="modalFooterCreateRoleAdmin">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateRoleAdmin" data-bs-dismiss="modal">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-<table class="table">
+<form id="formEditRoleAdmin" asp-action="EditRole">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalEditRoleAdmin" role="dialog" aria-labelledby="modalLabelEditRoleAdmin" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditRoleAdmin">Edit Role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyEditRoleAdmin">
+                    <div class="form-group form-floating">
+                        <input asp-for="Name" placeholder="Name" id="inputNameEditRoleAdmin" class="form-control" />
+                        <label asp-for="Name" class="control-label"></label>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer" id="modalFooterEditRoleAdmin">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditRoleAdmin" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formDeleteRoleAdmin" asp-action="DeleteRole">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalDeleteRoleAdmin" role="dialog" aria-labelledby="modalLabelDeleteRoleAdmin" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelDeleteRoleAdmin">Delete Role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyDeleteRoleAdmin">
+                    <p>Are you sure you want to Delete this RoleAdmin?</p>
+                </div>
+                <div class="modal-footer" id="modalFooterDeleteRoleAdmin">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteRoleAdmin" data-bs-dismiss="modal">Delete Role</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<table id="tblRoleAdmin" class="table table-hover">
     <thead>
         <tr>
             <th>
@@ -43,21 +91,11 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in ViewBag.Roles)
-        {
-            <tr>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    <a asp-action="EditRole" asp-route-id="@item.Id">Edit</a>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
 
 @section Scripts {
+    <script src="~/js/admin/role.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
     <partial name="_ValidationScriptsPartial" />
 }

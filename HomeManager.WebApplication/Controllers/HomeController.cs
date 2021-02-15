@@ -1,5 +1,5 @@
 ﻿using HomeManager.Models;
-using HomeManager.Models.ViewModels;
+using HomeManager.WebApplication.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

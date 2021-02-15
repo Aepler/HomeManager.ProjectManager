@@ -52,6 +52,27 @@ namespace HomeManager.Data.Context
         public static void SeedUser(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = Guid.Parse("7084A204-330E-4B8E-0788-08D8D0E3F5D6"),
+                    UserName = "Admin",
+                    NormalizedUserName = "ADMIN",
+                    Email = "Admin@Admin.Admin",
+                    NormalizedEmail = "ADMIN@ADMIN.ADMIN",
+                    Name = "Admin",
+                    Lastname = "Admin",
+                    EmailConfirmed = true,
+                    PasswordHash = "AQAAAAEAACcQAAAAEJLDpQEhYHywkPUimXOLlP6w24hXDuQdI2wtLcSKIB0K3BPmeFV+nzAaNgRRU2eozA==",
+                    SecurityStamp = "RRF4WT3IKFEA5BLYKDY5UJNCIAGATOAP",
+                    ConcurrencyStamp = "dc8cb136-9f75-46ee-8cae-72da0e35ff89",
+                    Darkmode = true,
+                    PhoneNumber = null,
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnd = null,
+                    LockoutEnabled = true,
+                    AccessFailedCount = 0
+                },
             new User
             {
                 Id = Guid.Parse("1C30ADD5-C7A9-48E9-6BEB-08D8C9D5DC9C"),
@@ -100,6 +121,11 @@ namespace HomeManager.Data.Context
         public static void SeedUserRole(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(
+                new IdentityUserRole<Guid>
+                {
+                    UserId = Guid.Parse("7084A204-330E-4B8E-0788-08D8D0E3F5D6"),
+                    RoleId = Guid.Parse("898DA44C-F5C4-45A4-7236-08D8C9FA7C8F")
+                },
             new IdentityUserRole<Guid>
             {
                 UserId = Guid.Parse("1C30ADD5-C7A9-48E9-6BEB-08D8C9D5DC9C"),
@@ -113,7 +139,7 @@ namespace HomeManager.Data.Context
             });
         }
 
-            public static void SeedStatus(ModelBuilder modelBuilder)
+        public static void SeedStatus(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Status>().HasData(
             new Status

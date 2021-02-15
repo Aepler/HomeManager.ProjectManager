@@ -1,4 +1,4 @@
-﻿@model HomeManager.Models.ViewModels.Admin.UserRolesModel
+﻿@model HomeManager.Models.DataTableModels.UserRoleDataTableModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "User Roles";
@@ -7,18 +7,18 @@
 
 <h4>@ViewData["Title"]</h4>
 
-<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateUserRole">New User Role</button>
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateUserRoleAdmin">New User Role</button>
 
-<form asp-action="CreateRole">
+<form id="formCreateUserRoleAdmin" asp-action="CreateUserRole">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalCreateUserRole" role="dialog" aria-labelledby="modalLabelCreateUserRole" aria-hidden="true">
+    <div class="modal fade" id="modalCreateUserRoleAdmin" role="dialog" aria-labelledby="modalLabelCreateUserRoleAdmin" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelCreateUserRole">New User Role</h5>
+                    <h5 class="modal-title" id="modalLabelCreateUserRoleAdmin">New User Role</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="modalBodyCreateUserRoleAdmin">
                     <div class="form-group form-floating">
                         <select asp-for="UserId" placeholder="UserId" class="form-control" asp-items="ViewBag.UserId">
                             <option value="-1" disabled selected>Select a User</option>
@@ -35,16 +35,41 @@
                         <span asp-validation-for="RoleId" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="modalFooterCreateUserRoleAdmin">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateUserRoleAdmin" data-bs-dismiss="modal">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-<table class="table">
+<form id="formDeleteUserRoleAdmin" asp-action="DeleteUserRole">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalDeleteUserRoleAdmin" role="dialog" aria-labelledby="modalLabelDeleteUserRoleAdmin" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelDeleteUserRoleAdmin">Delete User Role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyDeleteUserRoleAdmin">
+                    <input id="inputUserIdDeleteRoleAdmin" name="userId" hidden />
+                    <input id="inputRoleDeleteRoleAdmin" name="role" hidden />
+                    <p>Are you sure you want to Delete this UserRoleAdmin?</p>
+                </div>
+                <div class="modal-footer" id="modalFooterDeleteUserRoleAdmin">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteUserRoleAdmin" data-bs-dismiss="modal">Delete User Role</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<table id="tblUserRoleAdmin" class="table table-hover">
     <thead>
         <tr>
             <th>
@@ -56,24 +81,11 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in ViewBag.UserRoles)
-        {
-            <tr>
-                <td>
-                    @item.User
-                </td>
-                <td>
-                    @item.Role
-                </td>
-                <td>
-                    <a asp-action="EditUserRole">Edit</a>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
 
 @section Scripts {
+    <script src="~/js/admin/userRole.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
     <partial name="_ValidationScriptsPartial" />
 }

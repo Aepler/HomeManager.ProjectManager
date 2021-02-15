@@ -22,7 +22,7 @@ namespace HomeManager.Models
 
         public double StartBalance { get; set; }
 
-        public ICollection<Payments> Payments { get; set; }
+        public ICollection<Payment> Payments { get; set; }
         public ICollection<Payment_Template> Payment_Templates { get; set; }
         public ICollection<Category> Categories { get; set; }
         public ICollection<Type> types { get; set; }

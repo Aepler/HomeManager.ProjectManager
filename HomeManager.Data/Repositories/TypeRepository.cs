@@ -21,27 +21,32 @@ namespace HomeManager.Data.Repositories
 
         public async Task<Type> GetById(User user, int id)
         {
-            Type type = await _context.Types.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
+            Type type = await _context.Types.Include(x => x.Status).Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
             return type;
         }
 
         public async Task<ICollection<Type>> GetAll(User user)
         {
-            ICollection<Type> types = await _context.Types.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).ToListAsync();
+            ICollection<Type> types = await _context.Types.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).Include(x => x.Status).ToListAsync();
             return types;
         }
 
         public async Task<ICollection<Type>> GetByUser(User user)
         {
-            ICollection<Type> types = await _context.Types.Where(x => x.fk_UserId == user.Id && x.Deleted == false).ToListAsync();
+            ICollection<Type> types = await _context.Types.Where(x => x.fk_UserId == user.Id && x.Deleted == false).Include(x => x.Status).ToListAsync();
             return types;
         }
 
-        public async Task<bool> Add(User user, Type type)
+        public async Task<ICollection<Type>> GetDefault()
+        {
+            ICollection<Type> types = await _context.Types.Where(x => x.fk_UserId == null && x.Deleted == false).Include(x => x.Status).ToListAsync();
+            return types;
+        }
+
+        public async Task<bool> Add(Type type)
         {
             try
             {
-                type.fk_UserId = user.Id;
                 _context.Types.Add(type);
                 await _context.SaveChangesAsync();
 
@@ -53,20 +58,14 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Update(User user, Type type)
-        {        
+        public async Task<bool> Update(Type type)
+        {
             try
             {
-                var realType = await _context.Types.AsNoTracking().FirstAsync(x => x.Id == type.Id);
-                if (realType != null && realType.fk_UserId == user.Id)
-                {
-                    type.fk_UserId = user.Id;
-                    _context.Types.Update(type);
-                    await _context.SaveChangesAsync();
+                _context.Types.Update(type);
+                await _context.SaveChangesAsync();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
             catch (Exception ex)
             {
@@ -74,21 +73,14 @@ namespace HomeManager.Data.Repositories
             }
         }
 
-        public async Task<bool> Delete(User user, Type type)
+        public async Task<bool> Delete(Type type)
         {
             try
             {
-                var realType = await _context.Types.FindAsync(type.Id);
-                if (realType != null && realType.fk_UserId == user.Id)
-                {
-                    type.Deleted = true;
-                    type.DeletedOn = DateTime.Today;
-                    _context.Types.Update(type);
-                    await _context.SaveChangesAsync();
+                _context.Types.Update(type);
+                await _context.SaveChangesAsync();
 
-                    return true;
-                }
-                return false;
+                return true;
             }
             catch (Exception ex)
             {

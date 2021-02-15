@@ -12,7 +12,7 @@ namespace HomeManager.Models
     {
         public Type()
         {
-            this.Payments = new HashSet<Payments>();
+            this.Payments = new HashSet<Payment>();
             this.Payment_Templates = new HashSet<Payment_Template>();
         }
 
@@ -37,7 +37,7 @@ namespace HomeManager.Models
         [ForeignKey("fk_UserId")]
         public User User { get; set; }
 
-        public ICollection<Payments> Payments { get; set; }
+        public ICollection<Payment> Payments { get; set; }
         public ICollection<Payment_Template> Payment_Templates { get; set; }
     }
 }

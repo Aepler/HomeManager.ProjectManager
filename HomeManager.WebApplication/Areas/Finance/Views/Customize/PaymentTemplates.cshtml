@@ -1,0 +1,104 @@
+﻿@model HomeManager.Models.Payment_Template
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Payment Templates";
+    ViewData["ActivePage"] = ManageNavPages.PaymentTemplates;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreatePaymentTemplateCustomize">New PaymentTemplate</button>
+
+<form id="formCreatePaymentTemplateCustomize" asp-action="CreatePaymentTemplate">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalCreatePaymentTemplateCustomize" role="dialog" aria-labelledby="modalLabelCreatePaymentTemplateCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelCreatePaymentTemplateCustomize">New PaymentTemplate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyCreatePaymentTemplateCustomize">
+
+                </div>
+                <div class="modal-footer" id="modalFooterCreatePaymentTemplateCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreatePaymentTemplateCustomize" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formEditPaymentTemplateCustomize" asp-action="EditPaymentTemplate">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalEditPaymentTemplateCustomize" role="dialog" aria-labelledby="modalLabelEditPaymentTemplateCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditPaymentTemplateCustomize">Edit PaymentTemplate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyEditPaymentTemplateCustomize">
+
+                </div>
+                <div class="modal-footer" id="modalFooterEditPaymentTemplateCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditPaymentTemplateCustomize" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formDeletePaymentTemplateCustomize" asp-action="DeletePaymentTemplate">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalDeletePaymentTemplateCustomize" role="dialog" aria-labelledby="modalLabelDeletePaymentTemplateCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelDeletePaymentTemplateCustomize">Delete PaymentTemplate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyDeletePaymentTemplateCustomize">
+                    <p>Are you sure you want to Delete this PaymentTemplateCustomize?</p>
+                </div>
+                <div class="modal-footer" id="modalFooterDeletePaymentTemplateCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeletePaymentTemplateCustomize" data-bs-dismiss="modal">Delete PaymentTemplate</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<table id="tblPaymentTemplateCustomize" class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                Description
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Amount
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+    <script src="~/js/customize/paymentTemplate.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -70,7 +70,8 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _payment_TemplateRepository.Add(user, payment_Template);
+                payment_Template.fk_UserId = user.Id;
+                return await _payment_TemplateRepository.Add(payment_Template);
             }
             catch (Exception ex)
             {
@@ -82,7 +83,13 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _payment_TemplateRepository.Update(user, payment_Template);
+                var realPaymentTemplates = await _payment_TemplateRepository.GetById(user, payment_Template.Id);
+                if (realPaymentTemplates != null && realPaymentTemplates.fk_UserId == user.Id)
+                {
+                    payment_Template.fk_UserId = user.Id;
+                    return await _payment_TemplateRepository.Update(payment_Template);
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -94,7 +101,15 @@ namespace HomeManager.Services
         {
             try
             {
-                return await _payment_TemplateRepository.Delete(user, payment_Template);
+                var realPaymentTemplates = await _payment_TemplateRepository.GetById(user, payment_Template.Id);
+                if (realPaymentTemplates != null && realPaymentTemplates.fk_UserId == user.Id)
+                {
+                    payment_Template.fk_UserId = user.Id;
+                    payment_Template.Deleted = true;
+                    payment_Template.DeletedOn = DateTime.Today;
+                    return await _payment_TemplateRepository.Delete(payment_Template);
+                }
+                return false;
             }
             catch (Exception ex)
             {

@@ -7,60 +7,131 @@
 
 <h4>@ViewData["Title"]</h4>
 
-<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateType">New Type</button>
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateTypeAdmin">New Type</button>
 
-<form asp-action="CreateType">
+<form id="formCreateTypeAdmin" asp-action="CreateType">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalCreateType" role="dialog" aria-labelledby="modalLabelCreateType" aria-hidden="true">
+    <div class="modal fade" id="modalCreateTypeAdmin" role="dialog" aria-labelledby="modalLabelCreateTypeAdmin" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelCreateType">New Type</h5>
+                    <h5 class="modal-title" id="modalLabelCreateTypeAdmin">New Type</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="modalBodyCreateTypeAdmin">
                     <div class="form-group form-floating">
-                        <input asp-for="Name" placeholder="Name" class="form-control" />
+                        <input asp-for="Name" placeholder="Name" id="inputNameCreateTypeAdmin" class="form-control" />
                         <label asp-for="Name" class="control-label"></label>
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                     <br />
                     <div class="form-group form-floating">
-                        <input asp-for="EndTaxType" placeholder="EndTaxType" class="form-control" />
+                        <input asp-for="EndTaxType" placeholder="EndTaxType" id="inputEndTaxTypeCreateTypeAdmin" class="form-control" />
                         <label asp-for="EndTaxType" class="control-label"></label>
                         <span asp-validation-for="EndTaxType" class="text-danger"></span>
                     </div>
                     <br />
                     <div class="form-group form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" asp-for="Debit" /> @Html.DisplayNameFor(model => model.Debit)
+                            <input class="form-check-input" asp-for="Debit" id="inputDebitCreateTypeAdmin" /> @Html.DisplayNameFor(model => model.Debit)
                         </label>
                     </div>
                     <br />
                     <div class="form-group form-floating">
-                        <input asp-for="ExtraInput" placeholder="ExtraInput" class="form-control" />
+                        <input asp-for="ExtraInput" placeholder="ExtraInput" id="inputExtraInputCreateTypeAdmin" class="form-control" />
                         <label asp-for="ExtraInput" class="control-label"></label>
                         <span asp-validation-for="ExtraInput" class="text-danger"></span>
                     </div>
                     <br />
                     <div class="form-group form-floating">
-                        <select asp-for="fk_StatusId" class="form-control" asp-items="ViewBag.Status">
+                        <select asp-for="fk_StatusId" id="dropdownStatusCreateTypeAdmin" class="form-control" asp-items="ViewBag.Status">
                             <option value="-1" disabled selected>Select a end Status</option>
                         </select>
                         <label asp-for="fk_StatusId" class="control-label">End Status</label>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" id="modalFooterCreateTypeAdmin">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" value="Create" class="btn btn-primary">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateTypeAdmin" data-bs-dismiss="modal">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
+<form id="formEditTypeAdmin" asp-action="EditType">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalEditTypeAdmin" role="dialog" aria-labelledby="modalLabelEditTypeAdmin" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditTypeAdmin">Edit Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyEditTypeAdmin">
+                    <div class="form-group form-floating">
+                        <input asp-for="Name" placeholder="Name" id="inputNameEditTypeAdmin" class="form-control" />
+                        <label asp-for="Name" class="control-label"></label>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-group form-floating">
+                        <input asp-for="EndTaxType" placeholder="EndTaxType" id="inputEndTaxTypeEditTypeAdmin" class="form-control" />
+                        <label asp-for="EndTaxType" class="control-label"></label>
+                        <span asp-validation-for="EndTaxType" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" id="inputDebitEditTypeAdmin" asp-for="Debit" /> @Html.DisplayNameFor(model => model.Debit)
+                        </label>
+                    </div>
+                    <br />
+                    <div class="form-group form-floating">
+                        <input asp-for="ExtraInput" placeholder="ExtraInput" id="inputExtraInputEditTypeAdmin" class="form-control" />
+                        <label asp-for="ExtraInput" class="control-label"></label>
+                        <span asp-validation-for="ExtraInput" class="text-danger"></span>
+                    </div>
+                    <br />
+                    <div class="form-group form-floating">
+                        <select asp-for="fk_StatusId" id="dropdownStatusEditTypeAdmin" class="form-control" asp-items="ViewBag.Status">
+                        </select>
+                        <label asp-for="fk_StatusId" class="control-label">End Status</label>
+                    </div>
+                </div>
+                <div class="modal-footer" id="modalFooterEditTypeAdmin">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditTypeAdmin" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 
-<table class="table">
+<form id="formDeleteTypeAdmin" asp-action="DeleteType">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalLabelDeleteTypeAdmin" role="dialog" aria-labelledby="modalLabelDeleteTypeAdmin" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelDeleteTypeAdmin">Delete Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyDeleteTypeAdmin">
+                    <p>Are you sure you want to Delete this TypeAdmin?</p>
+                </div>
+                <div class="modal-footer" id="modalFooterDeleteTypeAdmin">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteTypeAdmin" data-bs-dismiss="modal">Delete Type</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<table id="tblTypeAdmin" class="table table-hover">
     <thead>
         <tr>
             <th>
@@ -81,31 +152,11 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in ViewBag.Types)
-        {
-        <tr>
-            <td>
-                @item.Name
-            </td>
-            <td>
-                @item.EndTaxType
-            </td>
-            <td>
-                @item.Debit
-            </td>
-            <td>
-                @item.ExtraInput
-            </td>
-            <td>
-                @item.Status.Name
-            </td>
-
-        </tr>
-        }
-    </tbody>
 </table>
 
 @section Scripts {
+    <script src="~/js/admin/type.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
     <partial name="_ValidationScriptsPartial" />
 }
