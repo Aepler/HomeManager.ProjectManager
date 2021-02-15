@@ -22,26 +22,22 @@ namespace HomeManager.Data.Repositories.Finance
 
         public async Task<Type> GetById(User user, int id)
         {
-            Type type = await _context.FinanceTypes.Include(x => x.Status).Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
-            return type;
+            return await _context.FinanceTypes.Include(x => x.Status).Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Type>> GetAll(User user)
         {
-            ICollection<Type> types = await _context.FinanceTypes.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).Include(x => x.Status).ToListAsync();
-            return types;
+            return await _context.FinanceTypes.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).Include(x => x.Status).ToListAsync();
         }
 
         public async Task<ICollection<Type>> GetByUser(User user)
         {
-            ICollection<Type> types = await _context.FinanceTypes.Where(x => x.fk_UserId == user.Id && x.Deleted == false).Include(x => x.Status).ToListAsync();
-            return types;
+            return await _context.FinanceTypes.Where(x => x.fk_UserId == user.Id && x.Deleted == false).Include(x => x.Status).ToListAsync();
         }
 
         public async Task<ICollection<Type>> GetDefault()
         {
-            ICollection<Type> types = await _context.FinanceTypes.Where(x => x.fk_UserId == null && x.Deleted == false).Include(x => x.Status).ToListAsync();
-            return types;
+            return await _context.FinanceTypes.Where(x => x.fk_UserId == null && x.Deleted == false).Include(x => x.Status).ToListAsync();
         }
 
         public async Task<bool> Add(Type type)

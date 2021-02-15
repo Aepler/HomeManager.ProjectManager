@@ -1,5 +1,5 @@
 const darkmodeSwitch = document.getElementById('darkmodeSwitch');
-const manage = document.getElementById('manage');
+const manage = document.getElementById('dropdownProfileSettings');
 
 
 $(document).ready(function () {
@@ -7,7 +7,7 @@ $(document).ready(function () {
         initTheme();
     }
     $('#darkmodeSwitch').change(function () {
-        switchTheme()
+        switchTheme();
         var bool = darkmodeSwitch.checked;
         if (manage) {
             UpdateUserDarkmode(bool);
@@ -19,7 +19,7 @@ function UpdateUserDarkmode(bool) {
     $.ajax({
         cache: false,
         type: "POST",
-        url: "Home/UpdateUserDarkmode",
+        url: "/Home/UpdateUserDarkmode",
         data: { darkmodeBool: bool },
     });
 };
@@ -36,7 +36,7 @@ function initTheme() {
 function switchTheme() {
     if (darkmodeSwitch.checked) {
         document.body.setAttribute('data-theme', 'dark');
-        localStorage.setItem('darkModeSwitch', 'dark');
+        localStorage.setItem('darkmodeSwitch', 'dark');
     } else {
         document.body.removeAttribute('data-theme');
         localStorage.removeItem('darkmodeSwitch');

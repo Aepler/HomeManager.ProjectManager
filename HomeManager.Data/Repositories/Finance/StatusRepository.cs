@@ -21,38 +21,32 @@ namespace HomeManager.Data.Repositories.Finance
 
         public async Task<Status> GetById(User user, int id)
         {
-            Status status = await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
-            return status;
+            return await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Status>> GetAll(User user)
         {
-            ICollection<Status> statuses = await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).ToListAsync();
-            return statuses;
+            return await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).ToListAsync();
         }
 
         public async Task<ICollection<Status>> GetByUser(User user)
         {
-            ICollection<Status> statuses = await _context.FinanceStatuses.Where(x => x.fk_UserId == user.Id && x.Deleted == false).ToListAsync();
-            return statuses;
+            return await _context.FinanceStatuses.Where(x => x.fk_UserId == user.Id && x.Deleted == false).ToListAsync();
         }
 
         public async Task<ICollection<Status>> GetByEndPoint(User user, bool endPoint)
         {
-            ICollection<Status> statuses = await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.EndPoint == endPoint && x.Deleted == false).ToListAsync();
-            return statuses;
+            return await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.EndPoint == endPoint && x.Deleted == false).ToListAsync();
         }
 
         public async Task<ICollection<Status>> GetPossibleStatus(User user, int id)
         {
-            ICollection<Status> statuses = await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && (x.EndPoint == false || x.Id == id) && x.Deleted == false).ToListAsync();
-            return statuses;
+            return await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && (x.EndPoint == false || x.Id == id) && x.Deleted == false).ToListAsync();
         }
 
         public async Task<ICollection<Status>> GetDefault()
         {
-            ICollection<Status> statuses = await _context.FinanceStatuses.Where(x => x.fk_UserId == null && x.Deleted == false).ToListAsync();
-            return statuses;
+            return await _context.FinanceStatuses.Where(x => x.fk_UserId == null && x.Deleted == false).ToListAsync();
         }
 
         public async Task<bool> Add(Status status)

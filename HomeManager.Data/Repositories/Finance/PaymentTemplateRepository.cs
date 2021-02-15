@@ -21,26 +21,22 @@ namespace HomeManager.Data.Repositories.Finance
 
         public async Task<PaymentTemplate> GetById(User user, int id)
         {
-            PaymentTemplate paymentTemplate = await _context.FinancePaymentTemplates.Where(x => x.fk_UserId == user.Id && x.Id == id && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).FirstOrDefaultAsync();
-            return paymentTemplate;
+            return await _context.FinancePaymentTemplates.Where(x => x.fk_UserId == user.Id && x.Id == id && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<PaymentTemplate>> GetAll(User user)
         {
-            ICollection<PaymentTemplate> paymentTemplates = await _context.FinancePaymentTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User).Where(x => x.fk_UserId == user.Id && x.Deleted == false).ToListAsync();
-            return paymentTemplates;
+            return await _context.FinancePaymentTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User).Where(x => x.fk_UserId == user.Id && x.Deleted == false).ToListAsync();
         }
 
         public async Task<ICollection<PaymentTemplate>> GetByCategory(User user, int fk_CategoryId)
         {
-            ICollection<PaymentTemplate> paymentTemplates = await _context.FinancePaymentTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User).Where(x => x.fk_UserId == user.Id && x.fk_CategoryId == fk_CategoryId && x.Deleted == false).ToListAsync();
-            return paymentTemplates;
+            return await _context.FinancePaymentTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User).Where(x => x.fk_UserId == user.Id && x.fk_CategoryId == fk_CategoryId && x.Deleted == false).ToListAsync();
         }
 
         public async Task<ICollection<PaymentTemplate>> GetByType(User user, int fk_TypeId)
         {
-            ICollection<PaymentTemplate> paymentTemplates = await _context.FinancePaymentTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User).Where(x => x.fk_UserId == user.Id && x.fk_TypeId == fk_TypeId && x.Deleted == false).ToListAsync();
-            return paymentTemplates;
+            return await _context.FinancePaymentTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User).Where(x => x.fk_UserId == user.Id && x.fk_TypeId == fk_TypeId && x.Deleted == false).ToListAsync();
         }
 
 
