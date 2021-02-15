@@ -254,6 +254,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Cooking\Controllers\" />
+    <Folder Include="Areas\Cooking\ViewModels\" />
     <Folder Include="wwwroot\lib\qrcode\" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿using HomeManager.Models;
+﻿using HomeManager.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;

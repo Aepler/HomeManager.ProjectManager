@@ -10,12 +10,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using HomeManager.Data;
 using Microsoft.EntityFrameworkCore;
-using HomeManager.Data.Repositories;
-using HomeManager.Data.Repositories.Interfaces;
-using HomeManager.Services;
-using HomeManager.Models.Interfaces;
+using HomeManager.Data.Repositories.Finance;
+using HomeManager.Data.Repositories.Cooking;
+using HomeManager.Data.Repositories.Interfaces.Finance;
+using HomeManager.Data.Repositories.Interfaces.Cooking;
+using HomeManager.Services.Finance;
+using HomeManager.Models.Interfaces.Finance;
 using Microsoft.AspNetCore.Identity;
-using HomeManager.Models;
+using HomeManager.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using HomeManager.Models.Interfaces.Factories;
 using HomeManager.WebApplication.Factories;
@@ -48,13 +50,13 @@ namespace HomeManager.WebApplication
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IStatusRepository, StatusRepository>();
             services.AddScoped<ITypeRepository, TypeRepository>();
-            services.AddScoped<IPayment_TemplateRepository, Payment_TemplateRepository>();
+            services.AddScoped<IPaymentTemplateRepository, PaymentTemplateRepository>();
 
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IStatusService, StatusService>();
             services.AddScoped<ITypeService, TypeService>();
-            services.AddScoped<IPayment_TemplateService, Payment_TemplateService>();
+            services.AddScoped<IPaymentTemplateService, PaymentTemplateService>();
 
             services.AddScoped<IDataTableFactory, DataTableFactory>();
             services.AddScoped<IDataTableResultModel, DataTableResultModel>();

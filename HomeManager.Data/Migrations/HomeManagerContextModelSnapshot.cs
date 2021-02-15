@@ -19,7 +19,148 @@ namespace HomeManager.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("HomeManager.Models.Category", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Favorites", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("fk_RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("fk_RecipeId");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("CookingFavorites");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Ingredient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Ammount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("IngredientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IngredientId");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("CookingIngredients");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Recipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<TimeSpan>("CookingTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Difficulty")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("PreapearingTime")
+                        .HasColumnType("time");
+
+                    b.Property<bool>("Public")
+                        .HasColumnType("bit");
+
+                    b.Property<byte>("Stars")
+                        .HasColumnType("tinyint");
+
+                    b.Property<TimeSpan>("TotalTime")
+                        .HasColumnType("time");
+
+                    b.Property<Guid>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("CookingRecipes");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("CookingTags");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,7 +184,7 @@ namespace HomeManager.Data.Migrations
 
                     b.HasIndex("fk_UserId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("FinanceCategories");
 
                     b.HasData(
                         new
@@ -89,113 +230,8 @@ namespace HomeManager.Data.Migrations
                             Name = "Saving"
                         });
                 });
-            modelBuilder.Entity("HomeManager.Models.Favorites", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("fk_RecipeId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("fk_UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("fk_RecipeId");
-
-                    b.HasIndex("fk_UserId");
-
-                    b.ToTable("Favorites");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Ingredient", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Ammount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("fk_UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IngredientId");
-
-                    b.HasIndex("fk_UserId");
-
-                    b.ToTable("Ingredients");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Payment_Template", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Invoice")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("fk_CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("fk_TypeId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("fk_UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("fk_CategoryId");
-
-                    b.HasIndex("fk_TypeId");
-
-                    b.HasIndex("fk_UserId");
-
-                    b.ToTable("Payment_Templates");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Payments", b =>
-            modelBuilder.Entity("HomeManager.Models.Payment", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Payment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -278,8 +314,21 @@ namespace HomeManager.Data.Migrations
 
                     b.HasIndex("fk_UserId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("FinancePayments");
                 });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.PaymentTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -290,12 +339,173 @@ namespace HomeManager.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Invoice")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("fk_CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fk_TypeId")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("fk_UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-            modelBuilder.Entity("HomeManager.Models.Role", b =>
+                    b.HasIndex("fk_CategoryId");
+
+                    b.HasIndex("fk_TypeId");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("FinancePaymentTemplates");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("EndPoint")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("FinanceStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Deleted = false,
+                            EndPoint = true,
+                            Name = "Paid"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Deleted = false,
+                            EndPoint = true,
+                            Name = "Received"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Deleted = false,
+                            EndPoint = false,
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Deleted = false,
+                            EndPoint = false,
+                            Name = "Fictitious"
+                        });
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Type", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Debit")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EndTaxType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExtraInput")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("fk_StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("fk_StatusId");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("FinanceTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Debit = false,
+                            Deleted = false,
+                            EndTaxType = "Net",
+                            ExtraInput = "Extra_Amount,TaxList",
+                            Name = "Salary",
+                            fk_StatusId = 2
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Debit = true,
+                            Deleted = false,
+                            EndTaxType = "Gross",
+                            Name = "Monthly Expens",
+                            fk_StatusId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Debit = true,
+                            Deleted = false,
+                            EndTaxType = "Gross",
+                            ExtraInput = "Extra_Amount",
+                            Name = "Expenditure",
+                            fk_StatusId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Debit = false,
+                            Deleted = false,
+                            EndTaxType = "Net",
+                            ExtraInput = "Extra_Amount",
+                            Name = "Earnings",
+                            fk_StatusId = 2
+                        });
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -346,185 +556,7 @@ namespace HomeManager.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Status", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("EndPoint")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("fk_UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("fk_UserId");
-
-                    b.ToTable("Statuses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Deleted = false,
-                            EndPoint = true,
-                            Name = "Paid"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Deleted = false,
-                            EndPoint = true,
-                            Name = "Received"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Deleted = false,
-                            EndPoint = false,
-                            Name = "Pending"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Deleted = false,
-                            EndPoint = false,
-                            Name = "Fictitious"
-                        });
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Tag", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("fk_UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IngredientId");
-
-                    b.HasIndex("fk_UserId");
-
-                    b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Type", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<bool>("Debit")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EndTaxType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExtraInput")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("fk_StatusId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("fk_UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("fk_StatusId");
-
-                    b.HasIndex("fk_UserId");
-
-                    b.ToTable("Types");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Debit = false,
-                            Deleted = false,
-                            EndTaxType = "Net",
-                            ExtraInput = "Extra_Amount,TaxList",
-                            Name = "Salary",
-                            fk_StatusId = 2
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Debit = true,
-                            Deleted = false,
-                            EndTaxType = "Gross",
-                            Name = "Monthly Expens",
-                            fk_StatusId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Debit = true,
-                            Deleted = false,
-                            EndTaxType = "Gross",
-                            ExtraInput = "Extra_Amount",
-                            Name = "Expenditure",
-                            fk_StatusId = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Debit = false,
-                            Deleted = false,
-                            EndTaxType = "Net",
-                            ExtraInput = "Extra_Amount",
-                            Name = "Earnings",
-                            fk_StatusId = 2
-                        });
-                });
-
-            modelBuilder.Entity("HomeManager.Models.User", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -682,7 +714,22 @@ namespace HomeManager.Data.Migrations
 
                     b.HasIndex("RecipesId");
 
-                    b.ToTable("IngredientRecipe");
+                    b.ToTable("CookingIngredientRecipes");
+                });
+
+            modelBuilder.Entity("IngredientTag", b =>
+                {
+                    b.Property<int>("IngredientsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("IngredientsId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("CookingIngredientTags");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -815,39 +862,91 @@ namespace HomeManager.Data.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("RecipeTag");
+                    b.ToTable("CookingRecipeTags");
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Category", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Favorites", b =>
                 {
-                    b.HasOne("HomeManager.Models.User", "User")
+                    b.HasOne("HomeManager.Models.Entities.Cooking.Recipe", "Recipe")
+                        .WithMany("Favorites")
+                        .HasForeignKey("fk_RecipeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("fk_UserId");
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Ingredient", b =>
+                {
+                    b.HasOne("HomeManager.Models.Entities.Cooking.Ingredient", null)
+                        .WithMany("Ingredients")
+                        .HasForeignKey("IngredientId");
+
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("fk_UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Recipe", b =>
+                {
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
+                        .WithMany("Recipes")
+                        .HasForeignKey("fk_UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Tag", b =>
+                {
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
+                        .WithMany("Tags")
+                        .HasForeignKey("fk_UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Category", b =>
+                {
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
                         .WithMany("Categories")
                         .HasForeignKey("fk_UserId");
 
                     b.Navigation("User");
                 });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Payment", b =>
                 {
-                    b.HasOne("HomeManager.Models.Category", "Category")
+                    b.HasOne("HomeManager.Models.Entities.Finance.Category", "Category")
                         .WithMany("Payments")
                         .HasForeignKey("fk_CategoryId");
 
-                    b.HasOne("HomeManager.Models.Status", "Status")
+                    b.HasOne("HomeManager.Models.Entities.Finance.Status", "Status")
                         .WithMany("Payments")
                         .HasForeignKey("fk_StatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HomeManager.Models.Payment_Template", "Payment_Template")
+                    b.HasOne("HomeManager.Models.Entities.Finance.PaymentTemplate", "Payment_Template")
                         .WithMany("Payments")
                         .HasForeignKey("fk_TemplateId");
 
-                    b.HasOne("HomeManager.Models.Type", "Type")
+                    b.HasOne("HomeManager.Models.Entities.Finance.Type", "Type")
                         .WithMany("Payments")
                         .HasForeignKey("fk_TypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HomeManager.Models.User", "User")
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
                         .WithMany("Payments")
                         .HasForeignKey("fk_UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -864,19 +963,19 @@ namespace HomeManager.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Payment_Template", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.PaymentTemplate", b =>
                 {
-                    b.HasOne("HomeManager.Models.Category", "Category")
+                    b.HasOne("HomeManager.Models.Entities.Finance.Category", "Category")
                         .WithMany("Payment_Templates")
                         .HasForeignKey("fk_CategoryId");
 
-                    b.HasOne("HomeManager.Models.Type", "Type")
+                    b.HasOne("HomeManager.Models.Entities.Finance.Type", "Type")
                         .WithMany("Payment_Templates")
                         .HasForeignKey("fk_TypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HomeManager.Models.User", "User")
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
                         .WithMany("Payment_Templates")
                         .HasForeignKey("fk_UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -889,48 +988,24 @@ namespace HomeManager.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Recipe", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Status", b =>
                 {
-                    b.HasOne("HomeManager.Models.User", "User")
-                        .WithMany("Recipes")
-                        .HasForeignKey("fk_UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Status", b =>
-                {
-                    b.HasOne("HomeManager.Models.User", "User")
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
                         .WithMany("statuses")
                         .HasForeignKey("fk_UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Tag", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Type", b =>
                 {
-                    b.HasOne("HomeManager.Models.Ingredient", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("IngredientId");
-
-                    b.HasOne("HomeManager.Models.User", "User")
-                        .WithMany("Tags")
-                        .HasForeignKey("fk_UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Type", b =>
-                {
-                    b.HasOne("HomeManager.Models.Status", "Status")
+                    b.HasOne("HomeManager.Models.Entities.Finance.Status", "Status")
                         .WithMany("Types")
                         .HasForeignKey("fk_StatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HomeManager.Models.User", "User")
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
                         .WithMany("types")
                         .HasForeignKey("fk_UserId");
 
@@ -941,22 +1016,37 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("IngredientRecipe", b =>
                 {
-                    b.HasOne("HomeManager.Models.Ingredient", null)
+                    b.HasOne("HomeManager.Models.Entities.Cooking.Ingredient", null)
                         .WithMany()
                         .HasForeignKey("IngredientsId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HomeManager.Models.Recipe", null)
+                    b.HasOne("HomeManager.Models.Entities.Cooking.Recipe", null)
                         .WithMany()
                         .HasForeignKey("RecipesId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("IngredientTag", b =>
+                {
+                    b.HasOne("HomeManager.Models.Entities.Cooking.Ingredient", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientsId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("HomeManager.Models.Entities.Cooking.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("HomeManager.Models.Role", null)
+                    b.HasOne("HomeManager.Models.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -965,7 +1055,7 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("HomeManager.Models.User", null)
+                    b.HasOne("HomeManager.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -974,7 +1064,7 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("HomeManager.Models.User", null)
+                    b.HasOne("HomeManager.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -983,13 +1073,13 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
                 {
-                    b.HasOne("HomeManager.Models.Role", null)
+                    b.HasOne("HomeManager.Models.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("HomeManager.Models.User", null)
+                    b.HasOne("HomeManager.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -998,7 +1088,7 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("HomeManager.Models.User", null)
+                    b.HasOne("HomeManager.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1007,58 +1097,56 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("RecipeTag", b =>
                 {
-                    b.HasOne("HomeManager.Models.Recipe", null)
+                    b.HasOne("HomeManager.Models.Entities.Cooking.Recipe", null)
                         .WithMany()
                         .HasForeignKey("RecipesId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HomeManager.Models.Tag", null)
+                    b.HasOne("HomeManager.Models.Entities.Cooking.Tag", null)
                         .WithMany()
                         .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Category", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Ingredient", b =>
+                {
+                    b.Navigation("Ingredients");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Cooking.Recipe", b =>
+                {
+                    b.Navigation("Favorites");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Category", b =>
                 {
                     b.Navigation("Payment_Templates");
 
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Ingredient", b =>
-                {
-                    b.Navigation("Ingredients");
-
-                    b.Navigation("Tags");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Payment_Template", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.PaymentTemplate", b =>
                 {
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Recipe", b =>
-                {
-                    b.Navigation("Favorites");
-                });
-
-            modelBuilder.Entity("HomeManager.Models.Status", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Status", b =>
                 {
                     b.Navigation("Payments");
 
                     b.Navigation("Types");
                 });
 
-            modelBuilder.Entity("HomeManager.Models.Type", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Type", b =>
                 {
                     b.Navigation("Payment_Templates");
 
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("HomeManager.Models.User", b =>
+            modelBuilder.Entity("HomeManager.Models.Entities.User", b =>
                 {
                     b.Navigation("Categories");
 

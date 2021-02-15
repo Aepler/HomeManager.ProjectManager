@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using HomeManager.Models;
-using HomeManager.Models.Interfaces;
+using HomeManager.Models.Entities.Finance;
+using HomeManager.Models.Entities;
+using HomeManager.Models.Interfaces.Finance;
 using HomeManager.Models.Interfaces.Factories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
@@ -27,17 +28,17 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
-        private readonly IPayment_TemplateService _payment_templateService;
+        private readonly IPaymentTemplateService _paymentTemplateService;
         private readonly IDataTableFactory _dataTableFactory;
 
-        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPayment_TemplateService payment_templateService, IDataTableFactory dataTableFactory)
+        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPaymentTemplateService paymentTemplateService, IDataTableFactory dataTableFactory)
         {
             _userManager = userManager;
             _paymentService = paymentService;
             _categoryService = categoryService;
             _typeService = typeService;
             _statusService = statusService;
-            _payment_templateService = payment_templateService;
+            _paymentTemplateService = paymentTemplateService;
             _dataTableFactory = dataTableFactory;
         }
 
@@ -89,7 +90,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         public async Task<JsonResult> GetTemplate()
         {
             var user = await _userManager.GetUserAsync(User);
-            var payment_template = await _payment_templateService.GetAll(user);
+            var payment_template = await _paymentTemplateService.GetAll(user);
             return Json(payment_template);
         }
 

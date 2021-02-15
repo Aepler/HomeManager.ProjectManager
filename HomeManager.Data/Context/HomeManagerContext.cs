@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using HomeManager.Models;
-using Type = HomeManager.Models.Type;
+using HomeManager.Models.Entities;
+using HomeManager.Models.Entities.Cooking;
+using HomeManager.Models.Entities.Finance;
 using HomeManager.Data.Context;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
+using Type = HomeManager.Models.Entities.Finance.Type;
 
 //Add-Migration HomeManager.PutNameHere -Context HomeManagerContext -OutputDir "Migrations"
 
@@ -19,15 +21,15 @@ namespace HomeManager.Data
         {
         }
 
-        public DbSet<Payment> Payments { get; set; }
-        public DbSet<Type> Types { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Status> Statuses { get; set; }
-        public DbSet<Payment_Template> Payment_Templates { get; set; }
-        public DbSet<Tag> Tags { get; set; }
-        public DbSet<Ingredient> Ingredients{  get; set; }
-        public DbSet<Recipe> Recipes { get; set; }
-        public DbSet<Favorites> Favorites { get; set; }
+        public DbSet<Payment> FinancePayments { get; set; }
+        public DbSet<Type> FinanceTypes { get; set; }
+        public DbSet<Category> FinanceCategories { get; set; }
+        public DbSet<Status> FinanceStatuses { get; set; }
+        public DbSet<PaymentTemplate> FinancePaymentTemplates { get; set; }
+        public DbSet<Tag> CookingTags { get; set; }
+        public DbSet<Ingredient> CookingIngredients {  get; set; }
+        public DbSet<Recipe> CookingRecipes { get; set; }
+        public DbSet<Favorites> CookingFavorites { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -70,15 +72,31 @@ namespace HomeManager.Data
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
-            modelBuilder.Entity<Payment>().ToTable("Payments");
+            modelBuilder.Entity<Ingredient>()
+    .HasMany(left => left.Recipes)
+    .WithMany(right => right.Ingredients)
+    .UsingEntity(join => join.ToTable("CookingIngredientRecipes"));
 
-            modelBuilder.Entity<Type>().ToTable("Types");
-            modelBuilder.Entity<Category>().ToTable("Categories");
-            modelBuilder.Entity<Status>().ToTable("Statuses");
-            modelBuilder.Entity<Payment_Template>().ToTable("Payment_Templates");
-            modelBuilder.Entity<Tag>().ToTable("Tags");
-            modelBuilder.Entity<Ingredient>().ToTable("Ingredients");
-            modelBuilder.Entity<Recipe>().ToTable("Recipes");
+            modelBuilder.Entity<Ingredient>()
+    .HasMany(left => left.Tags)
+    .WithMany(right => right.Ingredients)
+    .UsingEntity(join => join.ToTable("CookingIngredientTags"));
+
+            modelBuilder.Entity<Recipe>()
+    .HasMany(left => left.Tags)
+    .WithMany(right => right.Recipes)
+    .UsingEntity(join => join.ToTable("CookingRecipeTags"));
+
+
+            modelBuilder.Entity<Payment>().ToTable("FinancePayments");
+            modelBuilder.Entity<Type>().ToTable("FinanceTypes");
+            modelBuilder.Entity<Category>().ToTable("FinanceCategories");
+            modelBuilder.Entity<Status>().ToTable("FinanceStatuses");
+            modelBuilder.Entity<PaymentTemplate>().ToTable("FinancePaymentTemplates");
+            modelBuilder.Entity<Tag>().ToTable("CookingTags");
+            modelBuilder.Entity<Ingredient>().ToTable("CookingIngredients");
+            modelBuilder.Entity<Recipe>().ToTable("CookingRecipes");
+            modelBuilder.Entity<Favorites>().ToTable("CookingFavorites");
 
             modelBuilder.Seed();
 

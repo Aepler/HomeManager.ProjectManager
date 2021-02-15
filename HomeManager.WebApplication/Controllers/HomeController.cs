@@ -1,4 +1,4 @@
-﻿using HomeManager.Models;
+﻿using HomeManager.Models.Entities;
 using HomeManager.WebApplication.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

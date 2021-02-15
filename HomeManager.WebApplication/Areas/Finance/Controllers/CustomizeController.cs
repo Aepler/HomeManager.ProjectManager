@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HomeManager.Data;
-using HomeManager.Models;
-using HomeManager.Models.Interfaces;
+using HomeManager.Models.Entities;
+using HomeManager.Models.Entities.Finance;
+using HomeManager.Models.Interfaces.Finance;
 using Microsoft.AspNetCore.Identity;
-using Type = HomeManager.Models.Type;
+using Type = HomeManager.Models.Entities.Finance.Type;
 using Microsoft.AspNetCore.Authorization;
 using HomeManager.Models.Interfaces.Factories;
 using HomeManager.Models.DataTableModels;
@@ -24,16 +25,16 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
-        private readonly IPayment_TemplateService _payment_templateService;
+        private readonly IPaymentTemplateService _paymentTemplateService;
         private readonly IDataTableFactory _dataTableFactory;
 
-        public CustomizeController(UserManager<User> userManager, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPayment_TemplateService payment_templateService, IDataTableFactory dataTableFactory)
+        public CustomizeController(UserManager<User> userManager, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPaymentTemplateService paymentTemplateService, IDataTableFactory dataTableFactory)
         {
             _userManager = userManager;
             _categoryService = categoryService;
             _typeService = typeService;
             _statusService = statusService;
-            _payment_templateService = payment_templateService;
+            _paymentTemplateService = paymentTemplateService;
             _dataTableFactory = dataTableFactory;
         }
 
@@ -54,7 +55,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         public async Task<JsonResult> GetPaymentTemplate(int id)
         {
             var user = await _userManager.GetUserAsync(User);
-            var payment_Template = await _payment_templateService.GetById(user, id);
+            var payment_Template = await _paymentTemplateService.GetById(user, id);
             return Json(payment_Template);
         }
 
@@ -182,7 +183,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                var paymentTemplates = await _payment_templateService.GetAll(user);
+                var paymentTemplates = await _paymentTemplateService.GetAll(user);
                 var result = await _dataTableFactory.GetTableData(model, paymentTemplates);
 
                 return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
@@ -195,14 +196,14 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> CreatePaymentTemplate(Payment_Template payment_Template)
+        public async Task<JsonResult> CreatePaymentTemplate(PaymentTemplate paymentTemplate)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    await _payment_templateService.Add(user, payment_Template);
+                    await _paymentTemplateService.Add(user, paymentTemplate);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -216,9 +217,9 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> EditPaymentTemplate(int id, Payment_Template payment_Template)
+        public async Task<JsonResult> EditPaymentTemplate(int id, PaymentTemplate paymentTemplate)
         {
-            if (id != payment_Template.Id)
+            if (id != paymentTemplate.Id)
             {
                 return Json(null);
             }
@@ -228,7 +229,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
                 try
                 {
                     var user = await _userManager.GetUserAsync(User);
-                    await _payment_templateService.Update(user, payment_Template);
+                    await _paymentTemplateService.Update(user, paymentTemplate);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -248,10 +249,10 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
-                    var payment_Template = await _payment_templateService.GetById(user, id);
-                    if (payment_Template != null)
+                    var paymentTemplate = await _paymentTemplateService.GetById(user, id);
+                    if (paymentTemplate != null)
                     {
-                        await _payment_templateService.Delete(user, payment_Template);
+                        await _paymentTemplateService.Delete(user, paymentTemplate);
                     }
                 }
 

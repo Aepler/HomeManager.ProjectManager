@@ -1,4 +1,5 @@
-﻿using HomeManager.Models;
+﻿using HomeManager.Models.Entities;
+using HomeManager.Models.Entities.Finance;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,10 @@ using Microsoft.AspNetCore.Authentication;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Authorization;
-using HomeManager.Models.Interfaces;
+using HomeManager.Models.Interfaces.Finance;
 using HomeManager.Models.Interfaces.Factories;
 using System.Linq.Dynamic.Core;
-using Type = HomeManager.Models.Type;
+using Type = HomeManager.Models.Entities.Finance.Type;
 using HomeManager.Models.DataTableModels;
 using HomeManager.WebApplication.ViewModels.Admin;
 

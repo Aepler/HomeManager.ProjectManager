@@ -1,6 +1,6 @@
-﻿using HomeManager.Models;
-using HomeManager.Models.DataTableModels;
-using HomeManager.Models.Interfaces;
+﻿using HomeManager.Models.DataTableModels;
+using HomeManager.Models.Entities;
+using HomeManager.Models.Entities.Finance;
 using HomeManager.Models.Interfaces.Factories;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Type = HomeManager.Models.Entities.Finance.Type;
 
 namespace HomeManager.WebApplication.Factories
 {
@@ -16,7 +17,7 @@ namespace HomeManager.WebApplication.Factories
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
 
-        public DataTableFactory(UserManager<User> userManager, RoleManager<Role> roleManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPayment_TemplateService payment_templateService)
+        public DataTableFactory(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -185,7 +186,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<PaymentTemplateDataTableModel>> GetTableData(DataTableModel model, ICollection<Payment_Template> list)
+        public async Task<DataTableResultModel<PaymentTemplateDataTableModel>> GetTableData(DataTableModel model, ICollection<PaymentTemplate> list)
         {
             try
             {
@@ -242,7 +243,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<TypeDataTableModel>> GetTableData(DataTableModel model, ICollection<Models.Type> list)
+        public async Task<DataTableResultModel<TypeDataTableModel>> GetTableData(DataTableModel model, ICollection<Type> list)
         {
             try
             {

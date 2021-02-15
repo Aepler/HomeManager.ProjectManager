@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HomeManager.Models;
-using Type = HomeManager.Models.Type;
+using HomeManager.Models.Entities;
+using HomeManager.Models.Entities.Finance;
+using Type = HomeManager.Models.Entities.Finance.Type;
 using Microsoft.AspNetCore.Identity;
 
 namespace HomeManager.Data.Context
