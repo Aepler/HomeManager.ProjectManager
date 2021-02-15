@@ -47,6 +47,9 @@ namespace HomeManager.Models
         [ForeignKey("fk_UserId")]
         public User User { get; set; }
 
+ 
+        public ICollection<Favorites> Favorites { get; set; }
+
         public ICollection<Tag> Tags { get; set; }
 
         public ICollection<Ingredient> Ingredients { get; set; }

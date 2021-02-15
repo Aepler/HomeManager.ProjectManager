@@ -10,8 +10,6 @@ namespace HomeManager.Models
 {
     public class Favorites
     {
-        public Favorites() => Recipes = new HashSet<Recipe>();
-
         [Key]
         public int Id { get; set; }
 
@@ -23,6 +21,14 @@ namespace HomeManager.Models
 
         public User User { get; set; }
 
-        public virtual ICollection<Recipe> Recipes { get; set; }
+
+        [Display(Name = "Recipes")]
+
+        public int fk_RecipeId { get; set; }
+
+        [ForeignKey("fk_RecipeId")]
+
+        public Recipe Recipe { get; set; }
+
     }
 }

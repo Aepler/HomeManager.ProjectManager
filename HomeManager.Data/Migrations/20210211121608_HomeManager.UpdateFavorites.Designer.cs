@@ -4,14 +4,16 @@ using HomeManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HomeManager.Data.Migrations
 {
     [DbContext(typeof(HomeManagerContext))]
-    partial class HomeManagerContextModelSnapshot : ModelSnapshot
+    [Migration("20210211121608_HomeManager.UpdateFavorites")]
+    partial class HomeManagerUpdateFavorites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
