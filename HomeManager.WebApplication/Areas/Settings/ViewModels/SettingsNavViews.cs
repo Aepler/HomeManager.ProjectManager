@@ -8,6 +8,8 @@ namespace HomeManager.WebApplication.Areas.Settings.ViewModels
 { 
     public static class SettingsNavViews
     {
+        public static string Index => "Index";
+
         public static string IndexAccount => "IndexAccount";
 
         public static string Email => "Email";
@@ -23,6 +25,8 @@ namespace HomeManager.WebApplication.Areas.Settings.ViewModels
         public static string PersonalData => "PersonalData";
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
+
+        public static string IndextNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string IndexAccountNavClass(ViewContext viewContext) => PageNavClass(viewContext, IndexAccount);
 

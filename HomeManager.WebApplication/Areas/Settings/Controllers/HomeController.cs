@@ -9,7 +9,7 @@ namespace HomeManager.WebApplication.Areas.Settings.Controllers
 {
     [Area("Settings")]
     [Authorize]
-    public class FinanceController : Controller
+    public class HomeController : Controller
     {
         public IActionResult Index()
         {

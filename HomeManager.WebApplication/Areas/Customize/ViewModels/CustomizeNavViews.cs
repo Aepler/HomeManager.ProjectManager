@@ -8,6 +8,8 @@ namespace HomeManager.WebApplication.Areas.Customize.ViewModels
 {
     public static class CustomizeNavViews
     {
+        public static string Index => "Index";
+
         public static string IndexFinance => "IndexFinance";
 
         public static string Categories => "Categories";
@@ -17,6 +19,8 @@ namespace HomeManager.WebApplication.Areas.Customize.ViewModels
         public static string Types => "Types";
 
         public static string Status => "Status";
+
+        public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string IndexFinanceNavClass(ViewContext viewContext) => PageNavClass(viewContext, IndexFinance);
 

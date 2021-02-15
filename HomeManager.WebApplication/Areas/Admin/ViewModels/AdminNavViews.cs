@@ -8,6 +8,8 @@ namespace HomeManager.WebApplication.Areas.Admin.ViewModels
 {
     public static class AdminNavViews
     {
+        public static string Index => "Index";
+
         public static string IndexManage => "IndexManage";
 
         public static string Roles => "Roles";
@@ -23,6 +25,8 @@ namespace HomeManager.WebApplication.Areas.Admin.ViewModels
         public static string Types => "Types";
 
         public static string Status => "Status";
+
+        public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string IndexManageNavClass(ViewContext viewContext) => PageNavClass(viewContext, IndexManage);
 

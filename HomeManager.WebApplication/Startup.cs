@@ -89,7 +89,6 @@ namespace HomeManager.WebApplication
             app.UseAuthentication();
             app.UseAuthorization();
 
-            /*
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGet("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Register", true, true)));
@@ -101,7 +100,6 @@ namespace HomeManager.WebApplication
                 endpoints.MapGet("/Identity/Account/Login", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Login", true, true)));
                 endpoints.MapPost("/Identity/Account/Login", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Login", true, true)));
             });
-            */
 
             app.UseEndpoints(endpoints =>
             {
