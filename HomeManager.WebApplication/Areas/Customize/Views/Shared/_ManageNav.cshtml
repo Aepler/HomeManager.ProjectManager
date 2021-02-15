@@ -1,0 +1,10 @@
+﻿@using HomeManager.Models.Entities
+@inject SignInManager<User> SignInManager
+
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item"><a class="nav-link @CustomizeNavViews.IndexFinanceNavClass(ViewContext)" id="indexFinance" asp-area="Customize" asp-controller="Finance" asp-action="Index">Finance</a></li>
+    <li class="nav-item"><a class="nav-link @CustomizeNavViews.CategoriesNavClass(ViewContext)" id="categories" asp-area="Customize" asp-controller="Finance" asp-action="Categories">Categories</a></li>
+    <li class="nav-item"><a class="nav-link @CustomizeNavViews.PaymentTemplatesNavClass(ViewContext)" id="paymentTemplates" asp-area="Customize" asp-controller="Finance" asp-action="PaymentTemplates">Payment Templates</a></li>
+    <li class="nav-item"><a class="nav-link @CustomizeNavViews.TypesNavClass(ViewContext)" id="types" asp-area="Customize" asp-controller="Finance" asp-action="Types">Types</a></li>
+    <li class="nav-item"><a class="nav-link @CustomizeNavViews.StatusNavClass(ViewContext)" id="status" asp-area="Customize" asp-controller="Finance" asp-action="Status">Status</a></li>
+</ul>

@@ -1,0 +1,16 @@
+﻿@using HomeManager.Models.Entities;
+@inject SignInManager<User> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item"><a class="nav-link @SettingsNavViews.IndexAccountNavClass(ViewContext)" id="profile" asp-area="Settings" asp-controller="Account" asp-action="Index">Profile</a></li>
+    <li class="nav-item"><a class="nav-link @SettingsNavViews.EmailNavClass(ViewContext)" id="email" asp-area="Settings" asp-controller="Account" asp-action="Email">Email</a></li>
+    <li class="nav-item"><a class="nav-link @SettingsNavViews.ChangePasswordNavClass(ViewContext)" id="change-password" asp-area="Settings" asp-controller="Account" asp-action="ChangePassword">Password</a></li>
+    @if (hasExternalLogins)
+    {
+        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @SettingsNavViews.ExternalLoginsNavClass(ViewContext)" asp-area="Settings" asp-controller="Account" asp-action="ExternalLogins">External logins</a></li>
+    }
+    <li class="nav-item"><a class="nav-link @SettingsNavViews.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-area="Settings" asp-controller="Account" asp-action="TwoFactorAuthentication">Two-factor authentication</a></li>
+    <li class="nav-item"><a class="nav-link @SettingsNavViews.PersonalDataNavClass(ViewContext)" id="personal-data" asp-area="Settings" asp-controller="Account" asp-action="PersonalData">Personal data</a></li>
+</ul>

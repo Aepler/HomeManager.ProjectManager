@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using HomeManager.Models.Entities.Finance;
-using HomeManager.Models.Entities;
-using HomeManager.Models.Interfaces.Finance;
-using HomeManager.Models.Interfaces.Factories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
-using HomeManager.Models.Helpers;
-using System.IO;
-using System.Linq.Dynamic.Core;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using HomeManager.Models.DataTableModels;
+using HomeManager.Models.Entities;
+using HomeManager.Models.Entities.Finance;
+using HomeManager.Models.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Factories;
+using HomeManager.Models.Helpers;
 
 namespace HomeManager.WebApplication.Areas.Finance.Controllers
 {
