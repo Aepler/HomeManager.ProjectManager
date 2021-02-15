@@ -53,7 +53,7 @@ function List() {
     });
 
     $('#tblUserAdmin tbody').on('click', '.buttonEditUserAdmin', function () {
-        var id = $(this).val();
+        var id = $(this).parent().parent().attr("id");
         if (id != "") {
             $('#buttonModalEditUserAdmin').val(id);
             GetUserEdit(id);
@@ -61,7 +61,7 @@ function List() {
     });
 
     $('#modalFooterEditUserAdmin').on('click', '#buttonModalEditUserAdmin', function () {
-        var id = $(this).parent().parent().attr("id");
+        var id = $(this).val();
         if (id != null) {
             EditUserPost(id, table);
         }
@@ -85,6 +85,24 @@ function List() {
 //==============================================================================
 // Ajax ========================================================================
 //==============================================================================
+
+function GetUserEdit(id) {
+    $.ajax({
+        cache: false,
+        type: "GET",
+        url: "/Admin/GetUser/" + id,
+        success: function (data) {
+            $('#inputUserNameEditUserAdmin').val(data.userName);
+            $('#inputEmailEditUserAdmin').val(data.email);
+            $('#inputNameEditUserAdmin').val(data.name);
+            $('#inputLastnameEditUserAdmin').val(data.lastname);
+            $('#inputPhoneNumberEditUserAdmin').val(data.phoneNumber);
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            alert('Failed to retrieve type.');
+        }
+    });
+};
 
 function CreateUserPost(table) {
     $.ajax({

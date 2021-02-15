@@ -20,6 +20,7 @@ using HomeManager.Models.Interfaces.Factories;
 using System.Linq.Dynamic.Core;
 using Type = HomeManager.Models.Type;
 using HomeManager.Models.DataTableModels;
+using HomeManager.WebApplication.ViewModels.Admin;
 
 namespace HomeManager.WebApplication.Controllers
 {
@@ -118,13 +119,14 @@ namespace HomeManager.WebApplication.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> CreateUser(User user, string userPassword)
+        public async Task<JsonResult> CreateUser(UserModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _userManager.CreateAsync(user, userPassword);
+                    var user = new User { UserName = model.UserName, Email = model.Email, Name = model.Name, Lastname = model.Lastname, PhoneNumber = model.PhoneNumber };
+                    await _userManager.CreateAsync(user, model.Password);
                 }
                 catch (Exception)
                 {
@@ -149,7 +151,15 @@ namespace HomeManager.WebApplication.Controllers
             {
                 try
                 {
-                    await _userManager.UpdateAsync(user);
+                    var tempUser = await _userManager.FindByIdAsync(id);
+                    tempUser.UserName = user.UserName;
+                    tempUser.NormalizedUserName = user.UserName.ToUpper();
+                    tempUser.Email = user.Email;
+                    tempUser.NormalizedEmail = user.Email.ToUpper(); ;
+                    tempUser.Name = user.Name;
+                    tempUser.Lastname = user.Lastname;
+                    tempUser.PhoneNumber = user.PhoneNumber;
+                    await _userManager.UpdateAsync(tempUser);
                 }
                 catch (Exception)
                 {
