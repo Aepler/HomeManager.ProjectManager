@@ -10,11 +10,11 @@ namespace HomeManager.WebApplication.Areas.Customize.ViewModels
     {
         public static string Index => "Index";
 
-        public static string IndexFinance => "IndexFinance";
+        public static string Finance => "Finance";
 
         public static string Categories => "Categories";
 
-        public static string PaymentTemplates => "PaymentTemplates";
+        public static string Templates => "Templates";
 
         public static string Types => "Types";
 
@@ -22,11 +22,11 @@ namespace HomeManager.WebApplication.Areas.Customize.ViewModels
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
-        public static string IndexFinanceNavClass(ViewContext viewContext) => PageNavClass(viewContext, IndexFinance);
+        public static string FinanceNavClass(ViewContext viewContext) => PageNavClass(viewContext, Finance);
 
         public static string CategoriesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Categories);
 
-        public static string PaymentTemplatesNavClass(ViewContext viewContext) => PageNavClass(viewContext, PaymentTemplates);
+        public static string TemplatesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Templates);
 
         public static string TypesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Types);
 

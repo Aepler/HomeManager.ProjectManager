@@ -14,7 +14,7 @@ namespace HomeManager.Models.Interfaces.Factories
     {
         Task<DataTableResultModel<PaymentDataTableModel>> GetTableData(DataTableModel model, ICollection<Payment> list);
         Task<DataTableResultModel<CategoryDataTableModel>> GetTableData(DataTableModel model, ICollection<Category> list);
-        Task<DataTableResultModel<PaymentTemplateDataTableModel>> GetTableData(DataTableModel model, ICollection<PaymentTemplate> list);
+        Task<DataTableResultModel<TemplateDataTableModel>> GetTableData(DataTableModel model, ICollection<Template> list);
         Task<DataTableResultModel<TypeDataTableModel>> GetTableData(DataTableModel model, ICollection<Type> list);
         Task<DataTableResultModel<StatusDataTableModel>> GetTableData(DataTableModel model, ICollection<Status> list);
         Task<DataTableResultModel<UserDataTableModel>> GetTableData(DataTableModel model, ICollection<User> list);

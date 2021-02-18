@@ -21,37 +21,37 @@ namespace HomeManager.Data.Repositories.Finance
 
         public async Task<Payment> GetById(User user, int id)
         {
-            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.Id == id && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).FirstOrDefaultAsync();
+            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.Id == id && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Template).FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Payment>> GetAll(User user)
         {
-            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
+            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Template).ToListAsync();
         }
 
         public async Task<ICollection<Payment>> GetByCategory(User user, int fk_CategoryId)
         {
-            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.fk_CategoryId == fk_CategoryId && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
+            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.fk_CategoryId == fk_CategoryId && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Template).ToListAsync();
         }
 
         public async Task<ICollection<Payment>> GetByDate(User user, DateTime dateTime)
         {
-            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.Date == dateTime && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
+            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.Date == dateTime && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Template).ToListAsync();
         }
 
         public async Task<ICollection<Payment>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
         {
-            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && (x.Date >= dateTimeStart || x.Date <= dateTimeEnd) && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
+            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && (x.Date >= dateTimeStart || x.Date <= dateTimeEnd) && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Template).ToListAsync();
         }
 
         public async Task<ICollection<Payment>> GetByStatus(User user, int fk_StatusId)
         {
-            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.fk_StatusId == fk_StatusId && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
+            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.fk_StatusId == fk_StatusId && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Template).ToListAsync();
         }
 
         public async Task<ICollection<Payment>> GetByType(User user, int fk_TypeId)
         {
-            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.fk_TypeId == fk_TypeId && x.Deleted == false).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Payment_Template).ToListAsync();
+            return await _context.FinancePayments.Where(x => x.fk_UserId == user.Id && x.fk_TypeId == fk_TypeId && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).Include(x => x.Template).ToListAsync();
         }
 
 

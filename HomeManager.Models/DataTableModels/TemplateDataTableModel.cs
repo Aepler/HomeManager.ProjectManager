@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HomeManager.Models.DataTableModels
 {
-    public class PaymentTemplateDataTableModel
+    public class TemplateDataTableModel
     {
         public string Id { get; set; }
 

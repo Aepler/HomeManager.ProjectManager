@@ -26,7 +26,7 @@ namespace HomeManager.Models.Entities
         public double StartBalance { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
-        public ICollection<PaymentTemplate> Payment_Templates { get; set; }
+        public ICollection<Template> Payment_Templates { get; set; }
         public ICollection<Category> Categories { get; set; }
         public ICollection<Type> types { get; set; }
         public ICollection<Status> statuses { get; set; }

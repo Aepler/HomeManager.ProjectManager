@@ -30,10 +30,10 @@
                         <span asp-validation-for="EndTaxType" class="text-danger"></span>
                     </div>
                     <br />
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="Debit" id="inputDebitCreateTypeAdmin" /> @Html.DisplayNameFor(model => model.Debit)
-                        </label>
+                    <div class="form-group form-floating">
+                        <input asp-for="TransactionType" placeholder="TransactionType" id="inputTransactionTypeCreateTypeAdmin" class="form-control" />
+                        <label asp-for="TransactionType" class="control-label"></label>
+                        <span asp-validation-for="TransactionType" class="text-danger"></span>
                     </div>
                     <br />
                     <div class="form-group form-floating">
@@ -80,10 +80,10 @@
                         <span asp-validation-for="EndTaxType" class="text-danger"></span>
                     </div>
                     <br />
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" id="inputDebitEditTypeAdmin" asp-for="Debit" /> @Html.DisplayNameFor(model => model.Debit)
-                        </label>
+                    <div class="form-group form-floating">
+                        <input asp-for="TransactionType" placeholder="TransactionType" id="inputTransactionTypeEditTypeAdmin" class="form-control" />
+                        <label asp-for="TransactionType" class="control-label"></label>
+                        <span asp-validation-for="TransactionType" class="text-danger"></span>
                     </div>
                     <br />
                     <div class="form-group form-floating">

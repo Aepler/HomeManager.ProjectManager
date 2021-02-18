@@ -6,9 +6,9 @@ using System.Text;
 
 namespace HomeManager.Models.Entities.Finance
 {
-    public class PaymentTemplate
+    public class Template
     {
-        public PaymentTemplate()
+        public Template()
         {
             this.Payments = new HashSet<Payment>();
         }
@@ -24,8 +24,14 @@ namespace HomeManager.Models.Entities.Finance
         public System.DateTime Date { get; set; }
         public string Description { get; set; }
         [Required]
+        [Column(TypeName = "decimal(9,2)")]
         public decimal Amount { get; set; }
         public string Invoice { get; set; }
+
+        public DateTime? RepeatStart { get; set; }
+        public DateTime? RepeatEnd { get; set; }
+        public int? RepeatInterval { get; set; }
+
         public bool Deleted { get; set; }
         public DateTime? DeletedOn { get; set; }
 

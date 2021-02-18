@@ -15,14 +15,14 @@ namespace HomeManager.Models.DataTableModels
         public string User { get; set; }
         public string Date { get; set; }
         public string Description { get; set; }
-        public string Description_Extra { get; set; }
-        public string[] Description_Tax { get; set; }
+        public string[] Description_ExtraCosts { get; set; }
+        public string[] Description_TaxList { get; set; }
         public string Tax { get; set; }
         public string Amount { get; set; }
         public string Amount_Tax { get; set; }
         public string Amount_Gross { get; set; }
         public string Amount_Net { get; set; }
-        public string Amount_Extra { get; set; }
+        public string[] Amount_ExtraCosts { get; set; }
         public string[] Amount_TaxList { get; set; }
         public string Invoice { get; set; }
         public string DataType { get; set; }

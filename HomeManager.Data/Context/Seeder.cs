@@ -8,6 +8,7 @@ using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
 using Type = HomeManager.Models.Entities.Finance.Type;
 using Microsoft.AspNetCore.Identity;
+using HomeManager.Models.Enums;
 
 namespace HomeManager.Data.Context
 {
@@ -39,13 +40,6 @@ namespace HomeManager.Data.Context
                     Name = "User",
                     NormalizedName = "USER",
                     ConcurrencyStamp = "896e6ba7-5b4f-4231-bcc7-34aba5ca1e57"
-                },
-                new Role
-                {
-                    Id = Guid.Parse("626E5439-AC0E-423F-F10A-08D8CABAFA0B"),
-                    Name = "Test",
-                    NormalizedName = "TEST",
-                    ConcurrencyStamp = "714a5239-a8a3-4b42-af07-033481bd81e0"
                 }
                 );
         }
@@ -175,33 +169,36 @@ namespace HomeManager.Data.Context
             {
                 Id = 1,
                 Name = "Salary",
-                EndTaxType = "Net",
-                ExtraInput = new string[] { "Extra_Amount", "TaxList" },
+                EndTaxType = TaxType.Net,
+                TransactionType = TransactionType.Deposit,
+                ExtraInput = new string[] { PaymentExtraInput.Extra_Amount.ToString(), PaymentExtraInput.TaxList.ToString() },
                 fk_StatusId = 2
             },
             new Type
             {
                 Id = 2,
                 Name = "Monthly Expens",
-                EndTaxType = "Gross",
-                Debit = true,
+                EndTaxType = TaxType.Gross,
+                TransactionType = TransactionType.Debit,
+                Repeating = true,
                 fk_StatusId = 1
             },
             new Type
             {
                 Id = 3,
                 Name = "Expenditure",
-                EndTaxType = "Gross",
-                Debit = true,
-                ExtraInput = new string[] { "Extra_Amount" },
+                EndTaxType = TaxType.Gross,
+                TransactionType = TransactionType.Debit,
+                ExtraInput = new string[] { PaymentExtraInput.Extra_Amount.ToString() },
                 fk_StatusId = 1
             },
             new Type
             {
                 Id = 4,
                 Name = "Earnings",
-                EndTaxType = "Net",
-                ExtraInput = new string[] { "Extra_Amount" },
+                EndTaxType = TaxType.Net,
+                TransactionType = TransactionType.Deposit,
+                ExtraInput = new string[] { PaymentExtraInput.Extra_Amount.ToString() },
                 fk_StatusId = 2
             });
         }

@@ -20,36 +20,38 @@ namespace HomeManager.Models.Entities.Finance
         public User User { get; set; }
 
         [Required]
-        public System.DateTime Date { get; set; }
+        public DateTime Date { get; set; }
 
         [Required]
         public string Description { get; set; }
 
-        [Display(Name = "Description for extra Costs")]
-        public string Description_Extra { get; set; }
-
-        [Display(Name = "Description for Tax")]
-        public string[] Description_Tax { get; set; }
-
-        public decimal Tax { get; set; }
-        public string[] TaxList { get; set; }
+        public int Tax { get; set; }
 
         [Required]
         [Display(Name = "Total Amount")]
+        [Column(TypeName = "decimal(9,2)")]
         public decimal Amount { get; set; }
 
         [Display(Name = "Total Tax")]
+        [Column(TypeName = "decimal(9,2)")]
         public decimal Amount_Tax { get; set; }
 
         [Display(Name = "Amount Gross")]
+        [Column(TypeName = "decimal(9,2)")]
         public decimal Amount_Gross { get; set; }
 
         [Display(Name = "Amount Net")]
+        [Column(TypeName = "decimal(9,2)")]
         public decimal Amount_Net { get; set; }
 
+        [Display(Name = "Description for extra Costs")]
+        public string[] Description_ExtraCosts { get; set; }
         [Display(Name = "Amount")]
-        public decimal? Amount_Extra { get; set; }
+        public string[] Amount_ExtraCosts { get; set; }
 
+        [Display(Name = "Description for Tax")]
+        public string[] Description_TaxList { get; set; }
+        public string[] TaxList { get; set; }
         [Display(Name = "Amount")]
         public string[] Amount_TaxList { get; set; }
 
@@ -57,10 +59,14 @@ namespace HomeManager.Models.Entities.Finance
 
         public string DataType { get; set; }
 
+        public DateTime? RepeatStart { get; set; }
+        public DateTime? RepeatEnd { get; set; }
+        public int? RepeatInterval { get; set; }
+
         [Display(Name = "Payment Template")]
         public int? fk_TemplateId { get; set; }
         [ForeignKey("fk_TemplateId")]
-        public PaymentTemplate Payment_Template { get; set; }
+        public Template Template { get; set; }
 
         [Required]
         [Display(Name = "Type")]

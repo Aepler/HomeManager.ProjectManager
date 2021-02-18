@@ -14,6 +14,8 @@ using HomeManager.Models.Entities.Finance;
 using HomeManager.Models.Interfaces.Finance;
 using HomeManager.Models.Interfaces.Factories;
 using HomeManager.Models.Helpers;
+using HomeManager.Models.Interfaces.Factories.Finance;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace HomeManager.WebApplication.Areas.Finance.Controllers
 {
@@ -26,10 +28,11 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
-        private readonly IPaymentTemplateService _paymentTemplateService;
+        private readonly ITemplateService _paymentTemplateService;
         private readonly IDataTableFactory _dataTableFactory;
+        private readonly IFinanceFormFactory _financeFormFactory;
 
-        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, IPaymentTemplateService paymentTemplateService, IDataTableFactory dataTableFactory)
+        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, ITemplateService paymentTemplateService, IDataTableFactory dataTableFactory, IFinanceFormFactory financeFormFactory)
         {
             _userManager = userManager;
             _paymentService = paymentService;
@@ -38,15 +41,14 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             _statusService = statusService;
             _paymentTemplateService = paymentTemplateService;
             _dataTableFactory = dataTableFactory;
+            _financeFormFactory = financeFormFactory;
         }
 
         // GET: Payments
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            var payments = await _paymentService.GetAll(user);
-
-            ViewBag.Payments = payments;
+            ViewData["Types"] = new SelectList(await _typeService.GetAll(user), "Id", "Name");
 
             return View();
         }
@@ -69,43 +71,19 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetPayment(int id)
+        public async Task<JsonResult> GetPaymentCreate(int id)
         {
             var user = await _userManager.GetUserAsync(User);
-            var payment = await _paymentService.GetById(user, id);
-            return Json(payment);
+            var data = await _financeFormFactory.GetCreateForm(user, id);
+            return Json(data);
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetTypeList()
+        public async Task<JsonResult> GetPaymentEdit(int id)
         {
             var user = await _userManager.GetUserAsync(User);
-            var types = await _typeService.GetAll(user);
-            return Json(types);
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetTemplate()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var payment_template = await _paymentTemplateService.GetAll(user);
-            return Json(payment_template);
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetCategoryList()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var categories = await _categoryService.GetAll(user);
-            return Json(categories);
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetStatusListByType(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var status = await _statusService.GetPossibleStatus(user, id);
-            return Json(status);
+            var data = await _financeFormFactory.GetEditForm(user, id);
+            return Json(data);
         }
 
         // POST: Payments/Create

@@ -14,7 +14,7 @@ namespace HomeManager.Models.Interfaces.Finance
         Task<ICollection<Status>> GetAll(User user);
         Task<ICollection<Status>> GetByUser(User user);
         Task<ICollection<Status>> GetByEndPoint(User user, bool endPoint);
-        Task<ICollection<Status>> GetPossibleStatus(User user, int id);
+        Task<ICollection<Status>> GetByTypeId(User user, int typeId);
         Task<ICollection<Status>> GetDefault();
         Task<bool> Add(User user, Status status);
         Task<bool> Update(User user, Status status);

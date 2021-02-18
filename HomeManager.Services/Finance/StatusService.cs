@@ -67,11 +67,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Status>> GetPossibleStatus(User user, int id)
+        public async Task<ICollection<Status>> GetByTypeId(User user, int typeId)
         {
             try
             {
-                return await _statusRepository.GetPossibleStatus(user, id);
+                return await _statusRepository.GetByTypeId(user, typeId);
             }
             catch (Exception ex)
             {

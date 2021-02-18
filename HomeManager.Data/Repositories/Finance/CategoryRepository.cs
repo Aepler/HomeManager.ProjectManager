@@ -21,22 +21,22 @@ namespace HomeManager.Data.Repositories.Finance
 
         public async Task<Category> GetById(User user, int id)
         {
-            return await _context.FinanceCategories.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && x.Deleted == false).FirstOrDefaultAsync();
+            return await _context.FinanceCategories.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && !x.Deleted).FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Category>> GetAll(User user)
         {
-            return await _context.FinanceCategories.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Deleted == false).ToListAsync();
+            return await _context.FinanceCategories.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted).ToListAsync();
         }
 
         public async Task<ICollection<Category>> GetByUser(User user)
         {
-            return await _context.FinanceCategories.Where(x => x.fk_UserId == user.Id && x.Deleted == false).ToListAsync();
+            return await _context.FinanceCategories.Where(x => x.fk_UserId == user.Id && !x.Deleted).ToListAsync();
         }
 
         public async Task<ICollection<Category>> GetDefault()
         {
-            return await _context.FinanceCategories.Where(x => x.fk_UserId == null && x.Deleted == false).ToListAsync();
+            return await _context.FinanceCategories.Where(x => x.fk_UserId == null && !x.Deleted).ToListAsync();
         }
 
         public async Task<bool> Add(Category category)

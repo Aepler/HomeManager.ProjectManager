@@ -84,14 +84,14 @@ namespace HomeManager.WebApplication.Factories
                     Id = d.Id.ToString(),
                     Date = d.Date.ToString("dd.MM.yyyy"),
                     Description = d.Description,
-                    Description_Extra = d.Description_Extra,
-                    Description_Tax = d.Description_Tax,
+                    Description_ExtraCosts = d.Description_ExtraCosts,
+                    Description_TaxList = d.Description_TaxList,
                     Tax = d.Tax.ToString(),
                     Amount = d.Amount.ToString(),
                     Amount_Tax = d.Amount_Tax.ToString(),
                     Amount_Gross = d.Amount_Gross.ToString(),
                     Amount_Net = d.Amount_Net.ToString(),
-                    Amount_Extra = d.Amount_Extra.ToString(),
+                    Amount_ExtraCosts = d.Amount_ExtraCosts,
                     Amount_TaxList = d.Amount_TaxList,
                     fk_TypeId = d.fk_TypeId.ToString(),
                     Type = d.Type.Name,
@@ -186,14 +186,14 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<PaymentTemplateDataTableModel>> GetTableData(DataTableModel model, ICollection<PaymentTemplate> list)
+        public async Task<DataTableResultModel<TemplateDataTableModel>> GetTableData(DataTableModel model, ICollection<Template> list)
         {
             try
             {
-                var result = new DataTableResultModel<PaymentTemplateDataTableModel>();
+                var result = new DataTableResultModel<TemplateDataTableModel>();
                 int totalRecords = list.Count;
 
-                var modifiedData = list.Select(d => new PaymentTemplateDataTableModel
+                var modifiedData = list.Select(d => new TemplateDataTableModel
                 {
                     Id = d.Id.ToString(),
                     Date = d.Date.ToString(),
@@ -254,8 +254,8 @@ namespace HomeManager.WebApplication.Factories
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name,
-                    EndTaxType = d.EndTaxType,
-                    Debit = d.Debit.ToString(),
+                    EndTaxType = d.EndTaxType.ToString(),
+                    Debit = d.TransactionType.ToString(),
                     ExtraInput = d.ExtraInput,
                     fk_StatusId = d.fk_StatusId.ToString(),
                     Status = d.Status.Name

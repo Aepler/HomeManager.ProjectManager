@@ -6,65 +6,70 @@
 
 <h4>@ViewData["Title"]</h4>
 
-<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreatePayment">New Payment</button>
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreatePaymentFinance">New Payment</button>
 
-<form id="formCreatePayment" asp-action="Create" enctype="multipart/form-data">
+<form id="formCreatePaymentFinance" asp-action="Create" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalCreatePayment" role="dialog" aria-labelledby="modalLabelCreatePayment" aria-hidden="true">
+    <div class="modal fade" id="modalCreatePaymentFinance" role="dialog" aria-labelledby="modalLabelCreatePaymentFinance" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelCreatePayment">New Payment</h5>
+                    <h5 class="modal-title" id="modalLabelCreatePaymentFinance">New Payment</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="modalBodyCreatePayment">
-
+                <div class="modal-body" id="modalBodyCreatePaymentFinance">
+                    <div class="form-group form-floating">
+                        <select asp-for="fk_TypeId" id="dropdownTypeCreatePaymentFinance" class="form-control" asp-items="ViewBag.Types">
+                            <option value="-1" disabled selected>Select a Type</option>
+                        </select>
+                        <label asp-for="fk_TypeId" class="control-label">Type</label>
+                    </div>
                 </div>
-                <div class="modal-footer" id="modalFooterCreatePayment">
+                <div class="modal-footer" id="modalFooterCreatePaymentFinance">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreatePayment" data-bs-dismiss="modal">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreatePaymentFinance" data-bs-dismiss="modal">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-<form id="formEditPayment" asp-action="Edit" enctype="multipart/form-data">
+<form id="formEditPaymentFinance" asp-action="Edit" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalEditPayment" role="dialog" aria-labelledby="modalLabelEditPayment" aria-hidden="true">
+    <div class="modal fade" id="modalEditPaymentFinance" role="dialog" aria-labelledby="modalLabelEditPaymentFinance" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelEditPayment">Edit Payment</h5>
+                    <h5 class="modal-title" id="modalLabelEditPaymentFinance">Edit Payment</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="modalBodyEditPayment">
+                <div class="modal-body" id="modalBodyEditPaymentFinance">
 
                 </div>
-                <div class="modal-footer" id="modalFooterEditPayment">
+                <div class="modal-footer" id="modalFooterEditPaymentFinance">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditPayment" data-bs-dismiss="modal">Save changes</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditPaymentFinance" data-bs-dismiss="modal">Save changes</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
 
-<form id="formDeletePayment" asp-action="Delete">
+<form id="formDeletePaymentFinance" asp-action="Delete">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalDeletePayment" role="dialog" aria-labelledby="modalLabelDeletePayment" aria-hidden="true">
+    <div class="modal fade" id="modalDeletePaymentFinance" role="dialog" aria-labelledby="modalLabelDeletePaymentFinance" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelDeletePayment">Delete Payment</h5>
+                    <h5 class="modal-title" id="modalLabelDeletePaymentFinance">Delete Payment</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="modalBodyDeletePayment">
+                <div class="modal-body" id="modalBodyDeletePaymentFinance">
                     <p>Are you sure you want to Delete this Payment?</p>
                 </div>
-                <div class="modal-footer" id="modalFooterDeletePayment">
+                <div class="modal-footer" id="modalFooterDeletePaymentFinance">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeletePayment" data-bs-dismiss="modal">Delete Payment</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeletePaymentFinance" data-bs-dismiss="modal">Delete Payment</button>
                 </div>
             </div>
         </div>

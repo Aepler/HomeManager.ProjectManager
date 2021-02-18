@@ -11,7 +11,7 @@ namespace HomeManager.Models.Entities.Finance
         public Category()
         {
             this.Payments = new HashSet<Payment>();
-            this.Payment_Templates = new HashSet<PaymentTemplate>();
+            this.Payment_Templates = new HashSet<Template>();
         }
 
         [Key]
@@ -28,6 +28,6 @@ namespace HomeManager.Models.Entities.Finance
         public DateTime? DeletedOn { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
-        public ICollection<PaymentTemplate> Payment_Templates { get; set; }
+        public ICollection<Template> Payment_Templates { get; set; }
     }
 }

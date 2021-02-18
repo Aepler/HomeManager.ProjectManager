@@ -7,7 +7,7 @@
 //==============================================================================
 
 function List() {
-    var table = $("#tblPaymentTemplateCustomize").DataTable({
+    var table = $("#tblTemplateCustomize").DataTable({
         "processing": true,
         "serverSide": true,
         "filter": true,
@@ -15,7 +15,7 @@ function List() {
         "destroy": true,
         "order": [[0, "ASC"]],
         "ajax": {
-            "url": '/Customize/Finance/GetPaymentTemplateTableData',
+            "url": '/Customize/Finance/GetTemplateTableData',
             "type": "POST",
             "datatype": "json"
         },
@@ -28,44 +28,44 @@ function List() {
             , {
                 "orderable": false,
                 "data": null,
-                "defaultContent": "<button class='buttonEditPaymentTemplateCustomize btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditPaymentTemplateCustomize'>Edit</button>" +
+                "defaultContent": "<button class='buttonEditTemplateCustomize btn btn-outline-secondary' data-bs-toggle='modal' data-bs-target='#modalEditTemplateCustomize'>Edit</button>" +
                     " | " +
-                    "<button class='buttonDeletePaymentTemplateCustomize btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeletePaymentTemplateCustomize'>Delete</button>",
+                    "<button class='buttonDeleteTemplateCustomize btn btn-outline-danger' data-bs-toggle='modal' data-bs-target='#modalDeleteTemplateCustomize'>Delete</button>",
                 "width": "150px"
             }
         ]
     });
 
-    $('#tblPaymentTemplateCustomize tbody').on('click', '.buttonDeletePaymentTemplateCustomize', function () {
+    $('#tblTemplateCustomize tbody').on('click', '.buttonDeleteTemplateCustomize', function () {
         var id = $(this).parent().parent().attr("id");
         if (id != null) {
-            $('#buttonModalDeletePaymentTemplateCustomize').val(id);
+            $('#buttonModalDeleteTemplateCustomize').val(id);
         }
     });
 
-    $('#modalFooterDeletePaymentTemplateCustomize').on('click', '#buttonModalDeletePaymentTemplateCustomize', function () {
+    $('#modalFooterDeleteTemplateCustomize').on('click', '#buttonModalDeleteTemplateCustomize', function () {
         var id = $(this).val();
         if (id != null) {
-            DeletePaymentTemplatePost(id, table);
+            DeleteTemplatePost(id, table);
         }
     });
 
-    $('#modalFooterEditPaymentTemplateCustomize').on('click', '#buttonModalEditPaymentTemplateCustomize', function () {
+    $('#modalFooterEditTemplateCustomize').on('click', '#buttonModalEditTemplateCustomize', function () {
         var id = $(this).val();
         if (id != null) {
-            EditPaymentTemplatePost(id, table);
+            EditTemplatePost(id, table);
         }
     });
 
-    $('#modalFooterCreatePaymentTemplateCustomize').on('click', '#buttonModalCreatePaymentTemplateCustomize', function () {
-        CreatePaymentTemplatePost(table);
+    $('#modalFooterCreateTemplateCustomize').on('click', '#buttonModalCreateTemplateCustomize', function () {
+        CreateTemplatePost(table);
     });
 
-    $('#tblPaymentTemplateCustomize tbody').on('click', '.buttonEditPaymentTemplateCustomize', function () {
+    $('#tblTemplateCustomize tbody').on('click', '.buttonEditTemplateCustomize', function () {
         var id = $(this).parent().parent().attr("id");
         if (id != "") {
-            $('#buttonModalEditPaymentTemplateCustomize').val(id);
-            GetPaymentTemplateEdit(id);
+            $('#buttonModalEditTemplateCustomize').val(id);
+            GetTemplateEdit(id);
         }
     });
 }
@@ -82,11 +82,11 @@ function List() {
 // Ajax ========================================================================
 //==============================================================================
 
-function GetPaymentTemplateEdit(id) {
+function GetTemplateEdit(id) {
     $.ajax({
         cache: false,
         type: "GET",
-        url: "/Customize/Finance/GetPaymentTemplate/" + id,
+        url: "/Customize/Finance/GetTemplate/" + id,
         success: function (data) {
 
         },
@@ -96,47 +96,47 @@ function GetPaymentTemplateEdit(id) {
     });
 };
 
-function CreatePaymentTemplatePost(table) {
+function CreateTemplatePost(table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "/Customize/Finance/CreatePaymentTemplate/",
-        data: $('#formCreatePaymentTemplateCustomize').serialize(),
+        url: "/Customize/Finance/CreateTemplate/",
+        data: $('#formCreateTemplateCustomize').serialize(),
         success: function () {
             table.draw(false);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert('Failed to edit PaymentTemplate.');
+            alert('Failed to edit Template.');
         }
     });
 };
 
-function EditPaymentTemplatePost(id, table) {
+function EditTemplatePost(id, table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "/Customize/Finance/EditPaymentTemplate/" + id,
-        data: $('#formEditPaymentTemplateCustomize').serialize(),
+        url: "/Customize/Finance/EditTemplate/" + id,
+        data: $('#formEditTemplateCustomize').serialize(),
         success: function () {
             table.draw(false);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert('Failed to edit PaymentTemplate.');
+            alert('Failed to edit Template.');
         }
     });
 };
 
-function DeletePaymentTemplatePost(id, table) {
+function DeleteTemplatePost(id, table) {
     $.ajax({
         cache: false,
         type: "Post",
-        url: "/Customize/Finance/DeletePaymentTemplate/" + id,
-        data: $('#formDeletePaymentTemplateCustomize').serialize(),
+        url: "/Customize/Finance/DeleteTemplate/" + id,
+        data: $('#formDeleteTemplateCustomize').serialize(),
         success: function () {
             table.draw(false);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            alert('Failed to delete PaymentTemplate.');
+            alert('Failed to delete Template.');
         }
     });
 };

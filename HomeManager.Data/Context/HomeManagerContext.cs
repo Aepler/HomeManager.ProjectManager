@@ -25,7 +25,7 @@ namespace HomeManager.Data
         public DbSet<Type> FinanceTypes { get; set; }
         public DbSet<Category> FinanceCategories { get; set; }
         public DbSet<Status> FinanceStatuses { get; set; }
-        public DbSet<PaymentTemplate> FinancePaymentTemplates { get; set; }
+        public DbSet<Template> FinanceTemplates { get; set; }
         public DbSet<Tag> CookingTags { get; set; }
         public DbSet<Ingredient> CookingIngredients {  get; set; }
         public DbSet<Recipe> CookingRecipes { get; set; }
@@ -48,9 +48,9 @@ namespace HomeManager.Data
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<Payment>()
-            .Property(e => e.Description_Tax)
+            .Property(e => e.Description_TaxList)
             .HasConversion(
-                v => string.Join(',', v),
+                v => string.Join(',', v).Trim().Replace("%20", " "),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<Payment>()
@@ -64,6 +64,20 @@ namespace HomeManager.Data
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            modelBuilder.Entity<Payment>()
+            .Property(e => e.Description_ExtraCosts)
+            .HasConversion(
+                v => string.Join(',', v).Trim().Replace("%20", " "),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+
+            modelBuilder.Entity<Payment>()
+            .Property(e => e.Amount_ExtraCosts)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
 
 
             modelBuilder.Entity<Recipe>()
@@ -87,12 +101,19 @@ namespace HomeManager.Data
     .WithMany(right => right.Recipes)
     .UsingEntity(join => join.ToTable("CookingRecipeTags"));
 
+            modelBuilder.Entity<Type>()
+                .Property(c => c.EndTaxType)
+                .HasConversion<int>();
+
+            modelBuilder.Entity<Type>()
+                .Property(c => c.TransactionType)
+                .HasConversion<int>();
 
             modelBuilder.Entity<Payment>().ToTable("FinancePayments");
             modelBuilder.Entity<Type>().ToTable("FinanceTypes");
             modelBuilder.Entity<Category>().ToTable("FinanceCategories");
             modelBuilder.Entity<Status>().ToTable("FinanceStatuses");
-            modelBuilder.Entity<PaymentTemplate>().ToTable("FinancePaymentTemplates");
+            modelBuilder.Entity<Template>().ToTable("FinanceTemplates");
             modelBuilder.Entity<Tag>().ToTable("CookingTags");
             modelBuilder.Entity<Ingredient>().ToTable("CookingIngredients");
             modelBuilder.Entity<Recipe>().ToTable("CookingRecipes");

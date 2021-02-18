@@ -10,69 +10,69 @@ using HomeManager.Data.Repositories.Interfaces.Finance;
 
 namespace HomeManager.Services.Finance
 {
-    public class PaymentTemplateService : IPaymentTemplateService
+    public class TemplateService : ITemplateService
     {
-        private readonly IPaymentTemplateRepository _paymentTemplateRepository;
+        private readonly ITemplateRepository _templateRepository;
 
-        public PaymentTemplateService(IPaymentTemplateRepository paymentTemplateRepository)
+        public TemplateService(ITemplateRepository templateRepository)
         {
-            _paymentTemplateRepository = paymentTemplateRepository;
+            _templateRepository = templateRepository;
         }
 
-        public async Task<PaymentTemplate> GetById(User user, int id)
-        {
-            try
-            {
-                return await _paymentTemplateRepository.GetById(user, id);
-            }
-            catch (Exception ex)
-            {
-                return new PaymentTemplate();
-            }
-        }
-
-        public async Task<ICollection<PaymentTemplate>> GetAll(User user)
+        public async Task<Template> GetById(User user, int id)
         {
             try
             {
-                return await _paymentTemplateRepository.GetAll(user);
+                return await _templateRepository.GetById(user, id);
             }
             catch (Exception ex)
             {
-                return new List<PaymentTemplate>();
+                return new Template();
             }
         }
 
-        public async Task<ICollection<PaymentTemplate>> GetByCategory(User user, int fk_CategoryId)
+        public async Task<ICollection<Template>> GetAll(User user)
         {
             try
             {
-                return await _paymentTemplateRepository.GetByCategory(user, fk_CategoryId);
+                return await _templateRepository.GetAll(user);
             }
             catch (Exception ex)
             {
-                return new List<PaymentTemplate>();
+                return new List<Template>();
             }
         }
 
-        public async Task<ICollection<PaymentTemplate>> GetByType(User user, int fk_TypeId)
+        public async Task<ICollection<Template>> GetByCategory(User user, int fk_CategoryId)
         {
             try
             {
-                return await _paymentTemplateRepository.GetByType(user, fk_TypeId);
+                return await _templateRepository.GetByCategory(user, fk_CategoryId);
             }
             catch (Exception ex)
             {
-                return new List<PaymentTemplate>();
+                return new List<Template>();
             }
         }
 
-        public async Task<bool> Add(User user, PaymentTemplate paymentTemplate)
+        public async Task<ICollection<Template>> GetByType(User user, int fk_TypeId)
+        {
+            try
+            {
+                return await _templateRepository.GetByType(user, fk_TypeId);
+            }
+            catch (Exception ex)
+            {
+                return new List<Template>();
+            }
+        }
+
+        public async Task<bool> Add(User user, Template paymentTemplate)
         {
             try
             {
                 paymentTemplate.fk_UserId = user.Id;
-                return await _paymentTemplateRepository.Add(paymentTemplate);
+                return await _templateRepository.Add(paymentTemplate);
             }
             catch (Exception ex)
             {
@@ -80,15 +80,15 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Update(User user, PaymentTemplate paymentTemplate)
+        public async Task<bool> Update(User user, Template paymentTemplate)
         {
             try
             {
-                var realPaymentTemplates = await _paymentTemplateRepository.GetById(user, paymentTemplate.Id);
+                var realPaymentTemplates = await _templateRepository.GetById(user, paymentTemplate.Id);
                 if (realPaymentTemplates != null && realPaymentTemplates.fk_UserId == user.Id)
                 {
                     paymentTemplate.fk_UserId = user.Id;
-                    return await _paymentTemplateRepository.Update(paymentTemplate);
+                    return await _templateRepository.Update(paymentTemplate);
                 }
                 return false;
             }
@@ -98,17 +98,17 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Delete(User user, PaymentTemplate paymentTemplate)
+        public async Task<bool> Delete(User user, Template paymentTemplate)
         {
             try
             {
-                var realPaymentTemplates = await _paymentTemplateRepository.GetById(user, paymentTemplate.Id);
+                var realPaymentTemplates = await _templateRepository.GetById(user, paymentTemplate.Id);
                 if (realPaymentTemplates != null && realPaymentTemplates.fk_UserId == user.Id)
                 {
                     paymentTemplate.fk_UserId = user.Id;
                     paymentTemplate.Deleted = true;
                     paymentTemplate.DeletedOn = DateTime.Today;
-                    return await _paymentTemplateRepository.Delete(paymentTemplate);
+                    return await _templateRepository.Delete(paymentTemplate);
                 }
                 return false;
             }

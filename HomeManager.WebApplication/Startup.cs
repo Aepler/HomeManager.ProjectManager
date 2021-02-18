@@ -22,6 +22,8 @@ using Microsoft.AspNetCore.Http;
 using HomeManager.Models.Interfaces.Factories;
 using HomeManager.WebApplication.Factories;
 using HomeManager.Models.DataTableModels;
+using HomeManager.Models.Interfaces.Factories.Finance;
+using HomeManager.WebApplication.Areas.Finance.Factories;
 
 namespace HomeManager.WebApplication
 {
@@ -50,14 +52,15 @@ namespace HomeManager.WebApplication
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IStatusRepository, StatusRepository>();
             services.AddScoped<ITypeRepository, TypeRepository>();
-            services.AddScoped<IPaymentTemplateRepository, PaymentTemplateRepository>();
+            services.AddScoped<ITemplateRepository, TemplateRepository>();
 
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IStatusService, StatusService>();
             services.AddScoped<ITypeService, TypeService>();
-            services.AddScoped<IPaymentTemplateService, PaymentTemplateService>();
+            services.AddScoped<ITemplateService, TemplateService>();
 
+            services.AddScoped<IFinanceFormFactory, FinanceFormFactory>();
             services.AddScoped<IDataTableFactory, DataTableFactory>();
             services.AddScoped<IDataTableResultModel, DataTableResultModel>();
 

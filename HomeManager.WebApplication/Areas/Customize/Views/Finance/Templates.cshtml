@@ -1,0 +1,103 @@
+﻿@model HomeManager.Models.Entities.Finance.Template
+
+@{
+    ViewData["Title"] = "Templates";
+    ViewData["ActivePage"] = CustomizeNavViews.Templates;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateTemplateCustomize">New Template</button>
+
+<form id="formCreateTemplateCustomize" asp-action="CreateTemplate">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalCreateTemplateCustomize" role="dialog" aria-labelledby="modalLabelCreateTemplateCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelCreateTemplateCustomize">New Template</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyCreateTemplateCustomize">
+
+                </div>
+                <div class="modal-footer" id="modalFooterCreateTemplateCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateTemplateCustomize" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formEditTemplateCustomize" asp-action="EditTemplate">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalEditTemplateCustomize" role="dialog" aria-labelledby="modalLabelEditTemplateCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelEditTemplateCustomize">Edit Template</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyEditTemplateCustomize">
+
+                </div>
+                <div class="modal-footer" id="modalFooterEditTemplateCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditTemplateCustomize" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form id="formDeleteTemplateCustomize" asp-action="DeleteTemplate">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal fade" id="modalDeleteTemplateCustomize" role="dialog" aria-labelledby="modalLabelDeleteTemplateCustomize" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabelDeleteTemplateCustomize">Delete Template</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBodyDeleteTemplateCustomize">
+                    <p>Are you sure you want to Delete this TemplateCustomize?</p>
+                </div>
+                <div class="modal-footer" id="modalFooterDeleteTemplateCustomize">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteTemplateCustomize" data-bs-dismiss="modal">Delete Template</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<br />
+
+<table id="tblTemplateCustomize" class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                Description
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                Amount
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+    <script src="~/js/customize/finance/template.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
+    <partial name="_ValidationScriptsPartial" />
+}
+
