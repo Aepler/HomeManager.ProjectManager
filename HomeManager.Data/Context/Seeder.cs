@@ -169,8 +169,8 @@ namespace HomeManager.Data.Context
             {
                 Id = 1,
                 Name = "Salary",
-                EndTaxType = TaxType.Net,
-                TransactionType = TransactionType.Deposit,
+                EndTaxType = PaymentTaxType.Net,
+                TransactionType = PaymentTransactionType.Deposit,
                 ExtraInput = new string[] { PaymentExtraInput.Extra_Amount.ToString(), PaymentExtraInput.TaxList.ToString() },
                 fk_StatusId = 2
             },
@@ -178,8 +178,10 @@ namespace HomeManager.Data.Context
             {
                 Id = 2,
                 Name = "Monthly Expens",
-                EndTaxType = TaxType.Gross,
-                TransactionType = TransactionType.Debit,
+                EndTaxType = PaymentTaxType.Gross,
+                DefaultTaxRate = 19,
+                TransactionType = PaymentTransactionType.Debit,
+                ExtraInput = new string[] { PaymentExtraInput.Category.ToString()},
                 Repeating = true,
                 fk_StatusId = 1
             },
@@ -187,18 +189,19 @@ namespace HomeManager.Data.Context
             {
                 Id = 3,
                 Name = "Expenditure",
-                EndTaxType = TaxType.Gross,
-                TransactionType = TransactionType.Debit,
-                ExtraInput = new string[] { PaymentExtraInput.Extra_Amount.ToString() },
+                EndTaxType = PaymentTaxType.Gross,
+                TransactionType = PaymentTransactionType.Debit,
+                DefaultTaxRate = 19,
+                ExtraInput = new string[] { PaymentExtraInput.Extra_Amount.ToString(), PaymentExtraInput.Category.ToString() },
                 fk_StatusId = 1
             },
             new Type
             {
                 Id = 4,
                 Name = "Earnings",
-                EndTaxType = TaxType.Net,
-                TransactionType = TransactionType.Deposit,
-                ExtraInput = new string[] { PaymentExtraInput.Extra_Amount.ToString() },
+                EndTaxType = PaymentTaxType.Net,
+                TransactionType = PaymentTransactionType.Deposit,
+                ExtraInput = new string[] { PaymentExtraInput.Extra_Amount.ToString(), PaymentExtraInput.Category.ToString() },
                 fk_StatusId = 2
             });
         }

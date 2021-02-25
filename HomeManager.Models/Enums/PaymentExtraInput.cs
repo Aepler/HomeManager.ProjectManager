@@ -13,6 +13,8 @@ namespace HomeManager.Models.Enums
 
         Extra_Amount = 1,
 
-        TaxList = 2
+        TaxList = 2,
+
+        Category = 3
     }
 }

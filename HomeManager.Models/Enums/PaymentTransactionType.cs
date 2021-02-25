@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace HomeManager.Models.Enums
 {
     [Serializable]
-    public enum TaxType
+    public enum PaymentTransactionType
     {
-        NoValue = 0,
+        Both = 0,
 
-        Net = 1,
+        Debit = 1,
 
-        Gross = 2,
+        Deposit = 2,
     }
 }

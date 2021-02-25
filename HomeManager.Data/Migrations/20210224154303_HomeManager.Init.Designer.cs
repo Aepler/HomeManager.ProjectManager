@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HomeManager.Data.Migrations
 {
     [DbContext(typeof(HomeManagerContext))]
-    [Migration("20210218154636_HomeManager.Init")]
+    [Migration("20210224154303_HomeManager.Init")]
     partial class HomeManagerInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -283,13 +283,100 @@ namespace HomeManager.Data.Migrations
                     b.Property<byte[]>("Invoice")
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<int>("Tax")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TaxList")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("TemplateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("fk_CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("fk_RepeatingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fk_StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("fk_TypeId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TemplateId");
+
+                    b.HasIndex("fk_CategoryId");
+
+                    b.HasIndex("fk_RepeatingId");
+
+                    b.HasIndex("fk_StatusId");
+
+                    b.HasIndex("fk_TypeId");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("FinancePayments");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Repeating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<string>("Amount_ExtraCosts")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Amount_Gross")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<decimal>("Amount_Net")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<decimal>("Amount_Tax")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<string>("Amount_TaxList")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DataType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description_ExtraCosts")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description_TaxList")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("Invoice")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<DateTime?>("RepeatEnd")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("RepeatInterval")
+                    b.Property<int>("RepeatInterval")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("RepeatStart")
+                    b.Property<DateTime>("RepeatStart")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Tax")
@@ -304,9 +391,6 @@ namespace HomeManager.Data.Migrations
                     b.Property<int>("fk_StatusId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("fk_TemplateId")
-                        .HasColumnType("int");
-
                     b.Property<int>("fk_TypeId")
                         .HasColumnType("int");
 
@@ -315,17 +399,9 @@ namespace HomeManager.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("fk_CategoryId");
-
-                    b.HasIndex("fk_StatusId");
-
-                    b.HasIndex("fk_TemplateId");
-
-                    b.HasIndex("fk_TypeId");
-
                     b.HasIndex("fk_UserId");
 
-                    b.ToTable("FinancePayments");
+                    b.ToTable("FinanceRepeatings");
                 });
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Status", b =>
@@ -502,6 +578,7 @@ namespace HomeManager.Data.Migrations
                             Id = 2,
                             Deleted = false,
                             EndTaxType = 2,
+                            ExtraInput = "Category",
                             Name = "Monthly Expens",
                             Repeating = true,
                             TransactionType = 1,
@@ -512,7 +589,7 @@ namespace HomeManager.Data.Migrations
                             Id = 3,
                             Deleted = false,
                             EndTaxType = 2,
-                            ExtraInput = "Extra_Amount",
+                            ExtraInput = "Extra_Amount,Category",
                             Name = "Expenditure",
                             Repeating = false,
                             TransactionType = 1,
@@ -523,7 +600,7 @@ namespace HomeManager.Data.Migrations
                             Id = 4,
                             Deleted = false,
                             EndTaxType = 1,
-                            ExtraInput = "Extra_Amount",
+                            ExtraInput = "Extra_Amount,Category",
                             Name = "Earnings",
                             Repeating = false,
                             TransactionType = 2,
@@ -945,19 +1022,23 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Payment", b =>
                 {
+                    b.HasOne("HomeManager.Models.Entities.Finance.Template", null)
+                        .WithMany("Payments")
+                        .HasForeignKey("TemplateId");
+
                     b.HasOne("HomeManager.Models.Entities.Finance.Category", "Category")
                         .WithMany("Payments")
                         .HasForeignKey("fk_CategoryId");
+
+                    b.HasOne("HomeManager.Models.Entities.Finance.Repeating", "Repeating")
+                        .WithMany("Payments")
+                        .HasForeignKey("fk_RepeatingId");
 
                     b.HasOne("HomeManager.Models.Entities.Finance.Status", "Status")
                         .WithMany("Payments")
                         .HasForeignKey("fk_StatusId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("HomeManager.Models.Entities.Finance.Template", "Template")
-                        .WithMany("Payments")
-                        .HasForeignKey("fk_TemplateId");
 
                     b.HasOne("HomeManager.Models.Entities.Finance.Type", "Type")
                         .WithMany("Payments")
@@ -973,11 +1054,22 @@ namespace HomeManager.Data.Migrations
 
                     b.Navigation("Category");
 
+                    b.Navigation("Repeating");
+
                     b.Navigation("Status");
 
-                    b.Navigation("Template");
-
                     b.Navigation("Type");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Repeating", b =>
+                {
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("fk_UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1143,6 +1235,11 @@ namespace HomeManager.Data.Migrations
                 {
                     b.Navigation("Payment_Templates");
 
+                    b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Repeating", b =>
+                {
                     b.Navigation("Payments");
                 });
 

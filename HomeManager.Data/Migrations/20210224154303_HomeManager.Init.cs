@@ -265,6 +265,46 @@ namespace HomeManager.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FinanceRepeatings",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RepeatInterval = table.Column<int>(type: "int", nullable: false),
+                    RepeatStart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RepeatEnd = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    fk_UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
+                    Amount_Gross = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
+                    Amount_Net = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
+                    Tax = table.Column<int>(type: "int", nullable: false),
+                    Amount_Tax = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
+                    Description_ExtraCosts = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount_ExtraCosts = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description_TaxList = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TaxList = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount_TaxList = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Invoice = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    DataType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    fk_TypeId = table.Column<int>(type: "int", nullable: false),
+                    fk_CategoryId = table.Column<int>(type: "int", nullable: true),
+                    fk_StatusId = table.Column<int>(type: "int", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FinanceRepeatings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FinanceRepeatings_AspNetUsers_fk_UserId",
+                        column: x => x.fk_UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FinanceStatuses",
                 columns: table => new
                 {
@@ -469,11 +509,11 @@ namespace HomeManager.Data.Migrations
                     fk_UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Tax = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
-                    Amount_Tax = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
                     Amount_Gross = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
                     Amount_Net = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
+                    Tax = table.Column<int>(type: "int", nullable: false),
+                    Amount_Tax = table.Column<decimal>(type: "decimal(9,2)", nullable: false),
                     Description_ExtraCosts = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Amount_ExtraCosts = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description_TaxList = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -481,15 +521,13 @@ namespace HomeManager.Data.Migrations
                     Amount_TaxList = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Invoice = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     DataType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RepeatStart = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RepeatEnd = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RepeatInterval = table.Column<int>(type: "int", nullable: true),
-                    fk_TemplateId = table.Column<int>(type: "int", nullable: true),
+                    fk_RepeatingId = table.Column<int>(type: "int", nullable: true),
                     fk_TypeId = table.Column<int>(type: "int", nullable: false),
                     fk_CategoryId = table.Column<int>(type: "int", nullable: true),
                     fk_StatusId = table.Column<int>(type: "int", nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TemplateId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -507,14 +545,20 @@ namespace HomeManager.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_FinancePayments_FinanceRepeatings_fk_RepeatingId",
+                        column: x => x.fk_RepeatingId,
+                        principalTable: "FinanceRepeatings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_FinancePayments_FinanceStatuses_fk_StatusId",
                         column: x => x.fk_StatusId,
                         principalTable: "FinanceStatuses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_FinancePayments_FinanceTemplates_fk_TemplateId",
-                        column: x => x.fk_TemplateId,
+                        name: "FK_FinancePayments_FinanceTemplates_TemplateId",
+                        column: x => x.TemplateId,
                         principalTable: "FinanceTemplates",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -585,10 +629,10 @@ namespace HomeManager.Data.Migrations
                 columns: new[] { "Id", "Deleted", "DeletedOn", "EndTaxType", "ExtraInput", "Name", "Repeating", "TransactionType", "fk_StatusId", "fk_UserId" },
                 values: new object[,]
                 {
-                    { 2, false, null, 2, null, "Monthly Expens", true, 1, 1, null },
-                    { 3, false, null, 2, "Extra_Amount", "Expenditure", false, 1, 1, null },
+                    { 2, false, null, 2, "Category", "Monthly Expens", true, 1, 1, null },
+                    { 3, false, null, 2, "Extra_Amount,Category", "Expenditure", false, 1, 1, null },
                     { 1, false, null, 1, "Extra_Amount,TaxList", "Salary", false, 2, 2, null },
-                    { 4, false, null, 1, "Extra_Amount", "Earnings", false, 2, 2, null }
+                    { 4, false, null, 1, "Extra_Amount,Category", "Earnings", false, 2, 2, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -686,14 +730,14 @@ namespace HomeManager.Data.Migrations
                 column: "fk_CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FinancePayments_fk_RepeatingId",
+                table: "FinancePayments",
+                column: "fk_RepeatingId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FinancePayments_fk_StatusId",
                 table: "FinancePayments",
                 column: "fk_StatusId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancePayments_fk_TemplateId",
-                table: "FinancePayments",
-                column: "fk_TemplateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FinancePayments_fk_TypeId",
@@ -703,6 +747,16 @@ namespace HomeManager.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_FinancePayments_fk_UserId",
                 table: "FinancePayments",
+                column: "fk_UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancePayments_TemplateId",
+                table: "FinancePayments",
+                column: "TemplateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FinanceRepeatings_fk_UserId",
+                table: "FinanceRepeatings",
                 column: "fk_UserId");
 
             migrationBuilder.CreateIndex(
@@ -779,6 +833,9 @@ namespace HomeManager.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "CookingTags");
+
+            migrationBuilder.DropTable(
+                name: "FinanceRepeatings");
 
             migrationBuilder.DropTable(
                 name: "FinanceTemplates");

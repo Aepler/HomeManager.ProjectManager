@@ -194,23 +194,35 @@ function CreatePayment() {
     });
 
     $('#modalBodyCreatePaymentFinance').on('click', '#linkAdvancedAmountCreatePaymentFinance', function () {
+       
+        $(".addedInputExtraCost").each(function (i) {
+            if (this.value == "") {
+                var id = this.id;
+                $(".addedExtraCost" + id).remove();
+            }
+        });
+
         AdvancedAmount("Create");
     });
 
+    $('#modalBodyCreatePaymentFinance').on('click', '#linkAddExtraCostCreatePaymentFinance', function () {
+        AddExtraCost("Create");
+    });
+
     $('#modalBodyCreatePaymentFinance').on('click', '#linkAdvancedTaxListCreatePaymentFinance', function () {
+
+        $(".addedInputTaxList").each(function (i) {
+            if (this.value == "") {
+                var id = this.id;
+                $(".addedTax" + id).remove();
+            }
+        });
+
         AdvancedTax("Create");
     });
 
     $('#modalBodyCreatePaymentFinance').on('click', '#linkAddTaxCreatePaymentFinance', function () {
         AddTax("Create");
-    });
-
-    $('#modalBodyCreatePaymentFinance').on('click', '#linkAdvancedExtraCostsCreatePaymentFinance', function () {
-        AdvancedExtraCosts("Create");
-    });
-
-    $('#modalBodyCreatePaymentFinance').on('click', '#linkAddExtraCostCreatePaymentFinance', function () {
-        AddExtraCost("Create");
     });
 }
 
@@ -252,48 +264,64 @@ function AdvancedAmount(type) {
     $('#divAdvancedAmount' + type + 'PaymentFinance').toggle();
 }
 
+function AddExtraCost(type) {
+    var countString = $('#linkAdvancedAmount' + type + 'PaymentFinance').val();
+
+    if (countString == "") {
+        countString = "1"
+    }
+    var count = parseInt(countString);
+    
+    var data = '<br class="created addedExtraCost' + count + '" />' +
+        '<div class="row g-3 form-group advancedTax created addedExtraCost' + count + '">' +
+        '<div class="col form-floating">' +
+        '<input name="Description_ExtraCosts" placeholder="Description_ExtraCosts" class="form-control addedInputExtraCost" id="' + count + '" />' +
+        '<label for="Description_ExtraCosts" class="control-label">Description</label>' +
+        '</div>' +
+        '<div class="col form-floating">' +
+        '<input name="Amount_ExtraCosts" placeholder="Amount_ExtraCosts" class="form-control" />' +
+        '<label for="Amount_ExtraCosts" class="control-label">Amount</label>' +
+        '</div>' +
+        '</div>';
+
+    count += 1;
+    $('#linkAdvancedAmount' + type + 'PaymentFinance').val(count);
+
+    $('#linkAddExtraCost' + type + 'PaymentFinance').before(data);
+}
+
 function AdvancedTax(type) {
     $('#divAdvancedTax' + type + 'PaymentFinance').toggle();
 }
 
 function AddTax(type) {
-    var data = '<br class="created" />' +
-        '<div class="row g-3 form-group advancedTax created">' +
+    var countString = $('#linkAdvancedTaxList' + type + 'PaymentFinance').val();
+
+    if (countString == "") {
+        countString = "1"
+    }
+    var count = parseInt(countString);
+    
+    var data = '<br class="created addedTax' + count + '" />' +
+        '<div class="row g-3 form-group advancedTax created addedTax' + count + '">' +
         '<div class="col-6 form-floating">' +
-        '<input name="Description_TaxList" placeholder="Description_TaxList" class="form-control" id="inputDescription_TaxList' + type + 'PaymentFinance" />' +
+        '<input name="Description_TaxList" placeholder="Description_TaxList" class="form-control addedInputTaxList" id="' + count + '" />' +
         '<label for="Description_TaxList" class="control-label">Description</label>' +
         '</div>' +
         '<div class="col form-floating">' +
-        '<input name="TaxList" placeholder="TaxList" class="form-control" id="inputTaxList' + type + 'PaymentFinance" />' +
+        '<input name="TaxList" placeholder="TaxList" class="form-control"/>' +
         '<label for="TaxList" class="control-label">Tax %</label>' +
         '</div>' +
         '<div class="col form-floating">' +
-        '<input name="Amount_TaxList" placeholder="Amount_TaxList" class="form-control" id="inputAmountTaxList' + type + 'PaymentFinance" />' +
+        '<input name="Amount_TaxList" placeholder="Amount_TaxList" class="form-control" />' +
         '<label for="Amount_TaxList" class="control-label">Amount</label>' +
         '</div>' +
         '</div>';
 
+    count += 1;
+    $('#linkAdvancedTaxList' + type + 'PaymentFinance').val(count);
+
     $('#linkAddTax' + type + 'PaymentFinance').before(data);
-}
-
-function AdvancedExtraCosts(type) {
-    $('#divExtraCosts' + type + 'PaymentFinance').toggle();
-}
-
-function AddExtraCost(type) {
-    var data = '<br class="created" />' +
-        '<div class="row g-3 form-group advancedTax created">' +
-        '<div class="col form-floating">' +
-        '<input name="Description_ExtraCosts" placeholder="Description_ExtraCosts" class="form-control" id="inputDescription_ExtraCosts' + type + 'PaymentFinance" />' +
-        '<label for="Description_ExtraCosts" class="control-label">Description</label>' +
-        '</div>' +
-        '<div class="col form-floating">' +
-        '<input name="Amount_ExtraCosts" placeholder="Amount_ExtraCosts" class="form-control" id="inputAmount_ExtraCosts' + type + 'PaymentFinance" />' +
-        '<label for="Amount_ExtraCosts" class="control-label">Amount</label>' +
-        '</div>' +
-        '</div>';
-
-    $('#linkAddExtraCost' + type + 'PaymentFinance').before(data);
 }
 
 //==============================================================================

@@ -112,35 +112,46 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
 
         private string MakeResult(PaymentModel model, string method, Type type, Payment payment)
         {
-            var result = "<br class='created' />" + model.Date + "<br class='created' />" + model.Description + "<br class='created' />" + model.Amount;
-
             var extraInput = type.ExtraInput != null ? string.Join(',', type.ExtraInput) : "";
 
-            result += "<div class='created'>" + model.AdvancedAmount;
+            var result = "<br class='created' />" + model.Date + "<br class='created' />" + model.Description + "<br class='created' />" + model.Amount;
+
+            result += model.AdvancedAmount + "<br class='created' />";
+
+            result += "<div class='created' id='divAdvancedAmount" + method + "PaymentFinance' style='display: none'>";
+
+            if (type.EndTaxType == PaymentTaxType.Gross)
+            {
+                result += "<br class='created' />" + model.Amount_Gross + "<br class='created' />" + model.Amount_Net;
+
+            }
+            else if (type.EndTaxType == PaymentTaxType.Net)
+            {
+                result += "<br class='created' />" + model.Amount_Net + "<br class='created' />" + model.Amount_Gross;
+            }
 
             if (extraInput.Contains(PaymentExtraInput.Extra_Amount.ToString()))
             {
-                result += " | " + model.AdvancedExtraCosts + "</div> <div class='created' id='divExtraCosts" + method + "PaymentFinance' style='display: none'> <br class='created' />" + model.ExtraCosts  + model.AddExtraCost + "</div>";
+                result += model.ExtraCosts + model.AddExtraCost + "</div>";
             }
-
-            if (type.EndTaxType == TaxType.Gross)
+            else
             {
-                result += "<div class='created' id='divAdvancedAmount" + method + "PaymentFinance' style='display: none'>" + model.Amount_Gross + "<br class='created' />" + model.Amount_Net + "</div>";
-
-            }
-            else if (type.EndTaxType == TaxType.Net)
-            {
-                result += "<div class='created' id='divAdvancedAmount" + method + "PaymentFinance' style='display: none'>" + model.Amount_Net + "<br class='created' />" + model.Amount_Gross + "</div>";
+                result += "</div>";
             }
 
             result += "<br class='created' />" + model.Tax;
 
             if (extraInput.Contains(PaymentExtraInput.TaxList.ToString()))
             {
-                result += model.AdvancedTaxList + "<br class='created' /> <div class='created' id='divAdvancedTax" + method + "PaymentFinance' style='display: none'> <br class='created' />" + model.TaxList  + model.AddTax + "</div>";
+                result += model.AdvancedTaxList + "<br class='created' /> <div class='created' id='divAdvancedTax" + method + "PaymentFinance' style='display: none'> <br class='created' />" + model.TaxList + model.AddTax + "</div>";
             }
 
-            result += "<br class='created' />" + model.Category + "<br class='created' />" + model.Status + "<br class='created' />" + model.Invoice;
+            if (extraInput.Contains(PaymentExtraInput.Category.ToString()))
+            {
+                result += "<br class='created' />" + model.Category;
+            }
+
+            result += "<br class='created' />" + model.Status + "<br class='created' />" + model.Invoice;
 
             return result;
         }
@@ -185,10 +196,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
 
                 for (int i = 0; i < countExtraCosts; i++)
                 {
-                    if (i > 0)
-                    {
-                        result.ExtraCosts += "<br class='created' />";
-                    }
+                    result.ExtraCosts += "<br class='created' />";
                     result.ExtraCosts += "<div class='row g-3 form-group created'>" +
                 "<div class='col form-floating'>" +
                 "<input name='Description_ExtraCosts' placeholder='Description_ExtraCosts' class='form-control' id='inputDescriptionExtraCosts" + method + "PaymentFinance' value='" + payment.Description_ExtraCosts[i] + "' />" +
@@ -200,26 +208,8 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
                 "</div>" +
                 "</div>";
                 }
-
-                result.AdvancedExtraCosts = "<a href='#' class='link-dark created' id='linkAdvancedExtraCosts" + method + "PaymentFinance'>Extra Cost</a>";
-                result.AddExtraCost = "<a href='#' class='link-dark created' id='linkAddExtraCost" + method + "PaymentFinance'>Add Extra Cost</a>";
             }
-            else
-            {
-                result.ExtraCosts += "<div class='row g-3 form-group created'>" +
-                "<div class='col form-floating'>" +
-                "<input name='Description_ExtraCosts' placeholder='Description_ExtraCosts' class='form-control' id='inputDescriptionExtraCosts" + method + "PaymentFinance' value='' />" +
-                "<label for='Description_ExtraCosts' class='control-label'>Description</label>" +
-                "</div>" +
-                "<div class='col form-floating'>" +
-                "<input name='Amount_ExtraCosts' placeholder='Amount_ExtraCosts' class='form-control' id='inputAmountExtraCosts" + method + "PaymentFinance' value='' />" +
-                "<label for='Amount_ExtraCosts' class='control-label'>Amount</label>" +
-                "</div>" +
-                "</div>";
-
-                result.AdvancedExtraCosts = "<a href='#' class='link-dark created' id='linkAdvancedExtraCosts" + method + "PaymentFinance'>Extra Cost</a>";
-                result.AddExtraCost = "<a href='#' class='link-dark created' id='linkAddExtraCost" + method + "PaymentFinance'>Add Extra Cost</a>";
-            }
+            result.AddExtraCost = "<a href='#' class='link-dark created' id='linkAddExtraCost" + method + "PaymentFinance'>Add Extra Cost</a>";
 
             if (payment.Amount_TaxList != null)
             {
@@ -246,27 +236,26 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
                 "</div>" +
                 "</div>";
                 }
-                result.AdvancedTaxList = "<a href='#' class='link-dark created' id='linkAdvancedTaxList" + method + "PaymentFinance'>Advanced</a>";
+                result.AdvancedTaxList = "<a href='#' class='link-dark created' id='linkAdvancedTaxList" + method + "PaymentFinance' value='1'>Advanced</a>";
                 result.AddTax = "<a href='#' class='link-dark created' id='linkAddTax" + method + "PaymentFinance'>Add Tax</a>";
             }
             else
             {
                 result.TaxList += "<div class='row g-3 form-group created advancedTax'>" +
                 "<div class='col-6 form-floating'>" +
-                "<input name='Description_TaxList' placeholder='Description_TaxList' class='form-control' id='inputDescriptionTaxList" + method + "PaymentFinance' value='' />" +
+                "<input name='Description_TaxList' placeholder='Description_TaxList' class='form-control' id='inputDescriptionTaxList" + method + "PaymentFinance' />" +
                 "<label for='Description_TaxList' class='control-label'>Description</label>" +
                 "</div>" +
                 "<div class='col form-floating'>" +
-                "<input name='TaxList' placeholder='TaxList' class='form-control' id='inputTaxList" + method + "PaymentFinance' value='' />" +
+                "<input name='TaxList' placeholder='TaxList' class='form-control' id='inputTaxList" + method + "PaymentFinance' />" +
                 "<label for='TaxList' class='control-label'>Tax %</label>" +
                 "</div>" +
                 "<div class='col form-floating'>" +
-                "<input name='Amount_TaxList' placeholder='Amount_TaxList' class='form-control' id='inputAmountTaxList" + method + "PaymentFinance' value='' />" +
+                "<input name='Amount_TaxList' placeholder='Amount_TaxList' class='form-control' id='inputAmountTaxList" + method + "PaymentFinance' />" +
                 "<label for='Amount_TaxList' class='control-label'>Amount</label>" +
                 "</div>" +
                 "</div>";
-
-                result.AdvancedTaxList = "<a href='#' class='link-dark created' id='linkAdvancedTaxList" + method + "PaymentFinance'>Advanced</a>";
+                result.AdvancedTaxList = "<a href='#' class='link-dark created' id='linkAdvancedTaxList" + method + "PaymentFinance' value='1'>Advanced</a>";
                 result.AddTax = "<a href='#' class='link-dark created' id='linkAddTax" + method + "PaymentFinance'>Add Tax</a>";
             }
 
@@ -326,7 +315,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
 
             result.Status = statusElement;
 
-            result.AdvancedAmount = "<a href='#' class='link-dark created' id='linkAdvancedAmount" + method + "PaymentFinance' value='0' >Advanced</a>";
+            result.AdvancedAmount = "<a href='#' class='link-dark created' id='linkAdvancedAmount" + method + "PaymentFinance' value='1' >Advanced</a>";
 
             return result;
         }

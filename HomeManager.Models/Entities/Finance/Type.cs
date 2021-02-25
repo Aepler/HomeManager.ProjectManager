@@ -22,8 +22,9 @@ namespace HomeManager.Models.Entities.Finance
         [Required]
         public string Name { get; set; }
         [Required]
-        public TaxType EndTaxType { get; set; }
-        public TransactionType TransactionType { get; set; }
+        public PaymentTaxType EndTaxType { get; set; }
+        public int? DefaultTaxRate { get; set; }
+        public PaymentTransactionType TransactionType { get; set; }
         public string[] ExtraInput { get; set; }
         public bool Repeating { get; set; }
         [Required]
