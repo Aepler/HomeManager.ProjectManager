@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Models.Interfaces.Finance;
-using HomeManager.Data.Repositories.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Services.Finance;
+using HomeManager.Models.Interfaces.Repositories.Finance;
 
 namespace HomeManager.Services.Finance
 {
@@ -19,15 +19,20 @@ namespace HomeManager.Services.Finance
             _statusRepository = statusRepository;
         }
 
-        public async Task<Status> GetById(User user, int id)
+        public async Task<Status> GetById(User user, Guid id)
         {
             try
             {
-                return await _statusRepository.GetById(user, id);
+                var status = _statusRepository.GetById(id);
+                if ((status.fk_UserId == user.Id || status.fk_UserId == null) && !status.Deleted)
+                {
+                    return status;
+                }
+                return null;
             }
             catch (Exception ex)
             {
-                return new Status();
+                throw;
             }
         }
 
@@ -35,11 +40,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _statusRepository.GetAll(user);
+                return _statusRepository.GetAll().Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Status>();
+                throw;
             }
         }
 
@@ -47,11 +52,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _statusRepository.GetByUser(user);
+                return _statusRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Status>();
+                throw;
             }
         }
 
@@ -59,34 +64,36 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _statusRepository.GetByEndPoint(user, endPoint);
+                var statuses = await GetAll(user);
+                return statuses.Where(x => x.EndPoint == endPoint).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Status>();
+                throw;
             }
         }
 
-        public async Task<ICollection<Status>> GetByTypeId(User user, int typeId)
+        public async Task<ICollection<Status>> GetByTypeId(User user, Guid typeId)
         {
             try
             {
-                return await _statusRepository.GetByTypeId(user, typeId);
+                var statuses = await GetAll(user);
+                return statuses.Where(x => x.EndPoint == false || x.Id == typeId).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Status>();
+                throw;
             }
         }
         public async Task<ICollection<Status>> GetDefault()
         {
             try
             {
-                return await _statusRepository.GetDefault();
+                return _statusRepository.GetAll().Where(x => x.fk_UserId == null && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Status>();
+                throw;
             }
         }
 
@@ -96,7 +103,7 @@ namespace HomeManager.Services.Finance
             try
             {
                 status.fk_UserId = user.Id;
-                return await _statusRepository.Add(status);
+                return _statusRepository.Add(status);
             }
             catch (Exception ex)
             {
@@ -108,11 +115,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                var realStatus = await _statusRepository.GetById(user, status.Id);
+                var realStatus = await GetById(user, status.Id);
                 if (realStatus != null && realStatus.fk_UserId == user.Id)
                 {
                     status.fk_UserId = user.Id;
-                    return await _statusRepository.Update(status);
+                    return _statusRepository.Update(status);
                 }
                 return false;  
             }
@@ -126,13 +133,13 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                var realStatus = await _statusRepository.GetById(user, status.Id);
+                var realStatus = await GetById(user, status.Id);
                 if (realStatus != null && realStatus.fk_UserId == user.Id)
                 {
                     status.fk_UserId = user.Id;
                     status.Deleted = true;
                     status.DeletedOn = DateTime.Today;
-                    return await _statusRepository.Delete(status);
+                    return _statusRepository.Delete(status);
                 }
                 return false;
             }
@@ -149,7 +156,7 @@ namespace HomeManager.Services.Finance
                 if (userRoles.Contains("Admin"))
                 {
                     status.fk_UserId = null;
-                    return await _statusRepository.Add(status);
+                    return _statusRepository.Add(status);
                 }
                 return false;
             }
@@ -165,8 +172,13 @@ namespace HomeManager.Services.Finance
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    status.fk_UserId = null;
-                    return await _statusRepository.Update(status);
+                    var realStatuses = await GetDefault();
+                    var realStatus = realStatuses.Where(x => x.Id == status.Id).FirstOrDefault();
+                    if (realStatus != null && realStatus.fk_UserId == null)
+                    {
+                        status.fk_UserId = null;
+                        return _statusRepository.Update(status);
+                    }
                 }
                 return false;
             }
@@ -182,10 +194,15 @@ namespace HomeManager.Services.Finance
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    status.fk_UserId = null;
-                    status.Deleted = true;
-                    status.DeletedOn = DateTime.Today;
-                    return await _statusRepository.Update(status);
+                    var realStatuses = await GetDefault();
+                    var realStatus = realStatuses.Where(x => x.Id == status.Id).FirstOrDefault();
+                    if (realStatus != null && realStatus.fk_UserId == null)
+                    {
+                        status.fk_UserId = null;
+                        status.Deleted = true;
+                        status.DeletedOn = DateTime.Today;
+                        return _statusRepository.Update(status);
+                    }
                 }
                 return false;
             }

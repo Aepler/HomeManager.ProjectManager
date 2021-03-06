@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Models.Interfaces.Finance;
-using HomeManager.Data.Repositories.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Services.Finance;
+using HomeManager.Models.Interfaces.Repositories.Finance;
+using HomeManager.Models.Enums;
 
 namespace HomeManager.Services.Finance
 {
@@ -19,15 +20,20 @@ namespace HomeManager.Services.Finance
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<Payment> GetById(User user, int id)
+        public async Task<Payment> GetById(User user, Guid id)
         {
             try
             {
-                return await _paymentRepository.GetById(user, id);
+                var payment = _paymentRepository.GetById(id);
+                if (payment.fk_UserId == user.Id && !payment.Deleted)
+                {
+                    return payment;
+                }
+                return null;
             }
             catch (Exception ex)
             {
-                return new Payment();
+                throw;
             }
         }
 
@@ -35,11 +41,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _paymentRepository.GetAll(user);
+                return _paymentRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                throw;
             }
         }
 
@@ -58,11 +64,11 @@ namespace HomeManager.Services.Finance
 
                 foreach (var x in payments)
                 {
-                    if (x.fk_TypeId == 1 || x.fk_TypeId == 4)
+                    if (x.Type.TransactionType == PaymentTransactionType.Deposit || x.Type.TransactionType == PaymentTransactionType.Both)
                     {
                         result += x.Amount;
                     }
-                    else if(x.fk_TypeId == 2 || x.fk_TypeId == 3)
+                    else if(x.Type.TransactionType == PaymentTransactionType.Debit)
                     {
                         result -= x.Amount;
                     }
@@ -72,19 +78,46 @@ namespace HomeManager.Services.Finance
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                throw;
             }
         }
 
-        public async Task<ICollection<Payment>> GetByCategory(User user, int fk_CategoryId)
+        public async Task<ICollection<Payment>> GetByWallet(User user, Guid walletId)
         {
             try
             {
-                return await _paymentRepository.GetByCategory(user, fk_CategoryId);
+                var payments = await GetAll(user);
+                return payments.Where(x => x.fk_WalletId == walletId).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                throw;
+            }
+        }
+
+        public async Task<ICollection<Payment>> GetByCurrentWallet(User user)
+        {
+            try
+            {
+                var payments = await GetAll(user);
+                return payments.Where(x => x.fk_WalletId == user.CurrentWallet).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<ICollection<Payment>> GetByCategory(User user, Guid categoryId)
+        {
+            try
+            {
+                var payments = await GetAll(user);
+                return payments.Where(x => x.fk_CategoryId == categoryId).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 
@@ -92,11 +125,12 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _paymentRepository.GetByDate(user, dateTime);
+                var payments = await GetAll(user);
+                return payments.Where(x => x.Date == dateTime).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                throw;
             }
         }
 
@@ -104,35 +138,38 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _paymentRepository.GetByDateRange(user, dateTimeStart, dateTimeEnd);
+                var payments = await GetAll(user);
+                return payments.Where(x => x.Date >= dateTimeStart || x.Date <= dateTimeEnd).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                throw;
             }
         }
 
-        public async Task<ICollection<Payment>> GetByStatus(User user, int fk_StatusId)
+        public async Task<ICollection<Payment>> GetByStatus(User user, Guid statusId)
         {
             try
             {
-                return await _paymentRepository.GetByStatus(user, fk_StatusId);
+                var payments = await GetAll(user);
+                return payments.Where(x => x.fk_StatusId == statusId).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                throw;
             }
         }
 
-        public async Task<ICollection<Payment>> GetByType(User user, int fk_TypeId)
+        public async Task<ICollection<Payment>> GetByType(User user, Guid typeId)
         {
             try
             {
-                return await _paymentRepository.GetByType(user, fk_TypeId);
+                var payments = await GetAll(user);
+                return payments.Where(x => x.fk_TypeId == typeId).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                throw;
             }
         }
 
@@ -140,12 +177,12 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                ICollection<Payment> payments = await _paymentRepository.GetAll(user);
+                ICollection<Payment> payments = await GetAll(user);
                 return payments.Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                throw;
             }
         }
 
@@ -153,12 +190,12 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                ICollection<Payment> payments = await _paymentRepository.GetAll(user);
+                ICollection<Payment> payments = await GetAll(user);
                 return payments.Where(x => x.Status.EndPoint == false && x.Date > DateTime.Today).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Payment>();
+                throw;
             }
         }
 
@@ -167,7 +204,7 @@ namespace HomeManager.Services.Finance
             try
             {
                 payment.fk_UserId = user.Id;
-                return await _paymentRepository.Add(payment);
+                return _paymentRepository.Add(payment);
             }
             catch (Exception ex)
             {
@@ -179,11 +216,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                var realPayment = await _paymentRepository.GetById(user, payment.Id);
-                if (realPayment != null && realPayment.fk_UserId == user.Id)
+                var realPayment = await GetById(user, payment.Id);
+                if (realPayment != null)
                 {
                     payment.fk_UserId = user.Id;
-                    return await _paymentRepository.Update(payment);
+                    return _paymentRepository.Update(payment);
                 }
                 return false;
             }
@@ -197,13 +234,13 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                var realPayment = await _paymentRepository.GetById(user, payment.Id);
-                if (realPayment != null && realPayment.fk_UserId == user.Id)
+                var realPayment = await GetById(user, payment.Id);
+                if (realPayment != null)
                 {
                     payment.fk_UserId = user.Id;
                     payment.Deleted = true;
                     payment.DeletedOn = DateTime.Today;
-                    return await _paymentRepository.Delete(payment);
+                    return _paymentRepository.Delete(payment);
                 }
                 return false;
             }

@@ -27,6 +27,7 @@ namespace HomeManager.Data
         public DbSet<Status> FinanceStatuses { get; set; }
         public DbSet<Template> FinanceTemplates { get; set; }
         public DbSet<Repeating> FinanceRepeatings { get; set; }
+        public DbSet<Wallet> FinanceWallets { get; set; }
         public DbSet<Tag> CookingTags { get; set; }
         public DbSet<Ingredient> CookingIngredients {  get; set; }
         public DbSet<Recipe> CookingRecipes { get; set; }
@@ -49,64 +50,96 @@ namespace HomeManager.Data
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<Payment>()
-            .Property(e => e.Description_TaxList)
+            .Property(e => e.DetailedTaxDescription)
             .HasConversion(
                 v => string.Join(',', v).Trim().Replace("%20", " "),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<Payment>()
-            .Property(e => e.Amount_TaxList)
+            .Property(e => e.DetailedTaxAmount)
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<Payment>()
-            .Property(e => e.TaxList)
+            .Property(e => e.DetailedTaxRate)
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<Payment>()
-            .Property(e => e.Description_ExtraCosts)
+            .Property(e => e.ExtraCostDescription)
             .HasConversion(
                 v => string.Join(',', v).Trim().Replace("%20", " "),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
 
             modelBuilder.Entity<Payment>()
-            .Property(e => e.Amount_ExtraCosts)
+            .Property(e => e.ExtraCostAmount)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+
+            modelBuilder.Entity<Template>()
+            .Property(e => e.DetailedTaxDescription)
+            .HasConversion(
+                v => string.Join(',', v).Trim().Replace("%20", " "),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            modelBuilder.Entity<Template>()
+            .Property(e => e.DetailedTaxAmount)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            modelBuilder.Entity<Template>()
+            .Property(e => e.DetailedTaxRate)
+            .HasConversion(
+                v => string.Join(',', v),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            modelBuilder.Entity<Template>()
+            .Property(e => e.ExtraCostDescription)
+            .HasConversion(
+                v => string.Join(',', v).Trim().Replace("%20", " "),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+
+            modelBuilder.Entity<Template>()
+            .Property(e => e.ExtraCostAmount)
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
 
             modelBuilder.Entity<Repeating>()
-            .Property(e => e.Description_TaxList)
+            .Property(e => e.DetailedTaxDescription)
             .HasConversion(
                 v => string.Join(',', v).Trim().Replace("%20", " "),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<Repeating>()
-            .Property(e => e.Amount_TaxList)
+            .Property(e => e.DetailedTaxAmount)
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<Repeating>()
-            .Property(e => e.TaxList)
+            .Property(e => e.DetailedTaxRate)
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             modelBuilder.Entity<Repeating>()
-            .Property(e => e.Description_ExtraCosts)
+            .Property(e => e.ExtraCostDescription)
             .HasConversion(
                 v => string.Join(',', v).Trim().Replace("%20", " "),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
 
             modelBuilder.Entity<Repeating>()
-            .Property(e => e.Amount_ExtraCosts)
+            .Property(e => e.ExtraCostAmount)
             .HasConversion(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries));
@@ -148,6 +181,7 @@ namespace HomeManager.Data
             modelBuilder.Entity<Status>().ToTable("FinanceStatuses");
             modelBuilder.Entity<Template>().ToTable("FinanceTemplates");
             modelBuilder.Entity<Repeating>().ToTable("FinanceRepeatings");
+            modelBuilder.Entity<Wallet>().ToTable("FinanceWallets");
             modelBuilder.Entity<Tag>().ToTable("CookingTags");
             modelBuilder.Entity<Ingredient>().ToTable("CookingIngredients");
             modelBuilder.Entity<Recipe>().ToTable("CookingRecipes");

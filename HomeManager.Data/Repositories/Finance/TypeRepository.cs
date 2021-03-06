@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Data.Repositories.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Repositories.Finance;
 using Microsoft.EntityFrameworkCore;
 using Type = HomeManager.Models.Entities.Finance.Type;
 
@@ -20,32 +20,22 @@ namespace HomeManager.Data.Repositories.Finance
             _context = context;
         }
 
-        public async Task<Type> GetById(User user, int id)
+        public Type GetById(Guid id)
         {
-            return await _context.FinanceTypes.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && !x.Deleted).Include(x => x.Status).FirstOrDefaultAsync();
+            return _context.FinanceTypes.Where(x => x.Id == id).Include(x => x.Status).FirstOrDefault();
         }
 
-        public async Task<ICollection<Type>> GetAll(User user)
+        public ICollection<Type> GetAll()
         {
-            return await _context.FinanceTypes.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted).Include(x => x.Status).ToListAsync();
+            return _context.FinanceTypes.Include(x => x.Status).ToList();
         }
 
-        public async Task<ICollection<Type>> GetByUser(User user)
-        {
-            return await _context.FinanceTypes.Where(x => x.fk_UserId == user.Id && !x.Deleted).Include(x => x.Status).ToListAsync();
-        }
-
-        public async Task<ICollection<Type>> GetDefault()
-        {
-            return await _context.FinanceTypes.Where(x => x.fk_UserId == null && !x.Deleted).Include(x => x.Status).ToListAsync();
-        }
-
-        public async Task<bool> Add(Type type)
+        public bool Add(Type type)
         {
             try
             {
                 _context.FinanceTypes.Add(type);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }
@@ -55,12 +45,12 @@ namespace HomeManager.Data.Repositories.Finance
             }
         }
 
-        public async Task<bool> Update(Type type)
+        public bool Update(Type type)
         {
             try
             {
                 _context.FinanceTypes.Update(type);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }
@@ -70,12 +60,12 @@ namespace HomeManager.Data.Repositories.Finance
             }
         }
 
-        public async Task<bool> Delete(Type type)
+        public bool Delete(Type type)
         {
             try
             {
                 _context.FinanceTypes.Update(type);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }

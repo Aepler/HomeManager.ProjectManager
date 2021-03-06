@@ -11,8 +11,8 @@ namespace HomeManager.Models.Interfaces.Factories.Finance
 {
     public interface IFinanceFormFactory
     {
-        Task<string> GetCreateForm(User user, int typeId);
-        Task<string> GetCreateFromTemplateForm(User user, int templateId);
-        Task<string> GetEditForm(User user, int paymentId);
+        Task<string> GetCreateForm(User user, Guid typeId);
+        Task<string> GetCreateFromTemplateForm(User user, Guid templateId);
+        Task<string> GetEditForm(User user, Guid paymentId);
     }
 }

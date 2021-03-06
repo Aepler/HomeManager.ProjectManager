@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Data.Repositories.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Repositories.Finance;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeManager.Data.Repositories.Finance
@@ -19,42 +19,22 @@ namespace HomeManager.Data.Repositories.Finance
             _context = context;
         }
 
-        public async Task<Status> GetById(User user, int id)
+        public Status GetById(Guid id)
         {
-            return await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && !x.Deleted).FirstOrDefaultAsync();
+            return _context.FinanceStatuses.Where(x => x.Id == id).FirstOrDefault();
         }
 
-        public async Task<ICollection<Status>> GetAll(User user)
+        public ICollection<Status> GetAll()
         {
-            return await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted).ToListAsync();
+            return _context.FinanceStatuses.ToList();
         }
 
-        public async Task<ICollection<Status>> GetByUser(User user)
-        {
-            return await _context.FinanceStatuses.Where(x => x.fk_UserId == user.Id && !x.Deleted).ToListAsync();
-        }
-
-        public async Task<ICollection<Status>> GetByEndPoint(User user, bool endPoint)
-        {
-            return await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.EndPoint == endPoint && !x.Deleted).ToListAsync();
-        }
-
-        public async Task<ICollection<Status>> GetByTypeId(User user, int typeId)
-        {
-            return await _context.FinanceStatuses.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && (x.EndPoint == false || x.Id == typeId) && !x.Deleted).ToListAsync();
-        }
-
-        public async Task<ICollection<Status>> GetDefault()
-        {
-            return await _context.FinanceStatuses.Where(x => x.fk_UserId == null && !x.Deleted).ToListAsync();
-        }
-
-        public async Task<bool> Add(Status status)
+        public bool Add(Status status)
         {
             try
             {
                 _context.FinanceStatuses.Add(status);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }
@@ -64,12 +44,12 @@ namespace HomeManager.Data.Repositories.Finance
             }
         }
 
-        public async Task<bool> Update(Status status)
+        public bool Update(Status status)
         {
             try
             {
                 _context.FinanceStatuses.Update(status);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }
@@ -79,12 +59,12 @@ namespace HomeManager.Data.Repositories.Finance
             }
         }
 
-        public async Task<bool> Delete(Status status)
+        public bool Delete(Status status)
         {
             try
             {
                 _context.FinanceStatuses.Update(status);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }

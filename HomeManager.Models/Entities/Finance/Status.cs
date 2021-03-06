@@ -15,7 +15,7 @@ namespace HomeManager.Models.Entities.Finance
         }
 
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string Name { get; set; }
         public bool EndPoint { get; set; }

@@ -1,4 +1,4 @@
-﻿using HomeManager.Models.DataTableModels;
+﻿using HomeManager.Models.DataTable;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
 using HomeManager.Models.Interfaces.Factories;
@@ -22,14 +22,14 @@ namespace HomeManager.WebApplication.Factories
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        public async Task<DataTableResultModel<RoleDataTableModel>> GetTableData(DataTableModel model, ICollection<Role> list)
+        public async Task<DataTableResponse<RoleDataTable>> GetTableData(DataTableInput model, ICollection<Role> list)
         {
             try
             {
-                var result = new DataTableResultModel<RoleDataTableModel>();
+                var result = new DataTableResponse<RoleDataTable>();
                 int totalRecords = list.Count;
 
-                var modifiedData = list.Select(d => new RoleDataTableModel
+                var modifiedData = list.Select(d => new RoleDataTable
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name,
@@ -71,28 +71,28 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<PaymentDataTableModel>> GetTableData(DataTableModel model, ICollection<Payment> list)
+        public async Task<DataTableResponse<PaymentDataTable>> GetTableData(DataTableInput model, ICollection<Payment> list)
         {
             try
             {
-                var result = new DataTableResultModel<PaymentDataTableModel>();
+                var result = new DataTableResponse<PaymentDataTable>();
                 int totalRecords = list.Count;
 
 
-                var modifiedData = list.Select(d => new PaymentDataTableModel
+                var modifiedData = list.Select(d => new PaymentDataTable
                 {
                     Id = d.Id.ToString(),
                     Date = d.Date.ToString("dd.MM.yyyy"),
                     Description = d.Description,
-                    Description_ExtraCosts = d.Description_ExtraCosts,
-                    Description_TaxList = d.Description_TaxList,
-                    Tax = d.Tax.ToString(),
+                    Description_ExtraCosts = d.ExtraCostDescription,
+                    Description_TaxList = d.DetailedTaxDescription,
+                    Tax = d.TaxRate.ToString(),
                     Amount = d.Amount.ToString(),
-                    Amount_Tax = d.Amount_Tax.ToString(),
-                    Amount_Gross = d.Amount_Gross.ToString(),
-                    Amount_Net = d.Amount_Net.ToString(),
-                    Amount_ExtraCosts = d.Amount_ExtraCosts,
-                    Amount_TaxList = d.Amount_TaxList,
+                    Amount_Tax = d.TaxAmount.ToString(),
+                    Amount_Gross = d.GrossAmount.ToString(),
+                    Amount_Net = d.NetAmount.ToString(),
+                    Amount_ExtraCosts = d.ExtraCostAmount,
+                    Amount_TaxList = d.DetailedTaxAmount,
                     fk_TypeId = d.fk_TypeId.ToString(),
                     Type = d.Type.Name,
                     fk_CategoryId = d.fk_CategoryId.ToString(),
@@ -139,14 +139,14 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<CategoryDataTableModel>> GetTableData(DataTableModel model, ICollection<Category> list)
+        public async Task<DataTableResponse<CategoryDataTable>> GetTableData(DataTableInput model, ICollection<Category> list)
         {
             try
             {
-                var result = new DataTableResultModel<CategoryDataTableModel>();
+                var result = new DataTableResponse<CategoryDataTable>();
                 int totalRecords = list.Count;
 
-                var modifiedData = list.Select(d => new CategoryDataTableModel
+                var modifiedData = list.Select(d => new CategoryDataTable
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name
@@ -186,14 +186,14 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<TemplateDataTableModel>> GetTableData(DataTableModel model, ICollection<Template> list)
+        public async Task<DataTableResponse<TemplateDataTable>> GetTableData(DataTableInput model, ICollection<Template> list)
         {
             try
             {
-                var result = new DataTableResultModel<TemplateDataTableModel>();
+                var result = new DataTableResponse<TemplateDataTable>();
                 int totalRecords = list.Count;
 
-                var modifiedData = list.Select(d => new TemplateDataTableModel
+                var modifiedData = list.Select(d => new TemplateDataTable
                 {
                     Id = d.Id.ToString(),
                     Date = d.Date.ToString(),
@@ -243,14 +243,14 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<TypeDataTableModel>> GetTableData(DataTableModel model, ICollection<Type> list)
+        public async Task<DataTableResponse<TypeDataTable>> GetTableData(DataTableInput model, ICollection<Type> list)
         {
             try
             {
-                var result = new DataTableResultModel<TypeDataTableModel>();
+                var result = new DataTableResponse<TypeDataTable>();
                 int totalRecords = list.Count;
 
-                var modifiedData = list.Select(d => new TypeDataTableModel
+                var modifiedData = list.Select(d => new TypeDataTable
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name,
@@ -299,14 +299,14 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<StatusDataTableModel>> GetTableData(DataTableModel model, ICollection<Status> list)
+        public async Task<DataTableResponse<StatusDataTable>> GetTableData(DataTableInput model, ICollection<Status> list)
         {
             try
             {
-                var result = new DataTableResultModel<StatusDataTableModel>();
+                var result = new DataTableResponse<StatusDataTable>();
                 int totalRecords = list.Count;
 
-                var modifiedData = list.Select(d => new StatusDataTableModel
+                var modifiedData = list.Select(d => new StatusDataTable
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name,
@@ -348,14 +348,14 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<UserRoleDataTableModel>> GetTableData(DataTableModel model, ICollection<UserRoleDataTableModel> list)
+        public async Task<DataTableResponse<UserRoleDataTable>> GetTableData(DataTableInput model, ICollection<UserRoleDataTable> list)
         {
             try
             {
-                var result = new DataTableResultModel<UserRoleDataTableModel>();
+                var result = new DataTableResponse<UserRoleDataTable>();
                 int totalRecords = list.Count;
 
-                var modifiedData = list.Select(d => new UserRoleDataTableModel
+                var modifiedData = list.Select(d => new UserRoleDataTable
                 {
                     User = d.User,
                     UserId = d.UserId,
@@ -398,20 +398,20 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResultModel<UserDataTableModel>> GetTableData(DataTableModel model, ICollection<User> list)
+        public async Task<DataTableResponse<UserDataTable>> GetTableData(DataTableInput model, ICollection<User> list)
         {
             try
             {
-                var result = new DataTableResultModel<UserDataTableModel>();
+                var result = new DataTableResponse<UserDataTable>();
                 int totalRecords = list.Count;
 
-                var modifiedData = list.Select(d => new UserDataTableModel
+                var modifiedData = list.Select(d => new UserDataTable
                 {
                     Id = d.Id.ToString(),
                     UserName = d.UserName,
                     Email = d.Email,
-                    Name = d.Name,
-                    Lastname = d.Lastname,
+                    Name = d.FirstName,
+                    Lastname = d.LastName,
                     PhoneNumber = d.PhoneNumber != null ? d.PhoneNumber.ToString() : null,
                     TwoFactorEnabled = d.TwoFactorEnabled.ToString()
                 }

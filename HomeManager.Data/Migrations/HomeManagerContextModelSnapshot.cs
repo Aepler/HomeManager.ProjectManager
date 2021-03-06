@@ -162,10 +162,9 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -189,43 +188,43 @@ namespace HomeManager.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("65df89ea-df64-4074-a36c-6b15d1f16baf"),
                             Deleted = false,
                             Name = "Living"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("05e8b5cb-e640-4a20-8c4a-258626c90a84"),
                             Deleted = false,
                             Name = "Groceries"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("e9187c61-0682-40d9-8a78-8098bfd5f401"),
                             Deleted = false,
                             Name = "Leisure"
                         },
                         new
                         {
-                            Id = 4,
+                            Id = new Guid("6a7d9b47-7967-497f-8276-735d0a46cbcb"),
                             Deleted = false,
                             Name = "Mobility"
                         },
                         new
                         {
-                            Id = 5,
+                            Id = new Guid("327b058f-4182-4ca1-9c1b-cfa46e3f59e0"),
                             Deleted = false,
                             Name = "Insurance"
                         },
                         new
                         {
-                            Id = 6,
+                            Id = new Guid("de9f70b1-e498-4e6f-aba8-b290a7f91111"),
                             Deleted = false,
                             Name = "Loans"
                         },
                         new
                         {
-                            Id = 7,
+                            Id = new Guid("1e02aece-87a5-43a4-9407-232718500157"),
                             Deleted = false,
                             Name = "Saving"
                         });
@@ -233,31 +232,12 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Payment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(9,2)");
-
-                    b.Property<string>("Amount_ExtraCosts")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Amount_Gross")
-                        .HasColumnType("decimal(9,2)");
-
-                    b.Property<decimal>("Amount_Net")
-                        .HasColumnType("decimal(9,2)");
-
-                    b.Property<decimal>("Amount_Tax")
-                        .HasColumnType("decimal(9,2)");
-
-                    b.Property<string>("Amount_TaxList")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DataType")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -272,37 +252,64 @@ namespace HomeManager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description_ExtraCosts")
+                    b.Property<string>("DetailedTaxAmount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description_TaxList")
+                    b.Property<string>("DetailedTaxDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Invoice")
+                    b.Property<string>("DetailedTaxRate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExtraCostAmount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExtraCostDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("GrossAmount")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<byte[]>("InvoiceData")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("Tax")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TaxList")
+                    b.Property<string>("InvoiceDataType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TemplateId")
+                    b.Property<decimal>("NetAmount")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<string>("TaxDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TaxRate")
                         .HasColumnType("int");
 
-                    b.Property<int?>("fk_CategoryId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("TemplateId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("fk_RepeatingId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("WarrantyExpiryDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("fk_StatusId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("fk_CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("fk_TypeId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("fk_RepeatingId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("fk_StatusId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("fk_TypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("fk_WalletId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -319,36 +326,22 @@ namespace HomeManager.Data.Migrations
 
                     b.HasIndex("fk_UserId");
 
+                    b.HasIndex("fk_WalletId");
+
                     b.ToTable("FinancePayments");
                 });
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Repeating", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(9,2)");
 
-                    b.Property<string>("Amount_ExtraCosts")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Amount_Gross")
-                        .HasColumnType("decimal(9,2)");
-
-                    b.Property<decimal>("Amount_Net")
-                        .HasColumnType("decimal(9,2)");
-
-                    b.Property<decimal>("Amount_Tax")
-                        .HasColumnType("decimal(9,2)");
-
-                    b.Property<string>("Amount_TaxList")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DataType")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -357,16 +350,35 @@ namespace HomeManager.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description_ExtraCosts")
+                    b.Property<string>("DetailedTaxAmount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description_TaxList")
+                    b.Property<string>("DetailedTaxDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Invoice")
+                    b.Property<string>("DetailedTaxRate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExtraCostAmount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExtraCostDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("GrossAmount")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<byte[]>("InvoiceData")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("InvoiceDataType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("NetAmount")
+                        .HasColumnType("decimal(9,2)");
 
                     b.Property<DateTime?>("RepeatEnd")
                         .HasColumnType("datetime2");
@@ -377,25 +389,32 @@ namespace HomeManager.Data.Migrations
                     b.Property<DateTime>("RepeatStart")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Tax")
-                        .HasColumnType("int");
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("decimal(9,2)");
 
-                    b.Property<string>("TaxList")
+                    b.Property<string>("TaxDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("fk_CategoryId")
+                    b.Property<int>("TaxRate")
                         .HasColumnType("int");
 
-                    b.Property<int>("fk_StatusId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("WarrantyExpiryDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("fk_TypeId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("fk_CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("fk_TypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("fk_UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("fk_CategoryId");
+
+                    b.HasIndex("fk_TypeId");
 
                     b.HasIndex("fk_UserId");
 
@@ -404,10 +423,9 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Status", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -434,28 +452,28 @@ namespace HomeManager.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("58ae656b-0b17-4eed-aeeb-eeb660db266b"),
                             Deleted = false,
                             EndPoint = true,
                             Name = "Paid"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("641dde1b-2959-47ca-bbc6-d0979ff2bc14"),
                             Deleted = false,
                             EndPoint = true,
                             Name = "Received"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("c04f9f24-36c9-4569-86ed-3aa4e51278be"),
                             Deleted = false,
                             EndPoint = false,
                             Name = "Pending"
                         },
                         new
                         {
-                            Id = 4,
+                            Id = new Guid("26425888-2203-422d-8cf1-44400b5f9459"),
                             Deleted = false,
                             EndPoint = false,
                             Name = "Fictitious"
@@ -464,10 +482,9 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Template", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(9,2)");
@@ -482,25 +499,53 @@ namespace HomeManager.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Invoice")
+                    b.Property<string>("DetailedTaxAmount")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("RepeatEnd")
+                    b.Property<string>("DetailedTaxDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DetailedTaxRate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExtraCostAmount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExtraCostDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("GrossAmount")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<byte[]>("InvoiceData")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("InvoiceDataType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("NetAmount")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<string>("TaxDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TaxRate")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("WarrantyExpiryDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("RepeatInterval")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("fk_CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("RepeatStart")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("fk_CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("fk_TypeId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("fk_TypeId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("fk_UserId")
                         .HasColumnType("uniqueidentifier");
@@ -518,10 +563,9 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Type", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int?>("DefaultTaxRate")
                         .HasColumnType("int");
@@ -548,8 +592,8 @@ namespace HomeManager.Data.Migrations
                     b.Property<int>("TransactionType")
                         .HasColumnType("int");
 
-                    b.Property<int>("fk_StatusId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("fk_StatusId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("fk_UserId")
                         .HasColumnType("uniqueidentifier");
@@ -565,48 +609,85 @@ namespace HomeManager.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("66b2ecfa-915d-4ca1-af3f-e5c8602d1c23"),
                             Deleted = false,
                             EndTaxType = 1,
-                            ExtraInput = "Extra_Amount,TaxList",
+                            ExtraInput = "ExtraCost,DetailedTax",
                             Name = "Salary",
                             Repeating = false,
                             TransactionType = 2,
-                            fk_StatusId = 2
+                            fk_StatusId = new Guid("641dde1b-2959-47ca-bbc6-d0979ff2bc14")
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("6b423c70-1edd-4988-9cc4-bd4b77eef7e0"),
+                            DefaultTaxRate = 19,
                             Deleted = false,
                             EndTaxType = 2,
                             ExtraInput = "Category",
                             Name = "Monthly Expens",
                             Repeating = true,
                             TransactionType = 1,
-                            fk_StatusId = 1
+                            fk_StatusId = new Guid("58ae656b-0b17-4eed-aeeb-eeb660db266b")
                         },
                         new
                         {
-                            Id = 3,
+                            Id = new Guid("93399d01-9c77-483d-bd70-964898a7d875"),
+                            DefaultTaxRate = 19,
                             Deleted = false,
                             EndTaxType = 2,
-                            ExtraInput = "Extra_Amount,Category",
+                            ExtraInput = "ExtraCost,Category",
                             Name = "Expenditure",
                             Repeating = false,
                             TransactionType = 1,
-                            fk_StatusId = 1
+                            fk_StatusId = new Guid("58ae656b-0b17-4eed-aeeb-eeb660db266b")
                         },
                         new
                         {
-                            Id = 4,
+                            Id = new Guid("2cdc950b-c30d-4cbe-a0ca-0965f86cb9ac"),
                             Deleted = false,
                             EndTaxType = 1,
-                            ExtraInput = "Extra_Amount,Category",
+                            ExtraInput = "ExtraCost,Category",
                             Name = "Earnings",
                             Repeating = false,
                             TransactionType = 2,
-                            fk_StatusId = 2
+                            fk_StatusId = new Guid("641dde1b-2959-47ca-bbc6-d0979ff2bc14")
                         });
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Wallet", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("BalanceUpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("CurrentBalance")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("StartBalance")
+                        .HasColumnType("decimal(9,2)");
+
+                    b.Property<Guid>("fk_UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("fk_UserId");
+
+                    b.ToTable("FinanceWallets");
                 });
 
             modelBuilder.Entity("HomeManager.Models.Entities.Role", b =>
@@ -666,11 +747,11 @@ namespace HomeManager.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("CurrentWallet")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("Darkmode")
                         .HasColumnType("bit");
-
-                    b.Property<string>("DataType")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -679,7 +760,10 @@ namespace HomeManager.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Lastname")
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -687,9 +771,6 @@ namespace HomeManager.Data.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -708,14 +789,14 @@ namespace HomeManager.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<byte[]>("Picture")
+                    b.Property<byte[]>("ProfilePictureData")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ProfilePictureDataType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("StartBalance")
-                        .HasColumnType("float");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -745,15 +826,14 @@ namespace HomeManager.Data.Migrations
                             Darkmode = true,
                             Email = "Admin@Admin.Admin",
                             EmailConfirmed = true,
-                            Lastname = "Admin",
+                            FirstName = "Admin",
+                            LastName = "Admin",
                             LockoutEnabled = true,
-                            Name = "Admin",
                             NormalizedEmail = "ADMIN@ADMIN.ADMIN",
                             NormalizedUserName = "ADMIN",
                             PasswordHash = "AQAAAAEAACcQAAAAEJLDpQEhYHywkPUimXOLlP6w24hXDuQdI2wtLcSKIB0K3BPmeFV+nzAaNgRRU2eozA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "RRF4WT3IKFEA5BLYKDY5UJNCIAGATOAP",
-                            StartBalance = 0.0,
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         },
@@ -765,15 +845,14 @@ namespace HomeManager.Data.Migrations
                             Darkmode = true,
                             Email = "Francesco.Aepler@gmail.com",
                             EmailConfirmed = true,
-                            Lastname = "Aepler",
+                            FirstName = "Francesco",
+                            LastName = "Aepler",
                             LockoutEnabled = true,
-                            Name = "Francesco",
                             NormalizedEmail = "FRANCESCO.AEPLER@GMAIL.COM",
                             NormalizedUserName = "FRANCESCO",
                             PasswordHash = "AQAAAAEAACcQAAAAENCkeX4zTaT+Tre5hnrmc1oMzq420b8/GcdRhtRgWXknIW9VmEdemaVj0SVLTxJERA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "YK7VQDBLK2PUOJNEK7YKOW7NQDH7EDYO",
-                            StartBalance = 0.0,
                             TwoFactorEnabled = false,
                             UserName = "Francesco"
                         },
@@ -785,15 +864,14 @@ namespace HomeManager.Data.Migrations
                             Darkmode = true,
                             Email = "ole@admin.gov",
                             EmailConfirmed = true,
-                            Lastname = "Eggersmann",
+                            FirstName = "Ole",
+                            LastName = "Eggersmann",
                             LockoutEnabled = true,
-                            Name = "Ole",
                             NormalizedEmail = "OLE@ADMIN.GOV",
                             NormalizedUserName = "OLE",
                             PasswordHash = "AQAAAAEAACcQAAAAEHTM1p5KXcvGwKk4muG28dmLnhAgR3spQVXORsKEw+IN36bupGX27DhsTNrwIymmQg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "VTPKISZMI2WKD6GNEHR223NRWDHGYRX6",
-                            StartBalance = 0.0,
                             TwoFactorEnabled = false,
                             UserName = "Ole"
                         });
@@ -1053,6 +1131,12 @@ namespace HomeManager.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("HomeManager.Models.Entities.Finance.Wallet", "Wallet")
+                        .WithMany("Payments")
+                        .HasForeignKey("fk_WalletId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Category");
 
                     b.Navigation("Repeating");
@@ -1062,15 +1146,31 @@ namespace HomeManager.Data.Migrations
                     b.Navigation("Type");
 
                     b.Navigation("User");
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Repeating", b =>
                 {
+                    b.HasOne("HomeManager.Models.Entities.Finance.Category", "Category")
+                        .WithMany("Repeatings")
+                        .HasForeignKey("fk_CategoryId");
+
+                    b.HasOne("HomeManager.Models.Entities.Finance.Type", "Type")
+                        .WithMany("Repeatings")
+                        .HasForeignKey("fk_TypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("HomeManager.Models.Entities.User", "User")
-                        .WithMany()
+                        .WithMany("Repeatings")
                         .HasForeignKey("fk_UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Type");
 
                     b.Navigation("User");
                 });
@@ -1078,7 +1178,7 @@ namespace HomeManager.Data.Migrations
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Status", b =>
                 {
                     b.HasOne("HomeManager.Models.Entities.User", "User")
-                        .WithMany("statuses")
+                        .WithMany("Statuses")
                         .HasForeignKey("fk_UserId");
 
                     b.Navigation("User");
@@ -1087,17 +1187,17 @@ namespace HomeManager.Data.Migrations
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Template", b =>
                 {
                     b.HasOne("HomeManager.Models.Entities.Finance.Category", "Category")
-                        .WithMany("Payment_Templates")
+                        .WithMany("Templates")
                         .HasForeignKey("fk_CategoryId");
 
                     b.HasOne("HomeManager.Models.Entities.Finance.Type", "Type")
-                        .WithMany("Payment_Templates")
+                        .WithMany("Templates")
                         .HasForeignKey("fk_TypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("HomeManager.Models.Entities.User", "User")
-                        .WithMany("Payment_Templates")
+                        .WithMany("Templates")
                         .HasForeignKey("fk_UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1118,10 +1218,21 @@ namespace HomeManager.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("HomeManager.Models.Entities.User", "User")
-                        .WithMany("types")
+                        .WithMany("Types")
                         .HasForeignKey("fk_UserId");
 
                     b.Navigation("Status");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Wallet", b =>
+                {
+                    b.HasOne("HomeManager.Models.Entities.User", "User")
+                        .WithMany("Wallets")
+                        .HasForeignKey("fk_UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1234,9 +1345,11 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Category", b =>
                 {
-                    b.Navigation("Payment_Templates");
-
                     b.Navigation("Payments");
+
+                    b.Navigation("Repeatings");
+
+                    b.Navigation("Templates");
                 });
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Repeating", b =>
@@ -1258,8 +1371,15 @@ namespace HomeManager.Data.Migrations
 
             modelBuilder.Entity("HomeManager.Models.Entities.Finance.Type", b =>
                 {
-                    b.Navigation("Payment_Templates");
+                    b.Navigation("Payments");
 
+                    b.Navigation("Repeatings");
+
+                    b.Navigation("Templates");
+                });
+
+            modelBuilder.Entity("HomeManager.Models.Entities.Finance.Wallet", b =>
+                {
                     b.Navigation("Payments");
                 });
 
@@ -1269,17 +1389,21 @@ namespace HomeManager.Data.Migrations
 
                     b.Navigation("Ingredients");
 
-                    b.Navigation("Payment_Templates");
-
                     b.Navigation("Payments");
 
                     b.Navigation("Recipes");
 
-                    b.Navigation("statuses");
+                    b.Navigation("Repeatings");
+
+                    b.Navigation("Statuses");
 
                     b.Navigation("Tags");
 
-                    b.Navigation("types");
+                    b.Navigation("Templates");
+
+                    b.Navigation("Types");
+
+                    b.Navigation("Wallets");
                 });
 #pragma warning restore 612, 618
         }

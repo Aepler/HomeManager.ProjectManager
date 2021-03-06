@@ -1,6 +1,6 @@
 ﻿using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Data.Repositories.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Repositories.Finance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,32 +19,22 @@ namespace HomeManager.Data.Repositories.Finance
             _context = context;
         }
 
-        public async Task<Category> GetById(User user, int id)
+        public Category GetById(Guid id)
         {
-            return await _context.FinanceCategories.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && x.Id == id && !x.Deleted).FirstOrDefaultAsync();
+            return _context.FinanceCategories.Where(x => x.Id == id).FirstOrDefault();
         }
 
-        public async Task<ICollection<Category>> GetAll(User user)
+        public ICollection<Category> GetAll()
         {
-            return await _context.FinanceCategories.Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted).ToListAsync();
+            return _context.FinanceCategories.ToList();
         }
 
-        public async Task<ICollection<Category>> GetByUser(User user)
-        {
-            return await _context.FinanceCategories.Where(x => x.fk_UserId == user.Id && !x.Deleted).ToListAsync();
-        }
-
-        public async Task<ICollection<Category>> GetDefault()
-        {
-            return await _context.FinanceCategories.Where(x => x.fk_UserId == null && !x.Deleted).ToListAsync();
-        }
-
-        public async Task<bool> Add(Category category)
+        public bool Add(Category category)
         {
             try
             {
                 _context.FinanceCategories.Add(category);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }
@@ -54,12 +44,12 @@ namespace HomeManager.Data.Repositories.Finance
             }
         }
 
-        public async Task<bool> Update(Category category)
+        public bool Update(Category category)
         {
             try
             {
                 _context.FinanceCategories.Update(category);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return true;
             }
             catch (Exception ex)
@@ -68,12 +58,12 @@ namespace HomeManager.Data.Repositories.Finance
             }
         }
 
-        public async Task<bool> Delete(Category category)
+        public bool Delete(Category category)
         {
             try
             {
                 _context.FinanceCategories.Update(category);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }

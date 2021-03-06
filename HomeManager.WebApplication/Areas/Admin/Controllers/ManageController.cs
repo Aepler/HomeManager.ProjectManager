@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HomeManager.Models.DataTableModels;
+using HomeManager.Models.DataTable;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Interfaces.Factories;
 using HomeManager.WebApplication.Areas.Admin.ViewModels.Manage;
@@ -56,7 +56,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetUserTableData(DataTableModel model)
+        public async Task<JsonResult> GetUserTableData(DataTableInput model)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
             {
                 try
                 {
-                    var user = new User { UserName = model.UserName, Email = model.Email, Name = model.Name, Lastname = model.Lastname, PhoneNumber = model.PhoneNumber };
+                    var user = new User { UserName = model.UserName, Email = model.Email, FirstName = model.Name, LastName = model.Lastname, PhoneNumber = model.PhoneNumber };
                     await _userManager.CreateAsync(user, model.Password);
                 }
                 catch (Exception)
@@ -110,8 +110,8 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                     tempUser.NormalizedUserName = user.UserName.ToUpper();
                     tempUser.Email = user.Email;
                     tempUser.NormalizedEmail = user.Email.ToUpper(); ;
-                    tempUser.Name = user.Name;
-                    tempUser.Lastname = user.Lastname;
+                    tempUser.FirstName = user.FirstName;
+                    tempUser.LastName = user.LastName;
                     tempUser.PhoneNumber = user.PhoneNumber;
                     await _userManager.UpdateAsync(tempUser);
                 }
@@ -149,7 +149,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetRoleTableData(DataTableModel model)
+        public async Task<JsonResult> GetRoleTableData(DataTableInput model)
         {
             try
             {
@@ -250,11 +250,11 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetUserRoleTableData(DataTableModel model)
+        public async Task<JsonResult> GetUserRoleTableData(DataTableInput model)
         {
             try
             {
-                var userRoles = new List<UserRoleDataTableModel>();
+                var userRoles = new List<UserRoleDataTable>();
 
                 var users = await _userManager.Users.ToListAsync();
 
@@ -271,7 +271,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                     {
                         var role = await _roleManager.FindByNameAsync(roleName);
 
-                        var userRole = new UserRoleDataTableModel
+                        var userRole = new UserRoleDataTable
                         {
                             User = user.UserName,
                             UserId = user.Id.ToString(),
@@ -295,7 +295,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> CreateUserRole(UserRoleDataTableModel userRoles)
+        public async Task<JsonResult> CreateUserRole(UserRoleDataTable userRoles)
         {
             var user = await _userManager.FindByIdAsync(userRoles.UserId);
             var role = await _roleManager.FindByIdAsync(userRoles.RoleId);

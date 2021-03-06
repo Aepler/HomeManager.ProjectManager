@@ -11,10 +11,12 @@ namespace HomeManager.Models.Enums
     {
         NoValue = 0,
 
-        Extra_Amount = 1,
+        ExtraCost = 1,
 
-        TaxList = 2,
+        DetailedTax = 2,
 
-        Category = 3
+        Category = 3,
+
+        Warranty = 4
     }
 }

@@ -14,11 +14,12 @@ namespace HomeManager.Models.Entities.Finance
         public Type()
         {
             this.Payments = new HashSet<Payment>();
-            this.Payment_Templates = new HashSet<Template>();
+            this.Repeatings = new HashSet<Repeating>();
+            this.Templates = new HashSet<Template>();
         }
 
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
@@ -29,7 +30,7 @@ namespace HomeManager.Models.Entities.Finance
         public bool Repeating { get; set; }
         [Required]
         [Display(Name = "End Status")]
-        public int fk_StatusId { get; set; }
+        public Guid fk_StatusId { get; set; }
         [ForeignKey("fk_StatusId")]
         public Status Status { get; set; }
         public bool Deleted { get; set; }
@@ -41,6 +42,7 @@ namespace HomeManager.Models.Entities.Finance
         public User User { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
-        public ICollection<Template> Payment_Templates { get; set; }
+        public ICollection<Repeating> Repeatings { get; set; }
+        public ICollection<Template> Templates { get; set; }
     }
 }

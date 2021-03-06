@@ -2,7 +2,7 @@
 using HomeManager.Models.Entities.Finance;
 using HomeManager.Models.Enums;
 using HomeManager.Models.Interfaces.Factories.Finance;
-using HomeManager.Models.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Services.Finance;
 using HomeManager.WebApplication.Areas.Finance.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
             _paymentTemplateService = paymentTemplateService;
         }
 
-        public async Task<string> GetCreateForm(User user, int typeId)
+        public async Task<string> GetCreateForm(User user, Guid typeId)
         {
             try
             {
@@ -56,12 +56,12 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
             }
         }
 
-        public Task<string> GetCreateFromTemplateForm(User user, int templateId)
+        public Task<string> GetCreateFromTemplateForm(User user, Guid templateId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<string> GetEditForm(User user, int paymentId)
+        public async Task<string> GetEditForm(User user, Guid paymentId)
         {
             try
             {
@@ -130,7 +130,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
                 result += "<br class='created' />" + model.Amount_Net + "<br class='created' />" + model.Amount_Gross;
             }
 
-            if (extraInput.Contains(PaymentExtraInput.Extra_Amount.ToString()))
+            if (extraInput.Contains(Convert.ToString(PaymentExtraInput.ExtraCost)))
             {
                 result += model.ExtraCosts + model.AddExtraCost + "</div>";
             }
@@ -141,12 +141,12 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
 
             result += "<br class='created' />" + model.Tax;
 
-            if (extraInput.Contains(PaymentExtraInput.TaxList.ToString()))
+            if (extraInput.Contains(Convert.ToString(PaymentExtraInput.DetailedTax)))
             {
                 result += model.AdvancedTaxList + "<br class='created' /> <div class='created' id='divAdvancedTax" + method + "PaymentFinance' style='display: none'> <br class='created' />" + model.TaxList + model.AddTax + "</div>";
             }
 
-            if (extraInput.Contains(PaymentExtraInput.Category.ToString()))
+            if (extraInput.Contains(Convert.ToString(PaymentExtraInput.Category)))
             {
                 result += "<br class='created' />" + model.Category;
             }
@@ -173,37 +173,37 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
                 "<label for='Amount' class='control-label'>Total Amount</label>" +
                 "</div>";
             result.Amount_Gross = "<div class='form-group form-floating created'>" +
-                "<input name='Amount_Gross' placeholder='Amount_Gross' class='form-control' id='inputAmountGross" + method + "PaymentFinance' value='" + payment.Amount_Gross + "' />" +
+                "<input name='Amount_Gross' placeholder='Amount_Gross' class='form-control' id='inputAmountGross" + method + "PaymentFinance' value='" + payment.GrossAmount + "' />" +
                 "<label for='Amount_Gross' class='control-label'>Amount Gross</label>" +
                 "</div>";
             result.Amount_Net = "<div class='form-group form-floating created'>" +
-                "<input name='Amount_Net' placeholder='Amount_Net' class='form-control' id='inputAmountNet" + method + "PaymentFinance' value='" + payment.Amount_Net + "' />" +
+                "<input name='Amount_Net' placeholder='Amount_Net' class='form-control' id='inputAmountNet" + method + "PaymentFinance' value='" + payment.NetAmount + "' />" +
                 "<label for='Amount_Net' class='control-label'>Amount Net</label>" +
                 "</div>";
             result.Tax = "<div class='row g-3 form-group created'>" +
                 "<div class='col form-floating created'>" +
-                "<input name='Tax' placeholder='Tax' class='form-control' id='inputTax" + method + "PaymentFinance' value='" + payment.Tax + "' />" +
+                "<input name='Tax' placeholder='Tax' class='form-control' id='inputTax" + method + "PaymentFinance' value='" + payment.TaxRate + "' />" +
                 "<label for='Tax' class='control-label'>Tax</label>" +
                 "</div>" +
                 "<div class='col form-floating created'>" +
-                "<input name='Amount_Tax' placeholder='Amount_Tax' class='form-control' id='inputAmountTax" + method + "PaymentFinance' value='" + payment.Amount_Tax + "' />" +
+                "<input name='Amount_Tax' placeholder='Amount_Tax' class='form-control' id='inputAmountTax" + method + "PaymentFinance' value='" + payment.TaxAmount + "' />" +
                 "<label for='Amount_Tax' class='control-label'>Amount Tax</label>" +
                 "</div>" +
                 "</div>";
-            if (payment.Amount_ExtraCosts != null)
+            if (payment.ExtraCostAmount != null)
             {
-                var countExtraCosts = payment.Amount_TaxList.Count();
+                var countExtraCosts = payment.ExtraCostAmount.Count();
 
                 for (int i = 0; i < countExtraCosts; i++)
                 {
                     result.ExtraCosts += "<br class='created' />";
                     result.ExtraCosts += "<div class='row g-3 form-group created'>" +
                 "<div class='col form-floating'>" +
-                "<input name='Description_ExtraCosts' placeholder='Description_ExtraCosts' class='form-control' id='inputDescriptionExtraCosts" + method + "PaymentFinance' value='" + payment.Description_ExtraCosts[i] + "' />" +
+                "<input name='Description_ExtraCosts' placeholder='Description_ExtraCosts' class='form-control' id='inputDescriptionExtraCosts" + method + "PaymentFinance' value='" + payment.ExtraCostDescription[i] + "' />" +
                 "<label for='Description_ExtraCosts' class='control-label'>Description</label>" +
                 "</div>" +
                 "<div class='col form-floating'>" +
-                "<input name='Amount_ExtraCosts' placeholder='Amount_ExtraCosts' class='form-control' id='inputAmountExtraCosts" + method + "PaymentFinance' value='" + payment.Amount_ExtraCosts[i] + "' />" +
+                "<input name='Amount_ExtraCosts' placeholder='Amount_ExtraCosts' class='form-control' id='inputAmountExtraCosts" + method + "PaymentFinance' value='" + payment.ExtraCostAmount[i] + "' />" +
                 "<label for='Amount_ExtraCosts' class='control-label'>Amount</label>" +
                 "</div>" +
                 "</div>";
@@ -211,9 +211,9 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
             }
             result.AddExtraCost = "<a href='#' class='link-dark created' id='linkAddExtraCost" + method + "PaymentFinance'>Add Extra Cost</a>";
 
-            if (payment.Amount_TaxList != null)
+            if (payment.DetailedTaxAmount != null)
             {
-                var countTaxList = payment.Amount_TaxList.Count();
+                var countTaxList = payment.DetailedTaxAmount.Count();
 
                 for (int i = 0; i < countTaxList; i++)
                 {
@@ -223,15 +223,15 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
                     }
                     result.TaxList += "<div class='row g-3 form-group created advancedTax'>" +
                 "<div class='col-6 form-floating'>" +
-                "<input name='Description_TaxList' placeholder='Description_TaxList' class='form-control' id='inputDescriptionTaxList" + method + "PaymentFinance' value='" + payment.Description_TaxList[i] + "' />" +
+                "<input name='Description_TaxList' placeholder='Description_TaxList' class='form-control' id='inputDescriptionTaxList" + method + "PaymentFinance' value='" + payment.DetailedTaxDescription[i] + "' />" +
                 "<label for='Description_TaxList' class='control-label'>Description</label>" +
                 "</div>" +
                 "<div class='col form-floating'>" +
-                "<input name='TaxList' placeholder='TaxList' class='form-control' id='inputTaxList" + method + "PaymentFinance' value='" + payment.TaxList[i] + "' />" +
+                "<input name='TaxList' placeholder='TaxList' class='form-control' id='inputTaxList" + method + "PaymentFinance' value='" + payment.DetailedTaxRate[i] + "' />" +
                 "<label for='TaxList' class='control-label'>Tax %</label>" +
                 "</div>" +
                 "<div class='col form-floating'>" +
-                "<input name='Amount_TaxList' placeholder='Amount_TaxList' class='form-control' id='inputAmountTaxList" + method + "PaymentFinance' value='" + payment.Amount_TaxList[i] + "' />" +
+                "<input name='Amount_TaxList' placeholder='Amount_TaxList' class='form-control' id='inputAmountTaxList" + method + "PaymentFinance' value='" + payment.DetailedTaxAmount[i] + "' />" +
                 "<label for='Amount_TaxList' class='control-label'>Amount</label>" +
                 "</div>" +
                 "</div>";
@@ -293,7 +293,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
             var statusElement = "<div class='form-group form-floating created'>" +
                 "<select name='fk_StatusId' class ='form-control' id='dropdownStatus" + method + "PaymentFinance'>";
 
-            if (payment.fk_StatusId == 0)
+            if (payment.fk_StatusId == null)
             {
                 statusElement += "<option value='-1' disabled selected>Select a Status</option>";
             }

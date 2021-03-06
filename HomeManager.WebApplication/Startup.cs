@@ -12,16 +12,16 @@ using HomeManager.Data;
 using Microsoft.EntityFrameworkCore;
 using HomeManager.Data.Repositories.Finance;
 using HomeManager.Data.Repositories.Cooking;
-using HomeManager.Data.Repositories.Interfaces.Finance;
-using HomeManager.Data.Repositories.Interfaces.Cooking;
+using HomeManager.Models.Interfaces.Repositories.Finance;
+using HomeManager.Models.Interfaces.Services.Finance;
+using HomeManager.Models.Interfaces.Repositories.Cooking;
 using HomeManager.Services.Finance;
-using HomeManager.Models.Interfaces.Finance;
 using Microsoft.AspNetCore.Identity;
 using HomeManager.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using HomeManager.Models.Interfaces.Factories;
 using HomeManager.WebApplication.Factories;
-using HomeManager.Models.DataTableModels;
+using HomeManager.Models.DataTable;
 using HomeManager.Models.Interfaces.Factories.Finance;
 using HomeManager.WebApplication.Areas.Finance.Factories;
 
@@ -53,16 +53,20 @@ namespace HomeManager.WebApplication
             services.AddScoped<IStatusRepository, StatusRepository>();
             services.AddScoped<ITypeRepository, TypeRepository>();
             services.AddScoped<ITemplateRepository, TemplateRepository>();
+            services.AddScoped<IWalletRepository, WalletRepository>();
+            services.AddScoped<IRepeatingRepository, RepeatingRepository>();
 
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IStatusService, StatusService>();
             services.AddScoped<ITypeService, TypeService>();
             services.AddScoped<ITemplateService, TemplateService>();
+            services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<IRepeatingService, RepeatingService>();
 
             services.AddScoped<IFinanceFormFactory, FinanceFormFactory>();
             services.AddScoped<IDataTableFactory, DataTableFactory>();
-            services.AddScoped<IDataTableResultModel, DataTableResultModel>();
+            services.AddScoped<IDataTableResponse, DataTableResponse>();
 
             services.AddControllersWithViews();
             services.AddMvc();

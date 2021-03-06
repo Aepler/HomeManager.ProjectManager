@@ -1,6 +1,6 @@
 ﻿using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Data.Repositories.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Repositories.Finance;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,34 +19,22 @@ namespace HomeManager.Data.Repositories.Finance
             _context = context;
         }
 
-        public async Task<Template> GetById(User user, int id)
+        public Template GetById(Guid id)
         {
-            return await _context.FinanceTemplates.Where(x => x.fk_UserId == user.Id && x.Id == id && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).FirstOrDefaultAsync();
+            return _context.FinanceTemplates.Where(x => x.Id == id).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).FirstOrDefault();
         }
 
-        public async Task<ICollection<Template>> GetAll(User user)
+        public ICollection<Template> GetAll()
         {
-            return await _context.FinanceTemplates.Where(x => x.fk_UserId == user.Id && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).ToListAsync();
+            return _context.FinanceTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User).ToList();
         }
 
-        public async Task<ICollection<Template>> GetByCategory(User user, int fk_CategoryId)
-        {
-            return await _context.FinanceTemplates.Where(x => x.fk_UserId == user.Id && x.fk_CategoryId == fk_CategoryId && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).ToListAsync();
-        }
-
-        public async Task<ICollection<Template>> GetByType(User user, int fk_TypeId)
-        {
-            return await _context.FinanceTemplates.Where(x => x.fk_UserId == user.Id && x.fk_TypeId == fk_TypeId && !x.Deleted).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).ToListAsync();
-        }
-
-
-
-        public async Task<bool> Add(Template paymentTemplate)
+        public bool Add(Template paymentTemplate)
         {
             try
             {
                 _context.FinanceTemplates.Add(paymentTemplate);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }
@@ -56,12 +44,12 @@ namespace HomeManager.Data.Repositories.Finance
             }
         }
 
-        public async Task<bool> Update(Template paymentTemplate)
+        public bool Update(Template paymentTemplate)
         {
             try
             {
                 _context.FinanceTemplates.Update(paymentTemplate);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }
@@ -71,12 +59,12 @@ namespace HomeManager.Data.Repositories.Finance
             }
         }
 
-        public async Task<bool> Delete(Template paymentTemplate)
+        public bool Delete(Template paymentTemplate)
         {
             try
             {
                 _context.FinanceTemplates.Update(paymentTemplate);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
 
                 return true;
             }

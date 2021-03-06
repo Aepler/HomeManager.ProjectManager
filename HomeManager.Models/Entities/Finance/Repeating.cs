@@ -10,39 +10,76 @@ namespace HomeManager.Models.Entities.Finance
 {
     public class Repeating
     {
+        public Repeating()
+        {
+            this.Payments = new HashSet<Payment>();
+        }
+
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public int RepeatInterval { get; set; }
         public DateTime RepeatStart { get; set; }
         public DateTime? RepeatEnd { get; set; }
 
-        [Required]
         [Display(Name = "User")]
         public Guid fk_UserId { get; set; }
         [ForeignKey("fk_UserId")]
         public User User { get; set; }
 
+        public DateTime Date { get; set; }
+
+        [Required]
         public string Description { get; set; }
+
+        [Display(Name = "Total Amount")]
         [Column(TypeName = "decimal(9,2)")]
         public decimal Amount { get; set; }
+
+        [Display(Name = "Amount Gross")]
         [Column(TypeName = "decimal(9,2)")]
-        public decimal Amount_Gross { get; set; }
+        public decimal GrossAmount { get; set; }
+
+        [Display(Name = "Amount Net")]
         [Column(TypeName = "decimal(9,2)")]
-        public decimal Amount_Net { get; set; }
-        public int Tax { get; set; }
+        public decimal NetAmount { get; set; }
+
+        [Display(Name = "Tax Descripton")]
+        public string TaxDescription { get; set; }
+        [Display(Name = "Tax Rate")]
+        public int TaxRate { get; set; }
+        [Display(Name = "Total Tax")]
         [Column(TypeName = "decimal(9,2)")]
-        public decimal Amount_Tax { get; set; }
-        public string[] Description_ExtraCosts { get; set; }
-        public string[] Amount_ExtraCosts { get; set; }
-        public string[] Description_TaxList { get; set; }
-        public string[] TaxList { get; set; }
-        public string[] Amount_TaxList { get; set; }
-        public byte[] Invoice { get; set; }
-        public string DataType { get; set; }
-        public int fk_TypeId { get; set; }
-        public int? fk_CategoryId { get; set; }
-        public int fk_StatusId { get; set; }
+        public decimal TaxAmount { get; set; }
+
+        [Display(Name = "Description for extra cost")]
+        public string[] ExtraCostDescription { get; set; }
+        [Display(Name = "Amount")]
+        public string[] ExtraCostAmount { get; set; }
+
+        [Display(Name = "Description for Tax")]
+        public string[] DetailedTaxDescription { get; set; }
+        [Display(Name = "Tax Rate")]
+        public string[] DetailedTaxRate { get; set; }
+        [Display(Name = "Amount")]
+        public string[] DetailedTaxAmount { get; set; }
+
+        public byte[] InvoiceData { get; set; }
+
+        public string InvoiceDataType { get; set; }
+
+        [Display(Name = "Warranty Expiry Date")]
+        public DateTime? WarrantyExpiryDate { get; set; }
+
+        [Display(Name = "Type")]
+        public Guid fk_TypeId { get; set; }
+        [ForeignKey("fk_TypeId")]
+        public Type Type { get; set; }
+
+        [Display(Name = "Category")]
+        public Guid? fk_CategoryId { get; set; }
+        [ForeignKey("fk_CategoryId")]
+        public Category Category { get; set; }
 
         public bool Deleted { get; set; }
         public DateTime? DeletedOn { get; set; }

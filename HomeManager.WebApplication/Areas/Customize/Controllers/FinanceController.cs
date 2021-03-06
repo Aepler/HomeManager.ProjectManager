@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HomeManager.Models.DataTableModels;
+using HomeManager.Models.DataTable;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Models.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Services.Finance;
 using HomeManager.Models.Interfaces.Factories;
 using Type = HomeManager.Models.Entities.Finance.Type;
 
@@ -42,7 +42,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetCategory(int id)
+        public async Task<JsonResult> GetCategory(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var category = await _categoryService.GetById(user, id);
@@ -50,7 +50,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetTemplate(int id)
+        public async Task<JsonResult> GetTemplate(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var payment_Template = await _templateService.GetById(user, id);
@@ -58,7 +58,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetType(int id)
+        public async Task<JsonResult> GetType(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var type = await _typeService.GetById(user, id);
@@ -66,7 +66,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetStatus(int id)
+        public async Task<JsonResult> GetStatus(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var status = await _statusService.GetById(user, id);
@@ -79,7 +79,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetCategoryTableData(DataTableModel model)
+        public async Task<JsonResult> GetCategoryTableData(DataTableInput model)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> EditCategory(int id, Category category)
+        public async Task<JsonResult> EditCategory(Guid id, Category category)
         {
             if (id != category.Id)
             {
@@ -143,7 +143,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCategory(Guid id)
         {
             try
             {
@@ -176,7 +176,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetTemplateTableData(DataTableModel model)
+        public async Task<JsonResult> GetTemplateTableData(DataTableInput model)
         {
             try
             {
@@ -215,7 +215,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> EditTemplate(int id, Template template)
+        public async Task<JsonResult> EditTemplate(Guid id, Template template)
         {
             if (id != template.Id)
             {
@@ -240,7 +240,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteTemplate(int id)
+        public async Task<IActionResult> DeleteTemplate(Guid id)
         {
             try
             {
@@ -272,7 +272,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetTypeTableData(DataTableModel model)
+        public async Task<JsonResult> GetTypeTableData(DataTableInput model)
         {
             try
             {
@@ -311,7 +311,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> EditType(int id, Type type)
+        public async Task<JsonResult> EditType(Guid id, Type type)
         {
             if (id != type.Id)
             {
@@ -336,7 +336,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteType(int id)
+        public async Task<IActionResult> DeleteType(Guid id)
         {
             try
             {
@@ -364,7 +364,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetStatusTableData(DataTableModel model)
+        public async Task<JsonResult> GetStatusTableData(DataTableInput model)
         {
             try
             {
@@ -403,7 +403,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> EditStatus(int id, Status status)
+        public async Task<JsonResult> EditStatus(Guid id, Status status)
         {
             if (id != status.Id)
             {
@@ -427,7 +427,7 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteStatus(int id)
+        public async Task<IActionResult> DeleteStatus(Guid id)
         {
             try
             {
@@ -449,21 +449,21 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> TypeExists(int id)
+        private async Task<bool> TypeExists(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var types = await _typeService.GetAll(user);
             return types.Any(e => e.Id == id);
         }
 
-        private async Task<bool> StatusExists(int id)
+        private async Task<bool> StatusExists(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var status = await _statusService.GetAll(user);
             return status.Any(e => e.Id == id);
         }
 
-        private async Task<bool> CategoryExists(int id)
+        private async Task<bool> CategoryExists(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var categories = await _categoryService.GetAll(user);

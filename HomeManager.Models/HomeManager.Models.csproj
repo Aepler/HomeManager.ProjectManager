@@ -12,8 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Factories\" />
-    <Folder Include="Interfaces\Cooking\" />
+    <Folder Include="Interfaces\Services\Cooking\" />
   </ItemGroup>
 
 </Project>

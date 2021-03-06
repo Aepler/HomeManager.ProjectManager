@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using HomeManager.Models.DataTableModels;
+using HomeManager.Models.DataTable;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Models.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Services.Finance;
 using HomeManager.Models.Interfaces.Factories;
 using HomeManager.Models.Helpers;
 using HomeManager.Models.Interfaces.Factories.Finance;
@@ -28,18 +28,28 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
-        private readonly ITemplateService _paymentTemplateService;
+        private readonly ITemplateService _templateService;
+        private readonly IWalletService _walletService;
         private readonly IDataTableFactory _dataTableFactory;
         private readonly IFinanceFormFactory _financeFormFactory;
 
-        public PaymentsController(UserManager<User> userManager, IPaymentService paymentService, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, ITemplateService paymentTemplateService, IDataTableFactory dataTableFactory, IFinanceFormFactory financeFormFactory)
+        public PaymentsController(UserManager<User> userManager,
+            IPaymentService paymentService,
+            ICategoryService categoryService,
+            ITypeService typeService,
+            IStatusService statusService,
+            ITemplateService templateService,
+            IWalletService walletService,
+            IDataTableFactory dataTableFactory,
+            IFinanceFormFactory financeFormFactory)
         {
             _userManager = userManager;
             _paymentService = paymentService;
             _categoryService = categoryService;
             _typeService = typeService;
             _statusService = statusService;
-            _paymentTemplateService = paymentTemplateService;
+            _templateService = templateService;
+            _walletService = walletService;
             _dataTableFactory = dataTableFactory;
             _financeFormFactory = financeFormFactory;
         }
@@ -48,18 +58,24 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
+
+            if (user.CurrentWallet == null)
+            {
+                return RedirectToAction("SelectWallet");
+            }
+
             ViewData["Types"] = new SelectList(await _typeService.GetAll(user), "Id", "Name");
 
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetTableData(DataTableModel model)
+        public async Task<JsonResult> GetTableData(DataTableInput model)
         {
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                var payments = await _paymentService.GetAll(user);
+                var payments = await _paymentService.GetByCurrentWallet(user);
                 var result = await _dataTableFactory.GetTableData(model, payments);
 
                 return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
@@ -71,7 +87,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetPaymentCreate(int id)
+        public async Task<JsonResult> GetPaymentCreate(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var data = await _financeFormFactory.GetCreateForm(user, id);
@@ -79,11 +95,19 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetPaymentEdit(int id)
+        public async Task<JsonResult> GetPaymentEdit(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var data = await _financeFormFactory.GetEditForm(user, id);
             return Json(data);
+        }
+
+        public async Task<IActionResult> SelectWallet()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            ViewData["Wallets"] = await _walletService.GetAll(user);
+
+            return View();
         }
 
         // POST: Payments/Create
@@ -100,8 +124,8 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
                     using (var target = new MemoryStream())
                     {
                         files.CopyTo(target);
-                        payment.Invoice = target.ToArray();
-                        payment.DataType = files.ContentType;
+                        payment.InvoiceData = target.ToArray();
+                        payment.InvoiceDataType = files.ContentType;
                     }
                 }
                 else if (files != null && files.IsPDF())
@@ -109,8 +133,8 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
                     using (var target = new MemoryStream())
                     {
                         files.CopyTo(target);
-                        payment.Invoice = target.ToArray();
-                        payment.DataType = files.ContentType;
+                        payment.InvoiceData = target.ToArray();
+                        payment.InvoiceDataType = files.ContentType;
                     }
                 }
 
@@ -123,7 +147,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
                 {
                     throw;
                 }
-                
+
                 return Json(null);
             }
             return Json(null);
@@ -134,7 +158,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<JsonResult> Edit(int id, Payment payment)
+        public async Task<JsonResult> Edit(Guid id, Payment payment)
         {
             if (id != payment.Id)
             {
@@ -159,7 +183,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
@@ -181,7 +205,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> PaymentExistsAsync(int id)
+        private async Task<bool> PaymentExistsAsync(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
             var payments = await _paymentService.GetAll(user);

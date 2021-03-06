@@ -13,23 +13,25 @@ namespace HomeManager.Models.Entities
 {
     public class User : IdentityUser<Guid>
     {
-        public string Name { get; set; }
+        public string FirstName { get; set; }
 
-        public string Lastname { get; set; }
+        public string LastName { get; set; }
 
         public bool Darkmode { get; set; }
 
-        public byte[] Picture { get; set; }
+        public byte[] ProfilePictureData { get; set; }
 
-        public string DataType { get; set; }
+        public string ProfilePictureDataType { get; set; }
 
-        public double StartBalance { get; set; }
+        public Guid? CurrentWallet { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
-        public ICollection<Template> Payment_Templates { get; set; }
+        public ICollection<Template> Templates { get; set; }
+        public ICollection<Repeating> Repeatings { get; set; }
+        public ICollection<Wallet> Wallets { get; set; }
         public ICollection<Category> Categories { get; set; }
-        public ICollection<Type> types { get; set; }
-        public ICollection<Status> statuses { get; set; }
+        public ICollection<Type> Types { get; set; }
+        public ICollection<Status> Statuses { get; set; }
 
         public ICollection<Tag> Tags { get; set; }
         public ICollection<Recipe> Recipes { get; set; }

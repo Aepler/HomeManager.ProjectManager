@@ -1,4 +1,4 @@
-﻿using HomeManager.Data.Repositories.Interfaces.Cooking;
+﻿using HomeManager.Models.Interfaces.Repositories.Cooking;
 using HomeManager.Models.Entities.Cooking;
 using HomeManager.Models.Entities;
 using Microsoft.EntityFrameworkCore;

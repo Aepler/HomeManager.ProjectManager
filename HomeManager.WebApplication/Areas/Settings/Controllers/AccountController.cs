@@ -60,8 +60,8 @@ namespace HomeManager.WebApplication.Areas.Settings.Controllers
             model.Input = new IndexInputModel
             {
                 PhoneNumber = user.PhoneNumber,
-                Name = user.Name,
-                Lastname = user.Lastname
+                Name = user.FirstName,
+                Lastname = user.LastName
             };
 
             return View(model);

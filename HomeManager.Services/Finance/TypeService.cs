@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Models.Interfaces.Finance;
-using HomeManager.Data.Repositories.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Services.Finance;
+using HomeManager.Models.Interfaces.Repositories.Finance;
 using Type = HomeManager.Models.Entities.Finance.Type;
 
 namespace HomeManager.Services.Finance
@@ -20,15 +20,20 @@ namespace HomeManager.Services.Finance
             _typeRepository = typeRepository;
         }
 
-        public async Task<Type> GetById(User user, int id)
+        public async Task<Type> GetById(User user, Guid id)
         {
             try
             {
-                return await _typeRepository.GetById(user, id);
+                var type = _typeRepository.GetById(id);
+                if ((type.fk_UserId == user.Id || type.fk_UserId == null) && !type.Deleted)
+                {
+                    return type;
+                }
+                return null;
             }
             catch (Exception ex)
             {
-                return new Type();
+                throw;
             }
         }
 
@@ -36,11 +41,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _typeRepository.GetAll(user);
+                return _typeRepository.GetAll().Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Type>();
+                throw;
             }
         }
 
@@ -48,11 +53,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _typeRepository.GetByUser(user);
+                return _typeRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Type>();
+                throw;
             }
         }
 
@@ -60,11 +65,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _typeRepository.GetDefault();
+                return _typeRepository.GetAll().Where(x => x.fk_UserId == null && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Type>();
+                throw;
             }
         }
 
@@ -73,7 +78,7 @@ namespace HomeManager.Services.Finance
             try
             {
                 type.fk_UserId = user.Id;
-                return await _typeRepository.Add(type);
+                return _typeRepository.Add(type);
             }
             catch (Exception ex)
             {
@@ -85,11 +90,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                var realType = await _typeRepository.GetById(user, type.Id);
+                var realType = await GetById(user, type.Id);
                 if (realType != null && realType.fk_UserId == user.Id)
                 {
                     type.fk_UserId = user.Id;
-                    return await _typeRepository.Update(type);
+                    return _typeRepository.Update(type);
                 }
                 return false;
             }
@@ -103,13 +108,13 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                var realType = await _typeRepository.GetById(user, type.Id);
+                var realType = await GetById(user, type.Id);
                 if (realType != null && realType.fk_UserId == user.Id)
                 {
                     type.fk_UserId = user.Id;
                     type.Deleted = true;
                     type.DeletedOn = DateTime.Today;
-                    return await _typeRepository.Delete(type);
+                    return _typeRepository.Delete(type);
                 }
                 return false;
             }
@@ -126,7 +131,7 @@ namespace HomeManager.Services.Finance
                 if (userRoles.Contains("Admin"))
                 {
                     type.fk_UserId = null;
-                    return await _typeRepository.Add(type);
+                    return _typeRepository.Add(type);
                 }
                 return false;
             }
@@ -142,8 +147,13 @@ namespace HomeManager.Services.Finance
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    type.fk_UserId = null;
-                    return await _typeRepository.Update(type);
+                    var realTypes = await GetDefault();
+                    var realType = realTypes.Where(x => x.Id == type.Id).FirstOrDefault();
+                    if (realType != null && realType.fk_UserId == null)
+                    {
+                        type.fk_UserId = null;
+                        return _typeRepository.Update(type);
+                    }
                 }
                 return false;
             }
@@ -159,10 +169,15 @@ namespace HomeManager.Services.Finance
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    type.fk_UserId = null;
-                    type.Deleted = true;
-                    type.DeletedOn = DateTime.Today;
-                    return await _typeRepository.Update(type);
+                    var realTypes = await GetDefault();
+                    var realType = realTypes.Where(x => x.Id == type.Id).FirstOrDefault();
+                    if (realType != null && realType.fk_UserId == null)
+                    {
+                        type.fk_UserId = null;
+                        type.Deleted = true;
+                        type.DeletedOn = DateTime.Today;
+                        return _typeRepository.Update(type);
+                    }
                 }
                 return false;
             }

@@ -11,11 +11,12 @@ namespace HomeManager.Models.Entities.Finance
         public Category()
         {
             this.Payments = new HashSet<Payment>();
-            this.Payment_Templates = new HashSet<Template>();
+            this.Repeatings = new HashSet<Repeating>();
+            this.Templates = new HashSet<Template>();
         }
 
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Display(Name = "User")]
         public Guid? fk_UserId { get; set; }
@@ -28,6 +29,7 @@ namespace HomeManager.Models.Entities.Finance
         public DateTime? DeletedOn { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
-        public ICollection<Template> Payment_Templates { get; set; }
+        public ICollection<Repeating> Repeatings { get; set; }
+        public ICollection<Template> Templates { get; set; }
     }
 }

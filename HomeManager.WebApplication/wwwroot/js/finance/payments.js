@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     List();
-    CreatePayment();
-    EditLoader()
+    Create();
+    Edit()
 });
 
 //==============================================================================
@@ -29,6 +29,11 @@ function List() {
             , { "data": "category" }
             , { "data": "amount" }
         ]
+    });
+
+    $('#addRow').on('click', function () {
+        var test = '<tr id="2" role="row" class="odd"><td class="sorting_1">10.02.2021</td><td>EY</td><td>Salary</td><td>Salary</td><td>1,00</td></tr>';
+        $('#tblIndexPayments tbody').append(test);
     });
 
     $('#tblIndexPayments tbody').on('click', '.buttonDeletePaymentFinance', function () {
@@ -177,7 +182,7 @@ function ListFormat(d) {
 // Create Entry ================================================================
 //==============================================================================
 
-function CreatePayment() {
+function Create() {
     $('#dropdownTypeCreatePaymentFinance').change(function () {
         var id = $(this).val();
         if (id != "") {
@@ -194,7 +199,7 @@ function CreatePayment() {
     });
 
     $('#modalBodyCreatePaymentFinance').on('click', '#linkAdvancedAmountCreatePaymentFinance', function () {
-       
+
         $(".addedInputExtraCost").each(function (i) {
             if (this.value == "") {
                 var id = this.id;
@@ -226,7 +231,7 @@ function CreatePayment() {
     });
 }
 
-function EditLoader() {
+function Edit() {
     $('#modalBodyEditPaymentFinance').on('change', '#inputAmountGrossEditPaymentFinance', function () {
         var grossField = $('#inputAmountGrossEditPaymentFinance');
         var netField = $('#inputAmountNetEditPaymentFinance');
@@ -271,7 +276,7 @@ function AddExtraCost(type) {
         countString = "1"
     }
     var count = parseInt(countString);
-    
+
     var data = '<br class="created addedExtraCost' + count + '" />' +
         '<div class="row g-3 form-group advancedTax created addedExtraCost' + count + '">' +
         '<div class="col form-floating">' +
@@ -301,7 +306,7 @@ function AddTax(type) {
         countString = "1"
     }
     var count = parseInt(countString);
-    
+
     var data = '<br class="created addedTax' + count + '" />' +
         '<div class="row g-3 form-group advancedTax created addedTax' + count + '">' +
         '<div class="col-6 form-floating">' +
@@ -414,7 +419,7 @@ function CreatePaymentPost(table) {
 
         data.append("files", files[i]);
 
-    } 
+    }
 
     $.ajax({
         cache: false,

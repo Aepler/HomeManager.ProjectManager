@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
-using HomeManager.Models.Interfaces.Finance;
-using HomeManager.Data.Repositories.Interfaces.Finance;
+using HomeManager.Models.Interfaces.Services.Finance;
+using HomeManager.Models.Interfaces.Repositories.Finance;
 
 namespace HomeManager.Services.Finance
 {
@@ -19,15 +19,20 @@ namespace HomeManager.Services.Finance
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<Category> GetById(User user, int id)
+        public async Task<Category> GetById(User user, Guid id)
         {
             try
             {
-                return await _categoryRepository.GetById(user, id);
+                var category = _categoryRepository.GetById(id);
+                if ((category.fk_UserId == user.Id || category.fk_UserId == null) && !category.Deleted)
+                {
+                    return category;
+                }
+                return null;
             }
             catch (Exception ex)
             {
-                return new Category();
+                throw;
             }
         }
 
@@ -35,11 +40,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _categoryRepository.GetAll(user);
+                return _categoryRepository.GetAll().Where(x => x.fk_UserId == user.Id || x.fk_UserId == null && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Category>();
+                throw;
             }
         }
 
@@ -47,11 +52,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _categoryRepository.GetByUser(user);
+                return _categoryRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Category>();
+                throw;
             }
         }
 
@@ -59,11 +64,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                return await _categoryRepository.GetDefault();
+                return _categoryRepository.GetAll().Where(x => x.fk_UserId == null && !x.Deleted).ToList();
             }
             catch (Exception ex)
             {
-                return new List<Category>();
+                throw;
             }
         }
 
@@ -72,7 +77,7 @@ namespace HomeManager.Services.Finance
             try
             {
                 category.fk_UserId = user.Id;
-                return await _categoryRepository.Add(category);
+                return _categoryRepository.Add(category);
             }
             catch (Exception ex)
             {
@@ -84,11 +89,11 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                var realCategory = await _categoryRepository.GetById(user, category.Id);
+                var realCategory = await GetById(user, category.Id);
                 if (realCategory != null && realCategory.fk_UserId == user.Id)
                 {
                     category.fk_UserId = user.Id;
-                    return await _categoryRepository.Update(category);
+                    return _categoryRepository.Update(category);
                 }
                 return false;
             }
@@ -102,13 +107,13 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                var realCategory = await _categoryRepository.GetById(user, category.Id);
+                var realCategory = await GetById(user, category.Id);
                 if (realCategory != null && realCategory.fk_UserId == user.Id)
                 {
                     category.fk_UserId = user.Id;
                     category.Deleted = true;
                     category.DeletedOn = DateTime.Today;
-                    return await _categoryRepository.Delete(category);
+                    return _categoryRepository.Delete(category);
                 }
                 return false;
 
@@ -127,7 +132,7 @@ namespace HomeManager.Services.Finance
                 if (userRoles.Contains("Admin"))
                 {
                     category.fk_UserId = null;
-                    return await _categoryRepository.Add(category);
+                    return _categoryRepository.Add(category);
                 }
                 return false;
             }
@@ -143,8 +148,13 @@ namespace HomeManager.Services.Finance
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    category.fk_UserId = null;
-                    return await _categoryRepository.Update(category);
+                    var realCategories = await GetDefault();
+                    var realCategory = realCategories.Where(x => x.Id == category.Id).FirstOrDefault();
+                    if (realCategory != null && realCategory.fk_UserId == null)
+                    {
+                        category.fk_UserId = null;
+                        return _categoryRepository.Update(category);
+                    }
                 }
                 return false;
             }
@@ -160,10 +170,15 @@ namespace HomeManager.Services.Finance
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    category.fk_UserId = null;
-                    category.Deleted = true;
-                    category.DeletedOn = DateTime.Today;
-                    return await _categoryRepository.Update(category);
+                    var realCategories = await GetDefault();
+                    var realCategory = realCategories.Where(x => x.Id == category.Id).FirstOrDefault();
+                    if (realCategory != null && realCategory.fk_UserId == null)
+                    {
+                        category.fk_UserId = null;
+                        category.Deleted = true;
+                        category.DeletedOn = DateTime.Today;
+                        return _categoryRepository.Update(category);
+                    }
                 }
                 return false; 
             }

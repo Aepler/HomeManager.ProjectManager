@@ -1,4 +1,4 @@
-﻿using HomeManager.Models.DataTableModels;
+﻿using HomeManager.Models.DataTable;
 using HomeManager.Models.Entities.Finance;
 using HomeManager.Models.Entities;
 using System;
@@ -12,13 +12,13 @@ namespace HomeManager.Models.Interfaces.Factories
 {
     public interface IDataTableFactory
     {
-        Task<DataTableResultModel<PaymentDataTableModel>> GetTableData(DataTableModel model, ICollection<Payment> list);
-        Task<DataTableResultModel<CategoryDataTableModel>> GetTableData(DataTableModel model, ICollection<Category> list);
-        Task<DataTableResultModel<TemplateDataTableModel>> GetTableData(DataTableModel model, ICollection<Template> list);
-        Task<DataTableResultModel<TypeDataTableModel>> GetTableData(DataTableModel model, ICollection<Type> list);
-        Task<DataTableResultModel<StatusDataTableModel>> GetTableData(DataTableModel model, ICollection<Status> list);
-        Task<DataTableResultModel<UserDataTableModel>> GetTableData(DataTableModel model, ICollection<User> list);
-        Task<DataTableResultModel<RoleDataTableModel>> GetTableData(DataTableModel model, ICollection<Role> list);
-        Task<DataTableResultModel<UserRoleDataTableModel>> GetTableData(DataTableModel model, ICollection<UserRoleDataTableModel> list);
+        Task<DataTableResponse<PaymentDataTable>> GetTableData(DataTableInput model, ICollection<Payment> list);
+        Task<DataTableResponse<CategoryDataTable>> GetTableData(DataTableInput model, ICollection<Category> list);
+        Task<DataTableResponse<TemplateDataTable>> GetTableData(DataTableInput model, ICollection<Template> list);
+        Task<DataTableResponse<TypeDataTable>> GetTableData(DataTableInput model, ICollection<Type> list);
+        Task<DataTableResponse<StatusDataTable>> GetTableData(DataTableInput model, ICollection<Status> list);
+        Task<DataTableResponse<UserDataTable>> GetTableData(DataTableInput model, ICollection<User> list);
+        Task<DataTableResponse<RoleDataTable>> GetTableData(DataTableInput model, ICollection<Role> list);
+        Task<DataTableResponse<UserRoleDataTable>> GetTableData(DataTableInput model, ICollection<UserRoleDataTable> list);
     }
 }
