@@ -1,0 +1,165 @@
+﻿@model HomeManager.Models.Entities.Finance.Wallet
+
+@{
+    ViewData["Title"] = "Wallets";
+    ViewData["ActivePage"] = CustomizeNavViews.Wallets;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+@if (ViewBag.WalletCount == 0)
+{
+    <h4>Create Wallet</h4>
+    <br />
+    <form asp-action="CreateWallet">
+        <div class="form-group form-floating">
+            <input asp-for="Name" placeholder="Name" class="form-control" />
+            <label asp-for="Name"></label>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group form-floating">
+            <input asp-for="Description" placeholder="Description" class="form-control" />
+            <label asp-for="Description"></label>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group form-floating">
+            <input asp-for="StartBalance" placeholder="StartBalance" class="form-control" />
+            <label asp-for="StartBalance"></label>
+            <span asp-validation-for="StartBalance" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+}
+else
+{
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateWalletCustomize">New Wallet</button>
+
+    <form id="formCreateWalletCustomize" asp-action="CreateWallet">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="modal fade" id="modalCreateWalletCustomize" role="dialog" aria-labelledby="modalLabelCreateWalletCustomize" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabelCreateWalletCustomize">New Wallet</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modalBodyCreateWalletCustomize">
+                        <div class="form-group form-floating">
+                            <input asp-for="Name" placeholder="Name" id="inputNameCreateWalletCustomize" class="form-control" />
+                            <label asp-for="Name" class="control-label"></label>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group form-floating">
+                            <input asp-for="Description" placeholder="Description" id="inputDescriptionCreateWalletCustomize" class="form-control" />
+                            <label asp-for="Description"></label>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group form-floating">
+                            <input asp-for="StartBalance" placeholder="StartBalance" id="inputStartBalanceCreateWalletCustomize" class="form-control" />
+                            <label asp-for="StartBalance"></label>
+                            <span asp-validation-for="StartBalance" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="modalFooterCreateWalletCustomize">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateWalletCustomize" data-bs-dismiss="modal">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form id="formEditWalletCustomize" asp-action="EditWallet">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="modal fade" id="modalEditWalletCustomize" role="dialog" aria-labelledby="modalLabelEditWalletCustomize" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabelEditWalletCustomize">Edit Wallet</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modalBodyEditWalletCustomize">
+                        <div class="form-group form-floating">
+                            <input asp-for="Name" placeholder="Name" id="inputNameEditWalletCustomize" class="form-control" />
+                            <label asp-for="Name" class="control-label"></label>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group form-floating">
+                            <input asp-for="Description" placeholder="Description" id="inputDescriptionEditWalletCustomize" class="form-control" />
+                            <label asp-for="Description"></label>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group form-floating">
+                            <input asp-for="StartBalance" placeholder="StartBalance" id="inputStartBalanceEditWalletCustomize" class="form-control" />
+                            <label asp-for="StartBalance"></label>
+                            <span asp-validation-for="StartBalance" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer" id="modalFooterEditWalletCustomize">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditWalletCustomize" data-bs-dismiss="modal">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form id="formDeleteWalletCustomize" asp-action="DeleteWallet">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="modal fade" id="modalDeleteWalletCustomize" role="dialog" aria-labelledby="modalLabelDeleteWalletCustomize" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabelDeleteWalletCustomize">Delete Wallet</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modalBodyDeleteWalletCustomize">
+                        <p>Are you sure you want to Delete this WalletCustomize?</p>
+                    </div>
+                    <div class="modal-footer" id="modalFooterDeleteWalletCustomize">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteWalletCustomize" data-bs-dismiss="modal">Delete Wallet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <br />
+
+    <table id="tblWalletCustomize" class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    StartBalance
+                </th>
+                <th>
+                    CurrentBalance
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+}
+
+@section Scripts {
+    <script src="~/js/customize/finance/wallet.js"></script>
+    <script src="~/lib/datatables/datatables.min.js"></script>
+    <link rel="stylesheet" href="~/lib/datatables/datatables.min.css">
+    <partial name="_ValidationScriptsPartial" />
+}

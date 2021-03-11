@@ -24,21 +24,31 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         private readonly ITypeService _typeService;
         private readonly IStatusService _statusService;
         private readonly ITemplateService _templateService;
+        private readonly IWalletService _walletService;
         private readonly IDataTableFactory _dataTableFactory;
 
-        public FinanceController(UserManager<User> userManager, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, ITemplateService templateService, IDataTableFactory dataTableFactory)
+        public FinanceController(UserManager<User> userManager, ICategoryService categoryService, ITypeService typeService, IStatusService statusService, ITemplateService templateService, IWalletService walletService, IDataTableFactory dataTableFactory)
         {
             _userManager = userManager;
             _categoryService = categoryService;
             _typeService = typeService;
             _statusService = statusService;
             _templateService = templateService;
+            _walletService = walletService;
             _dataTableFactory = dataTableFactory;
         }
 
         public async Task<IActionResult> Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetWallet(Guid id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var wallet = await _walletService.GetById(user, id);
+            return Json(wallet);
         }
 
         [HttpGet]
@@ -53,8 +63,8 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         public async Task<JsonResult> GetTemplate(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
-            var payment_Template = await _templateService.GetById(user, id);
-            return Json(payment_Template);
+            var template = await _templateService.GetById(user, id);
+            return Json(template);
         }
 
         [HttpGet]
@@ -73,8 +83,113 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
             return Json(status);
         }
 
+        public async Task<IActionResult> Wallets()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var wallets = await _walletService.GetAll(user);
+            ViewData["WalletCount"] = wallets.Count;
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetWalletTableData(DataTableInput model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var wallets = await _walletService.GetAll(user);
+                var result = await _dataTableFactory.GetTableData(model, wallets);
+
+                return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> CreateWallet(Wallet wallet)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    wallet.CurrentBalance = wallet.StartBalance;
+                    await _walletService.Add(user, wallet);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+
+                return Json(null);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<JsonResult> EditWallet(Guid id, Wallet wallet)
+        {
+            if (id != wallet.Id)
+            {
+                return Json(null);
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    await _walletService.Update(user, wallet);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+                return Json(null);
+            }
+            return Json(null);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteWallet(Guid id)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    var wallet = await _walletService.GetById(user, id);
+                    if (wallet != null)
+                    {
+                        await _walletService.Delete(user, wallet);
+                        user.CurrentWallet = null;
+                        await _userManager.UpdateAsync(user);
+                    }
+                }
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         public async Task<IActionResult> Categories()
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            var categories = await _categoryService.GetByUser(user);
+            ViewData["CategoryCount"] = categories.Count;
+
             return View();
         }
 
@@ -168,6 +283,9 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         public async Task<IActionResult> Templates()
         {
             var user = await _userManager.GetUserAsync(User);
+
+            var templates = await _templateService.GetAll(user);
+            ViewData["TemplateCount"] = templates.Count;
 
             ViewData["fk_TypeId"] = new SelectList(await _statusService.GetAll(user), "Id", "Name");
             ViewData["fk_CategoryId"] = new SelectList(await _statusService.GetAll(user), "Id", "Name");
@@ -266,6 +384,9 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
+            var types = await _typeService.GetByUser(user);
+            ViewData["TypeCount"] = types.Count;
+
             ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name");
 
             return View();
@@ -360,6 +481,11 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
 
         public async Task<IActionResult> Status()
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            var statuses = await _statusService.GetByUser(user);
+            ViewData["StatusCount"] = statuses.Count;
+
             return View();
         }
 
@@ -447,27 +573,6 @@ namespace HomeManager.WebApplication.Areas.Customize.Controllers
                 throw;
             }
             return RedirectToAction(nameof(Index));
-        }
-
-        private async Task<bool> TypeExists(Guid id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var types = await _typeService.GetAll(user);
-            return types.Any(e => e.Id == id);
-        }
-
-        private async Task<bool> StatusExists(Guid id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var status = await _statusService.GetAll(user);
-            return status.Any(e => e.Id == id);
-        }
-
-        private async Task<bool> CategoryExists(Guid id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var categories = await _categoryService.GetAll(user);
-            return categories.Any(e => e.Id == id);
         }
     }
 }

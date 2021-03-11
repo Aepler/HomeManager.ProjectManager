@@ -1,4 +1,5 @@
 ﻿@model HomeManager.Models.Entities.Finance.Status
+
 @{
     ViewData["Title"] = "Status";
     ViewData["ActivePage"] = CustomizeNavViews.Status;
@@ -6,106 +7,131 @@
 
 <h4>@ViewData["Title"]</h4>
 
-<button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateStatusCustomize">New Status</button>
+@if (ViewBag.StatusCount == 0)
+{
+<h4>Create Status</h4>
+    <br />
+    <form asp-action="CreateStatus">
+        <div class="form-group form-floating">
+            <input asp-for="Name" placeholder="Name" class="form-control" />
+            <label asp-for="Name"></label>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <br />
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" id="inputEndPointCreateStatusCustomize" asp-for="EndPoint" /> @Html.DisplayNameFor(model => model.EndPoint)
+            </label>
+        </div>
+        <br />
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+}
+else
+{
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCreateStatusCustomize">New Status</button>
 
-<form id="formCreateStatusCustomize" asp-action="CreateStatus">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalCreateStatusCustomize" role="dialog" aria-labelledby="modalLabelCreateStatusCustomize" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelCreateStatusCustomize">New Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="modalBodyCreateStatusCustomize">
-                    <div class="form-group form-floating">
-                        <input asp-for="Name" placeholder="Name" id="inputNameCreateStatusCustomize" class="form-control" />
-                        <label asp-for="Name" class="control-label"></label>
-                        <span asp-validation-for="Name" class="text-danger"></span>
+    <form id="formCreateStatusCustomize" asp-action="CreateStatus">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="modal fade" id="modalCreateStatusCustomize" role="dialog" aria-labelledby="modalLabelCreateStatusCustomize" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabelCreateStatusCustomize">New Status</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <br />
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" id="inputEndPointCreateStatusCustomize" asp-for="EndPoint" /> @Html.DisplayNameFor(model => model.EndPoint)
-                        </label>
+                    <div class="modal-body" id="modalBodyCreateStatusCustomize">
+                        <div class="form-group form-floating">
+                            <input asp-for="Name" placeholder="Name" id="inputNameCreateStatusCustomize" class="form-control" />
+                            <label asp-for="Name" class="control-label"></label>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" id="inputEndPointCreateStatusCustomize" asp-for="EndPoint" /> @Html.DisplayNameFor(model => model.EndPoint)
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer" id="modalFooterCreateStatusCustomize">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateStatusCustomize" data-bs-dismiss="modal">Save changes</button>
+                    <div class="modal-footer" id="modalFooterCreateStatusCustomize">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" value="Create" class="btn btn-primary" id="buttonModalCreateStatusCustomize" data-bs-dismiss="modal">Save changes</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 
-<form id="formEditStatusCustomize" asp-action="EditStatus">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalEditStatusCustomize" role="dialog" aria-labelledby="modalLabelEditStatusCustomize" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelEditStatusCustomize">Edit Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="modalBodyEditStatusCustomize">
-                    <div class="form-group form-floating">
-                        <input asp-for="Name" placeholder="Name" id="inputNameEditStatusCustomize" class="form-control" />
-                        <label asp-for="Name" class="control-label"></label>
-                        <span asp-validation-for="Name" class="text-danger"></span>
+    <form id="formEditStatusCustomize" asp-action="EditStatus">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="modal fade" id="modalEditStatusCustomize" role="dialog" aria-labelledby="modalLabelEditStatusCustomize" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabelEditStatusCustomize">Edit Status</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <br />
-                    <div class="form-group form-check">
-                        <label class="form-check-label">
-                            <input class="form-check-input" id="inputEndPointEditStatusCustomize" asp-for="EndPoint" /> @Html.DisplayNameFor(model => model.EndPoint)
-                        </label>
+                    <div class="modal-body" id="modalBodyEditStatusCustomize">
+                        <div class="form-group form-floating">
+                            <input asp-for="Name" placeholder="Name" id="inputNameEditStatusCustomize" class="form-control" />
+                            <label asp-for="Name" class="control-label"></label>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" id="inputEndPointEditStatusCustomize" asp-for="EndPoint" /> @Html.DisplayNameFor(model => model.EndPoint)
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer" id="modalFooterEditStatusCustomize">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditStatusCustomize" data-bs-dismiss="modal">Save changes</button>
+                    <div class="modal-footer" id="modalFooterEditStatusCustomize">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" value="Create" class="btn btn-primary" id="buttonModalEditStatusCustomize" data-bs-dismiss="modal">Save changes</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 
-<form id="formDeleteStatusCustomize" asp-action="DeleteStatus">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="modal fade" id="modalDeleteStatusCustomize" role="dialog" aria-labelledby="modalLabelDeleteStatusCustomize" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelDeleteStatusCustomize">Delete Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="modalBodyDeleteStatusCustomize">
-                    <p>Are you sure you want to Delete this StatusCustomize?</p>
-                </div>
-                <div class="modal-footer" id="modalFooterDeleteStatusCustomize">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteStatusCustomize" data-bs-dismiss="modal">Delete Status</button>
+    <form id="formDeleteStatusCustomize" asp-action="DeleteStatus">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="modal fade" id="modalDeleteStatusCustomize" role="dialog" aria-labelledby="modalLabelDeleteStatusCustomize" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabelDeleteStatusCustomize">Delete Status</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="modalBodyDeleteStatusCustomize">
+                        <p>Are you sure you want to Delete this StatusCustomize?</p>
+                    </div>
+                    <div class="modal-footer" id="modalFooterDeleteStatusCustomize">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" value="Create" class="btn btn-danger" id="buttonModalDeleteStatusCustomize" data-bs-dismiss="modal">Delete Status</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 
-<br />
+    <br />
 
-<table id="tblStatusCustomize" class="table table-hover">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                End Point
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-</table>
+    <table id="tblStatusCustomize" class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    End Point
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+}
 
 @section Scripts {
     <script src="~/js/customize/finance/status.js"></script>

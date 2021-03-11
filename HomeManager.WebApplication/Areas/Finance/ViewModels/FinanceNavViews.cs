@@ -12,14 +12,14 @@ namespace HomeManager.WebApplication.Areas.Finance.ViewModels
 
         public static string Payments => "Payments";
 
-        public static string RepeatingPayments => "RepeatingPayments";
+        public static string Repeating => "Repeating";
 
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string PaymentsNavClass(ViewContext viewContext) => PageNavClass(viewContext, Payments);
 
-        public static string RepeatingPaymentsNavClass(ViewContext viewContext) => PageNavClass(viewContext, RepeatingPayments);
+        public static string RepeatingNavClass(ViewContext viewContext) => PageNavClass(viewContext, Repeating);
 
         private static string PageNavClass(ViewContext viewContext, string page)
         {

@@ -171,7 +171,7 @@ namespace HomeManager.Data.Context
                 Name = "Salary",
                 EndTaxType = PaymentTaxType.Net,
                 TransactionType = PaymentTransactionType.Deposit,
-                ExtraInput = new string[] { Convert.ToString(PaymentExtraInput.ExtraCost), Convert.ToString(PaymentExtraInput.DetailedTax) },
+                ExtraInput = new string[] { Convert.ToString((int)PaymentExtraInput.ExtraCost), Convert.ToString((int)PaymentExtraInput.DetailedTax) },
                 fk_StatusId = Guid.Parse("641DDE1B-2959-47CA-BBC6-D0979FF2BC14")
             },
             new Type
@@ -181,7 +181,7 @@ namespace HomeManager.Data.Context
                 EndTaxType = PaymentTaxType.Gross,
                 DefaultTaxRate = 19,
                 TransactionType = PaymentTransactionType.Debit,
-                ExtraInput = new string[] { Convert.ToString(PaymentExtraInput.Category)},
+                ExtraInput = new string[] { Convert.ToString((int)PaymentExtraInput.Category)},
                 Repeating = true,
                 fk_StatusId = Guid.Parse("58AE656B-0B17-4EED-AEEB-EEB660DB266B")
             },
@@ -192,7 +192,7 @@ namespace HomeManager.Data.Context
                 EndTaxType = PaymentTaxType.Gross,
                 TransactionType = PaymentTransactionType.Debit,
                 DefaultTaxRate = 19,
-                ExtraInput = new string[] { Convert.ToString(PaymentExtraInput.ExtraCost), Convert.ToString(PaymentExtraInput.Category) },
+                ExtraInput = new string[] { Convert.ToString((int)PaymentExtraInput.ExtraCost), Convert.ToString((int)PaymentExtraInput.Category), Convert.ToString((int)PaymentExtraInput.Warranty) },
                 fk_StatusId = Guid.Parse("58AE656B-0B17-4EED-AEEB-EEB660DB266B")
             },
             new Type
@@ -201,7 +201,7 @@ namespace HomeManager.Data.Context
                 Name = "Earnings",
                 EndTaxType = PaymentTaxType.Net,
                 TransactionType = PaymentTransactionType.Deposit,
-                ExtraInput = new string[] { Convert.ToString(PaymentExtraInput.ExtraCost), Convert.ToString(PaymentExtraInput.Category) },
+                ExtraInput = new string[] { Convert.ToString((int)PaymentExtraInput.ExtraCost), Convert.ToString((int)PaymentExtraInput.Category) },
                 fk_StatusId = Guid.Parse("641DDE1B-2959-47CA-BBC6-D0979FF2BC14")
             });
         }

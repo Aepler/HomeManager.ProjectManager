@@ -35,7 +35,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
             {
                 var result = "";
                 var type = await _typeService.GetById(user, typeId);
-                var status = await _statusService.GetByTypeId(user, typeId);
+                var status = await _statusService.GetByTypeId(user, type);
                 var category = await _categoryService.GetAll(user);
 
                 if (status == null)
@@ -130,7 +130,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
                 result += "<br class='created' />" + model.Amount_Net + "<br class='created' />" + model.Amount_Gross;
             }
 
-            if (extraInput.Contains(Convert.ToString(PaymentExtraInput.ExtraCost)))
+            if (extraInput.Contains(Convert.ToString((int)PaymentExtraInput.ExtraCost)))
             {
                 result += model.ExtraCosts + model.AddExtraCost + "</div>";
             }
@@ -141,12 +141,12 @@ namespace HomeManager.WebApplication.Areas.Finance.Factories
 
             result += "<br class='created' />" + model.Tax;
 
-            if (extraInput.Contains(Convert.ToString(PaymentExtraInput.DetailedTax)))
+            if (extraInput.Contains(Convert.ToString((int)PaymentExtraInput.DetailedTax)))
             {
                 result += model.AdvancedTaxList + "<br class='created' /> <div class='created' id='divAdvancedTax" + method + "PaymentFinance' style='display: none'> <br class='created' />" + model.TaxList + model.AddTax + "</div>";
             }
 
-            if (extraInput.Contains(Convert.ToString(PaymentExtraInput.Category)))
+            if (extraInput.Contains(Convert.ToString((int)PaymentExtraInput.Category)))
             {
                 result += "<br class='created' />" + model.Category;
             }

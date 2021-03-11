@@ -7,6 +7,8 @@ using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
 using HomeManager.Models.Interfaces.Services.Finance;
 using HomeManager.Models.Interfaces.Repositories.Finance;
+using Type = HomeManager.Models.Entities.Finance.Type;
+using HomeManager.Models.Enums;
 
 namespace HomeManager.Services.Finance
 {
@@ -73,12 +75,19 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Status>> GetByTypeId(User user, Guid typeId)
+        public async Task<ICollection<Status>> GetByTypeId(User user, Type type)
         {
             try
             {
                 var statuses = await GetAll(user);
-                return statuses.Where(x => x.EndPoint == false || x.Id == typeId).ToList();
+                if (type.TransactionType == PaymentTransactionType.Both)
+                {
+                    return statuses.ToList();
+                }
+                else
+                {
+                    return statuses.Where(x => x.EndPoint == false || x.Id == type.fk_StatusId).ToList();
+                }
             }
             catch (Exception ex)
             {

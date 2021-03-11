@@ -21,12 +21,12 @@ namespace HomeManager.Data.Repositories.Finance
 
         public Payment GetById(Guid id)
         {
-            return _context.FinancePayments.Where(x => x.Id == id).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).FirstOrDefault();
+            return _context.FinancePayments.Where(x => x.Id == id).Include(x => x.Wallet).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).FirstOrDefault();
         }
 
         public ICollection<Payment> GetAll()
         {
-            return _context.FinancePayments.Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToList();
+            return _context.FinancePayments.Include(x => x.Wallet).Include(x => x.Category).Include(x => x.Type).Include(x => x.Status).Include(x => x.User).ToList();
         }
 
         public bool Add(Payment payment)

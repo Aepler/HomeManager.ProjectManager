@@ -27,6 +27,11 @@ namespace HomeManager.Models.Entities.Finance
         [ForeignKey("fk_UserId")]
         public User User { get; set; }
 
+        [Display(Name = "Wallet")]
+        public Guid fk_WalletId { get; set; }
+        [ForeignKey("fk_WalletId")]
+        public Wallet Wallet { get; set; }
+
         public DateTime Date { get; set; }
 
         [Required]

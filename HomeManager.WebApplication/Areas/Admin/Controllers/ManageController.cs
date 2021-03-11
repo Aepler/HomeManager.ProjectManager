@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HomeManager.Models.DataTable;
+using HomeManager.Models.DataTable.Finance;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Interfaces.Factories;
 using HomeManager.WebApplication.Areas.Admin.ViewModels.Manage;

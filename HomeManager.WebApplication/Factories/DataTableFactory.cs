@@ -1,4 +1,5 @@
 ﻿using HomeManager.Models.DataTable;
+using HomeManager.Models.DataTable.Finance;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
 using HomeManager.Models.Interfaces.Factories;
@@ -22,6 +23,56 @@ namespace HomeManager.WebApplication.Factories
             _userManager = userManager;
             _roleManager = roleManager;
         }
+
+        public async Task<DataTableResponse<WalletDataTable>> GetTableData(DataTableInput model, ICollection<Wallet> list)
+        {
+            try
+            {
+                var result = new DataTableResponse<WalletDataTable>();
+                int totalRecords = list.Count;
+
+                var modifiedData = list.Select(d => new WalletDataTable
+                {
+                    Id = d.Id.ToString(),
+                    Name = d.Name,
+                    Description = d.Description,
+                    StartBalance = d.StartBalance.ToString(),
+                    CurrentBalance = d.CurrentBalance.ToString()
+                }
+                    );
+
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value)
+                     ).ToList();
+                }
+
+                string sortBy = "";
+                string sortDir = "";
+
+                if (model.order != null)
+                {
+                    sortBy = model.columns[model.order[0].column].data;
+                    sortDir = model.order[0].dir.ToLower();
+                }
+
+                int recFilter = modifiedData.Count();
+                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
+
+                result.draw = model.draw;
+                result.recordsTotal = totalRecords;
+                result.recordsFiltered = recFilter;
+                result.data = modifiedData;
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<DataTableResponse<RoleDataTable>> GetTableData(DataTableInput model, ICollection<Role> list)
         {
             try
@@ -50,7 +101,6 @@ namespace HomeManager.WebApplication.Factories
 
                 if (model.order != null)
                 {
-                    // in this example we just default sort on the 1st column
                     sortBy = model.columns[model.order[0].column].data;
                     sortDir = model.order[0].dir.ToLower();
                 }
@@ -118,7 +168,6 @@ namespace HomeManager.WebApplication.Factories
 
                 if (model.order != null)
                 {
-                    // in this example we just default sort on the 1st column
                     sortBy = model.columns[model.order[0].column].data;
                     sortDir = model.order[0].dir.ToLower();
                 }
@@ -165,7 +214,6 @@ namespace HomeManager.WebApplication.Factories
 
                 if (model.order != null)
                 {
-                    // in this example we just default sort on the 1st column
                     sortBy = model.columns[model.order[0].column].data;
                     sortDir = model.order[0].dir.ToLower();
                 }
@@ -222,7 +270,6 @@ namespace HomeManager.WebApplication.Factories
 
                 if (model.order != null)
                 {
-                    // in this example we just default sort on the 1st column
                     sortBy = model.columns[model.order[0].column].data;
                     sortDir = model.order[0].dir.ToLower();
                 }
@@ -278,7 +325,6 @@ namespace HomeManager.WebApplication.Factories
 
                 if (model.order != null)
                 {
-                    // in this example we just default sort on the 1st column
                     sortBy = model.columns[model.order[0].column].data;
                     sortDir = model.order[0].dir.ToLower();
                 }
@@ -327,7 +373,6 @@ namespace HomeManager.WebApplication.Factories
 
                 if (model.order != null)
                 {
-                    // in this example we just default sort on the 1st column
                     sortBy = model.columns[model.order[0].column].data;
                     sortDir = model.order[0].dir.ToLower();
                 }
@@ -377,7 +422,6 @@ namespace HomeManager.WebApplication.Factories
 
                 if (model.order != null)
                 {
-                    // in this example we just default sort on the 1st column
                     sortBy = model.columns[model.order[0].column].data;
                     sortDir = model.order[0].dir.ToLower();
                 }
@@ -434,7 +478,6 @@ namespace HomeManager.WebApplication.Factories
 
                 if (model.order != null)
                 {
-                    // in this example we just default sort on the 1st column
                     sortBy = model.columns[model.order[0].column].data;
                     sortDir = model.order[0].dir.ToLower();
                 }

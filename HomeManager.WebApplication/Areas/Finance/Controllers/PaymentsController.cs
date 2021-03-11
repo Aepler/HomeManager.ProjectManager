@@ -61,7 +61,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
 
             if (user.CurrentWallet == null)
             {
-                return RedirectToAction("SelectWallet");
+                return RedirectToAction("SelectWallet", "Finance");
             }
 
             ViewData["Types"] = new SelectList(await _typeService.GetAll(user), "Id", "Name");
@@ -75,7 +75,7 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                var payments = await _paymentService.GetByCurrentWallet(user);
+                var payments = await _paymentService.GetCompleted(user);
                 var result = await _dataTableFactory.GetTableData(model, payments);
 
                 return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
@@ -100,14 +100,6 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             var user = await _userManager.GetUserAsync(User);
             var data = await _financeFormFactory.GetEditForm(user, id);
             return Json(data);
-        }
-
-        public async Task<IActionResult> SelectWallet()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            ViewData["Wallets"] = await _walletService.GetAll(user);
-
-            return View();
         }
 
         // POST: Payments/Create
@@ -205,11 +197,18 @@ namespace HomeManager.WebApplication.Areas.Finance.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> PaymentExistsAsync(Guid id)
+        public async Task<IActionResult> Repeating()
         {
             var user = await _userManager.GetUserAsync(User);
-            var payments = await _paymentService.GetAll(user);
-            return payments.Any(e => e.Id == id);
+
+            if (user.CurrentWallet == null)
+            {
+                return RedirectToAction("SelectWallet", "Finance");
+            }
+
+            ViewData["Types"] = new SelectList(await _typeService.GetAll(user), "Id", "Name");
+
+            return View();
         }
     }
 }

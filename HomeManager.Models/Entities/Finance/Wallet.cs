@@ -13,6 +13,7 @@ namespace HomeManager.Models.Entities.Finance
         public Wallet()
         {
             this.Payments = new HashSet<Payment>();
+            this.Repeatings = new HashSet<Repeating>();
         }
 
         [Key]
@@ -25,6 +26,8 @@ namespace HomeManager.Models.Entities.Finance
 
         [Required]
         public string Name { get; set; }
+
+        public string Description { get; set; }
 
         [Display(Name = "Start Balance")]
         [Column(TypeName = "decimal(9,2)")]
@@ -39,5 +42,6 @@ namespace HomeManager.Models.Entities.Finance
         public DateTime? DeletedOn { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
+        public ICollection<Repeating> Repeatings { get; set; }
     }
 }

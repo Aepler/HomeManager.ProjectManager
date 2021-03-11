@@ -21,9 +21,10 @@ namespace HomeManager.Models.Interfaces.Services.Finance
         Task<ICollection<Payment>> GetByDate(User user, DateTime dateTime);
         Task<ICollection<Payment>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd);
         Task<ICollection<Payment>> GetCompleted(User user);
+        Task<ICollection<Payment>> GetAllCompleted(User user);
         Task<ICollection<Payment>> GetPending(User user);
         Task<ICollection<Payment>> GetBalanceToday(User user);
-        Task<ICollection<Payment>> GetBalanceForDate(User user, DateTime dateTime);
+        Task<ICollection<Payment>> GetTotalBalanceToday(User user);
         Task<bool> Add(User user, Payment payment);
         Task<bool> Update(User user, Payment payment);
         Task<bool> Delete(User user, Payment payment);

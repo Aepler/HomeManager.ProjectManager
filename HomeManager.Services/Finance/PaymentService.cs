@@ -49,18 +49,13 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetBalanceForDate(User user, DateTime dateTime)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ICollection<Payment>> GetBalanceToday(User user)
         {
             try
             {
                 decimal result = 0;
 
-                ICollection<Payment> payments = await GetAll(user);
+                ICollection<Payment> payments = await GetCompleted(user);
 
                 foreach (var x in payments)
                 {
@@ -68,7 +63,35 @@ namespace HomeManager.Services.Finance
                     {
                         result += x.Amount;
                     }
-                    else if(x.Type.TransactionType == PaymentTransactionType.Debit)
+                    else if (x.Type.TransactionType == PaymentTransactionType.Debit)
+                    {
+                        result -= x.Amount;
+                    }
+                }
+
+                return payments;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<ICollection<Payment>> GetTotalBalanceToday(User user)
+        {
+            try
+            {
+                decimal result = 0;
+
+                ICollection<Payment> payments = await GetAllCompleted(user);
+
+                foreach (var x in payments)
+                {
+                    if (x.Type.TransactionType == PaymentTransactionType.Deposit || x.Type.TransactionType == PaymentTransactionType.Both)
+                    {
+                        result += x.Amount;
+                    }
+                    else if (x.Type.TransactionType == PaymentTransactionType.Debit)
                     {
                         result -= x.Amount;
                     }
@@ -177,6 +200,19 @@ namespace HomeManager.Services.Finance
         {
             try
             {
+                ICollection<Payment> payments = await GetByCurrentWallet(user);
+                return payments.Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public async Task<ICollection<Payment>> GetAllCompleted(User user)
+        {
+            try
+            {
                 ICollection<Payment> payments = await GetAll(user);
                 return payments.Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today).ToList();
             }
@@ -203,8 +239,13 @@ namespace HomeManager.Services.Finance
         {
             try
             {
-                payment.fk_UserId = user.Id;
-                return _paymentRepository.Add(payment);
+                if (user.CurrentWallet != null)
+                {
+                    payment.fk_UserId = user.Id;
+                    payment.fk_WalletId = (Guid)user.CurrentWallet;
+                    return _paymentRepository.Add(payment);
+                }
+                return false;
             }
             catch (Exception ex)
             {

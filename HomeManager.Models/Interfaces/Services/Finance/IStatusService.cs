@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
+using Type = HomeManager.Models.Entities.Finance.Type;
 
 namespace HomeManager.Models.Interfaces.Services.Finance
 {
@@ -14,7 +15,7 @@ namespace HomeManager.Models.Interfaces.Services.Finance
         Task<ICollection<Status>> GetAll(User user);
         Task<ICollection<Status>> GetByUser(User user);
         Task<ICollection<Status>> GetByEndPoint(User user, bool endPoint);
-        Task<ICollection<Status>> GetByTypeId(User user, Guid typeId);
+        Task<ICollection<Status>> GetByTypeId(User user, Type type);
         Task<ICollection<Status>> GetDefault();
         Task<bool> Add(User user, Status status);
         Task<bool> Update(User user, Status status);

@@ -20,6 +20,8 @@ namespace HomeManager.WebApplication.Areas.Customize.ViewModels
 
         public static string Status => "Status";
 
+        public static string Wallets => "Wallets";
+
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string FinanceNavClass(ViewContext viewContext) => PageNavClass(viewContext, Finance);
@@ -31,6 +33,8 @@ namespace HomeManager.WebApplication.Areas.Customize.ViewModels
         public static string TypesNavClass(ViewContext viewContext) => PageNavClass(viewContext, Types);
 
         public static string StatusNavClass(ViewContext viewContext) => PageNavClass(viewContext, Status);
+
+        public static string WalletsNavClass(ViewContext viewContext) => PageNavClass(viewContext, Wallets);
 
         private static string PageNavClass(ViewContext viewContext, string page)
         {
