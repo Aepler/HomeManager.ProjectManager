@@ -24,9 +24,9 @@ namespace HomeManager.Data.Repositories.Finance
             return _context.FinanceRepeatings.Where(x => x.Id == id).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).FirstOrDefault();
         }
 
-        public ICollection<Repeating> GetAll()
+        public IQueryable<Repeating> GetAll()
         {
-            return _context.FinanceRepeatings.Include(x => x.Category).Include(x => x.Type).Include(x => x.User).ToList();
+            return _context.FinanceRepeatings.Include(x => x.Category).Include(x => x.Type).Include(x => x.User);
         }
 
         public bool Add(Repeating repeating)

@@ -24,9 +24,9 @@ namespace HomeManager.Data.Repositories.Finance
             return _context.FinanceStatuses.Where(x => x.Id == id).FirstOrDefault();
         }
 
-        public ICollection<Status> GetAll()
+        public IQueryable<Status> GetAll()
         {
-            return _context.FinanceStatuses.ToList();
+            return _context.FinanceStatuses;
         }
 
         public bool Add(Status status)

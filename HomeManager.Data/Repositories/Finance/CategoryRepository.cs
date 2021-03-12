@@ -24,9 +24,9 @@ namespace HomeManager.Data.Repositories.Finance
             return _context.FinanceCategories.Where(x => x.Id == id).FirstOrDefault();
         }
 
-        public ICollection<Category> GetAll()
+        public IQueryable<Category> GetAll()
         {
-            return _context.FinanceCategories.ToList();
+            return _context.FinanceCategories;
         }
 
         public bool Add(Category category)

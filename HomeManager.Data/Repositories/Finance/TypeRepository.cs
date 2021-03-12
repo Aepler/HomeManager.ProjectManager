@@ -25,9 +25,9 @@ namespace HomeManager.Data.Repositories.Finance
             return _context.FinanceTypes.Where(x => x.Id == id).Include(x => x.Status).FirstOrDefault();
         }
 
-        public ICollection<Type> GetAll()
+        public IQueryable<Type> GetAll()
         {
-            return _context.FinanceTypes.Include(x => x.Status).ToList();
+            return _context.FinanceTypes.Include(x => x.Status);
         }
 
         public bool Add(Type type)

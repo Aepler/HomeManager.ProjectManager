@@ -24,9 +24,9 @@ namespace HomeManager.Data.Repositories.Finance
             return _context.FinanceTemplates.Where(x => x.Id == id).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).FirstOrDefault();
         }
 
-        public ICollection<Template> GetAll()
+        public IQueryable<Template> GetAll()
         {
-            return _context.FinanceTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User).ToList();
+            return _context.FinanceTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User);
         }
 
         public bool Add(Template paymentTemplate)

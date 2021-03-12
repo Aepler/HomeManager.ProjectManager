@@ -1,24 +1,15 @@
-using HomeManager.Api.Data;
-using HomeManager.Api.Models;
-using HomeManager.Data;
-using HomeManager.Data.Repositories.Finance;
-using HomeManager.Models.Entities;
-using HomeManager.Models.Interfaces.Factories.Finance;
-using HomeManager.Models.Interfaces.Repositories.Finance;
-using HomeManager.Models.Interfaces.Services.Finance;
-using HomeManager.Services.Finance;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HomeManager.Api
@@ -35,27 +26,11 @@ namespace HomeManager.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<HomeManagerContextApi>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("HomeManagerDbConnection"), b => b.MigrationsAssembly("HomeManager.Data")));
 
-            services.AddDatabaseDeveloperPageExceptionFilter();
-
-            services.AddDefaultIdentity<User>()
-                .AddRoles<Role>()
-                .AddEntityFrameworkStores<HomeManagerContextApi>();
-
-            services.AddIdentityServer()
-                .AddApiAuthorization<User, HomeManagerContextApi>();
-
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
-            services.AddControllersWithViews();
-            services.AddRazorPages();
-            // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
+            services.AddControllers();
+            services.AddSwaggerGen(c =>
             {
-                configuration.RootPath = "ClientApp/dist";
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HomeManager.Api", Version = "v1" });
             });
         }
 
@@ -65,59 +40,19 @@ namespace HomeManager.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HomeManager.Api v1"));
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            if (!env.IsDevelopment())
-            {
-                app.UseSpaStaticFiles();
-            }
 
             app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseIdentityServer();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Register", true, true)));
-                endpoints.MapPost("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Register", true, true)));
-            });
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/Identity/Account/Login", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Login", true, true)));
-                endpoints.MapPost("/Identity/Account/Login", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Login", true, true)));
-            });
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
-            });
-
-            app.UseSpa(spa =>
-            {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
+                endpoints.MapControllers();
             });
         }
     }

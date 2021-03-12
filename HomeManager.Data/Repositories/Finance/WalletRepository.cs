@@ -24,9 +24,9 @@ namespace HomeManager.Data.Repositories.Finance
             return _context.FinanceWallets.Where(x => x.Id == id).Include(x => x.User).FirstOrDefault();
         }
 
-        public ICollection<Wallet> GetAll()
+        public IQueryable<Wallet> GetAll()
         {
-            return _context.FinanceWallets.Include(x => x.User).ToList();
+            return _context.FinanceWallets.Include(x => x.User);
         }
         public bool Add(Wallet wallet)
         {
