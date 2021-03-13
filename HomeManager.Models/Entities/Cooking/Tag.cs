@@ -29,8 +29,6 @@ namespace HomeManager.Models.Entities.Cooking
 
         [Display(Name = "User")]
         public Guid? fk_UserId { get; set; }
-        [ForeignKey("fk_UserId")]
-        public User User { get; set; }
 
         public ICollection<Recipe> Recipes { get; set; }
         public ICollection<Ingredient> Ingredients { get; set; }

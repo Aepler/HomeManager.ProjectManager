@@ -1,4 +1,3 @@
-using HomeManager.Api.Data;
 using HomeManager.Api.Models;
 using HomeManager.Data;
 using HomeManager.Models.Entities;
@@ -30,18 +29,22 @@ namespace HomeManager.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<HomeManagerContextApi>(options =>
+            services.AddDbContext<HomeManagerContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("HomeManagerDbConnection")));
+
+            services.AddDbContext<HomeManagerAuthContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("HomeManagerAuthConnection")));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<User>()
                 .AddRoles<Role>()
-                .AddEntityFrameworkStores<HomeManagerContextApi>();
+                .AddEntityFrameworkStores<HomeManagerAuthContext>();
 
             services.AddIdentityServer()
-                .AddApiAuthorization<User, HomeManagerContextApi>();
+                .AddApiAuthorization<User, HomeManagerAuthContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
@@ -79,19 +82,29 @@ namespace HomeManager.Api
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseIdentityServer();
             app.UseAuthorization();
+            app.UseIdentityServer();
 
-            app.UseEndpoints(endpoints =>
+            app.Use(async (context, next) =>
             {
-                endpoints.MapGet("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Register", true, true)));
-                endpoints.MapPost("/Identity/Account/Register", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Register", true, true)));
+                var url = context.Request.Path.Value;
+
+                if (url.Contains("/Identity/Account/Login"))
+                {
+                    var query = context.Request.QueryString;
+                    context.Response.Redirect("/Account/Login" + query);
+                    return;
+                }
+
+                await next();
             });
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/Identity/Account/Login", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Login", true, true)));
-                endpoints.MapPost("/Identity/Account/Login", context => Task.Factory.StartNew(() => context.Response.Redirect("/Account/Login", true, true)));
+                endpoints.MapControllerRoute(
+                  name: "areas",
+                  pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
             });
 
             app.UseEndpoints(endpoints =>

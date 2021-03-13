@@ -16,12 +16,16 @@ namespace HomeManager.Data.Context
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            SeedRole(modelBuilder);
-            SeedUser(modelBuilder);
-            SeedUserRole(modelBuilder);
             SeedStatus(modelBuilder);
             SeedType(modelBuilder);
             SeedCategory(modelBuilder);
+        }
+
+        public static void SeedAuthorrization(this ModelBuilder modelBuilder)
+        {
+            SeedRole(modelBuilder);
+            SeedUser(modelBuilder);
+            SeedUserRole(modelBuilder);
         }
 
         public static void SeedRole(ModelBuilder modelBuilder)

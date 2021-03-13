@@ -21,12 +21,12 @@ namespace HomeManager.Data.Repositories.Finance
 
         public Template GetById(Guid id)
         {
-            return _context.FinanceTemplates.Where(x => x.Id == id).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).FirstOrDefault();
+            return _context.FinanceTemplates.Where(x => x.Id == id).Include(x => x.Category).Include(x => x.Type).FirstOrDefault();
         }
 
         public IQueryable<Template> GetAll()
         {
-            return _context.FinanceTemplates.Include(x => x.Category).Include(x => x.Type).Include(x => x.User);
+            return _context.FinanceTemplates.Include(x => x.Category).Include(x => x.Type);
         }
 
         public bool Add(Template paymentTemplate)

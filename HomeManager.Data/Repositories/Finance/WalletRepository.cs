@@ -21,12 +21,12 @@ namespace HomeManager.Data.Repositories.Finance
 
         public Wallet GetById(Guid id)
         {
-            return _context.FinanceWallets.Where(x => x.Id == id).Include(x => x.User).FirstOrDefault();
+            return _context.FinanceWallets.Where(x => x.Id == id).FirstOrDefault();
         }
 
         public IQueryable<Wallet> GetAll()
         {
-            return _context.FinanceWallets.Include(x => x.User);
+            return _context.FinanceWallets;
         }
         public bool Add(Wallet wallet)
         {

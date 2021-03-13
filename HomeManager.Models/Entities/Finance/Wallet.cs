@@ -19,23 +19,17 @@ namespace HomeManager.Models.Entities.Finance
         [Key]
         public Guid Id { get; set; }
 
-        [Display(Name = "User")]
         public Guid fk_UserId { get; set; }
-        [ForeignKey("fk_UserId")]
-        public User User { get; set; }
 
         [Required]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        [Display(Name = "Start Balance")]
         [Column(TypeName = "decimal(9,2)")]
         public double StartBalance { get; set; }
-        [Display(Name = "Current Balance")]
         [Column(TypeName = "decimal(9,2)")]
         public double CurrentBalance { get; set; }
-        [Display(Name = "Current Balance")]
         public DateTime? BalanceUpdateDate { get; set; }
 
         public bool Deleted { get; set; }

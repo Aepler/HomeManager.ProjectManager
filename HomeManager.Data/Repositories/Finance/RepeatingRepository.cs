@@ -21,12 +21,12 @@ namespace HomeManager.Data.Repositories.Finance
 
         public Repeating GetById(Guid id)
         {
-            return _context.FinanceRepeatings.Where(x => x.Id == id).Include(x => x.Category).Include(x => x.Type).Include(x => x.User).FirstOrDefault();
+            return _context.FinanceRepeatings.Where(x => x.Id == id).Include(x => x.Category).Include(x => x.Type).FirstOrDefault();
         }
 
         public IQueryable<Repeating> GetAll()
         {
-            return _context.FinanceRepeatings.Include(x => x.Category).Include(x => x.Type).Include(x => x.User);
+            return _context.FinanceRepeatings.Include(x => x.Category).Include(x => x.Type);
         }
 
         public bool Add(Repeating repeating)

@@ -28,18 +28,15 @@ namespace HomeManager.Models.Entities.Finance
         public PaymentTransactionType TransactionType { get; set; }
         public string[] ExtraInput { get; set; }
         public bool Repeating { get; set; }
-        [Required]
-        [Display(Name = "End Status")]
+
         public Guid fk_StatusId { get; set; }
         [ForeignKey("fk_StatusId")]
         public Status Status { get; set; }
+
         public bool Deleted { get; set; }
         public DateTime? DeletedOn { get; set; }
 
-        [Display(Name = "User")]
         public Guid? fk_UserId { get; set; }
-        [ForeignKey("fk_UserId")]
-        public User User { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
         public ICollection<Repeating> Repeatings { get; set; }

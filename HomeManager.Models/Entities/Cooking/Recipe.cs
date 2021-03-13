@@ -44,8 +44,6 @@ namespace HomeManager.Models.Entities.Cooking
 
         [Display(Name = "User")]
         public Guid fk_UserId { get; set; }
-        [ForeignKey("fk_UserId")]
-        public User User { get; set; }
 
  
         public ICollection<Favorites> Favorites { get; set; }

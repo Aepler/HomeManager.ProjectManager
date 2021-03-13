@@ -23,7 +23,6 @@ namespace HomeManager.Data.Repositories.Cooking
         {
             return await _context.CookingRecipes
                 .Where(r => r.fk_UserId == user.Id && r.Deleted == false)
-                .Include(r => r.User)
                 .ToListAsync();
         }
         
@@ -33,7 +32,6 @@ namespace HomeManager.Data.Repositories.Cooking
         {
             return await _context.CookingRecipes
                 .Where(r => r.Public && !r.Deleted)
-                .Include(r => r.User)
                 .ToListAsync();
         }
 
@@ -42,7 +40,6 @@ namespace HomeManager.Data.Repositories.Cooking
         {
             return await _context.CookingRecipes
                 .Where(r => r.fk_UserId == user.Id && r.Id == id && !r.Deleted)
-                .Include(r => r.User)
                 .FirstOrDefaultAsync();
         }
 
@@ -51,7 +48,7 @@ namespace HomeManager.Data.Repositories.Cooking
         {
             return await _context.CookingFavorites
                 .Where(f => f.fk_UserId == user.Id)
-                .Select(f => f.Recipe).Include(r => r.User)
+                .Select(f => f.Recipe)
                 .ToListAsync();
         }
 
@@ -60,7 +57,6 @@ namespace HomeManager.Data.Repositories.Cooking
         {
             return await _context.CookingRecipes
                 .Where(r => r.Ingredients.Contains(ingredient))
-                .Include(r => r.User)
                 .ToListAsync();
         }
 
@@ -68,7 +64,6 @@ namespace HomeManager.Data.Repositories.Cooking
         {
             return await _context.CookingRecipes
                 .Where(r => r.Tags.Contains(tag))
-                .Include(r => r.User)
                 .ToListAsync();
         } 
 

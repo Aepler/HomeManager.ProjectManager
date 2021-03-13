@@ -22,10 +22,7 @@ namespace HomeManager.Models.Entities.Finance
         public bool Deleted { get; set; }
         public DateTime? DeletedOn { get; set; }
 
-        [Display(Name = "User")]
         public Guid? fk_UserId { get; set; }
-        [ForeignKey("fk_UserId")]
-        public User User { get; set; }
 
         public ICollection<Payment> Payments { get; set; }
         public ICollection<Type> Types { get; set; }

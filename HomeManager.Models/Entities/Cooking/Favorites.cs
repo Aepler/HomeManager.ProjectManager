@@ -17,10 +17,6 @@ namespace HomeManager.Models.Entities.Cooking
 
         public Guid? fk_UserId { get; set; }
 
-        [ForeignKey("fk_UserId")]
-
-        public User User { get; set; }
-
 
         [Display(Name = "Recipes")]
 

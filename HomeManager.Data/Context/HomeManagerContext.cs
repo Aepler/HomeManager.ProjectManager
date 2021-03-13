@@ -11,11 +11,12 @@ using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using Type = HomeManager.Models.Entities.Finance.Type;
 
-//Add-Migration HomeManager.PutNameHere -Context HomeManagerContext -OutputDir "Migrations"
+//Add-Migration HomeManagerDb.PutNameHere -Context HomeManagerContext -OutputDir "Migrations/Db"
+//Update-Database -Context HomeManagerContext
 
 namespace HomeManager.Data
 {
-    public class HomeManagerContext : IdentityDbContext<User, Role, Guid>
+    public class HomeManagerContext : DbContext
     {
         public HomeManagerContext(DbContextOptions<HomeManagerContext> options) : base(options)
         {

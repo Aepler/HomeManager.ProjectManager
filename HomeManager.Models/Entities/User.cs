@@ -24,18 +24,5 @@ namespace HomeManager.Models.Entities
         public string ProfilePictureDataType { get; set; }
 
         public Guid? CurrentWallet { get; set; }
-
-        public ICollection<Payment> Payments { get; set; }
-        public ICollection<Template> Templates { get; set; }
-        public ICollection<Repeating> Repeatings { get; set; }
-        public ICollection<Wallet> Wallets { get; set; }
-        public ICollection<Category> Categories { get; set; }
-        public ICollection<Type> Types { get; set; }
-        public ICollection<Status> Statuses { get; set; }
-
-        public ICollection<Tag> Tags { get; set; }
-        public ICollection<Recipe> Recipes { get; set; }
-
-        public ICollection<Ingredient> Ingredients { get; set; }
     }
 }

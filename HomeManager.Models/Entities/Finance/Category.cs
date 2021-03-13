@@ -18,10 +18,7 @@ namespace HomeManager.Models.Entities.Finance
         [Key]
         public Guid Id { get; set; }
 
-        [Display(Name = "User")]
         public Guid? fk_UserId { get; set; }
-        [ForeignKey("fk_UserId")]
-        public User User { get; set; }
 
         [Required]
         public string Name { get; set; }

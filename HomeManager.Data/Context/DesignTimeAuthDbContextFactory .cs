@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace HomeManager.Data.Context
 {
-    public class DesignTimeAuthDbContextFactory : IDesignTimeDbContextFactory<HomeManagerContextApi>
+    public class DesignTimeAuthDbContextFactory : IDesignTimeDbContextFactory<HomeManagerAuthContext>
     {
-        private const string CONN_STRING = "Server=localhost\\SQLEXPRESS;Database=HomeManagerDb;Trusted_Connection=True;MultipleActiveResultSets=true";
-        public HomeManagerContextApi CreateDbContext(string[] args)
+        private const string CONN_STRING = "Server=localhost\\SQLEXPRESS;Database=HomeManagerAuth;Trusted_Connection=True;MultipleActiveResultSets=true";
+        public HomeManagerAuthContext CreateDbContext(string[] args)
         {
             IServiceCollection services = new ServiceCollection();
 
 
-            services.AddDbContext<HomeManagerContextApi>(options => options.UseSqlServer(CONN_STRING));
+            services.AddDbContext<HomeManagerAuthContext>(options => options.UseSqlServer(CONN_STRING));
             services.Configure<IdentityServer4.EntityFramework.Options.OperationalStoreOptions>(x => { });
 
-            var context = services.BuildServiceProvider().GetService<HomeManagerContextApi>();
+            var context = services.BuildServiceProvider().GetService<HomeManagerAuthContext>();
 
             return context;
         }
