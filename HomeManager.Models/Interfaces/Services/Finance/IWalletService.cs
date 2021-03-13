@@ -10,10 +10,10 @@ namespace HomeManager.Models.Interfaces.Services.Finance
 {
     public interface IWalletService
     {
-        Task<Wallet> GetById(User user, Guid id);
-        Task<ICollection<Wallet>> GetAll(User user);
-        Task<bool> Add(User user, Wallet wallet);
-        Task<bool> Update(User user, Wallet wallet);
-        Task<bool> Delete(User user, Wallet wallet);
+        Wallet GetById(User user, Guid id);
+        ICollection<Wallet> GetAll(User user);
+        bool Add(User user, Wallet wallet);
+        bool Update(User user, Wallet wallet);
+        bool Delete(User user, Wallet wallet);
     }
 }

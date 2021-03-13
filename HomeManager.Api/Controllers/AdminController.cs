@@ -32,11 +32,11 @@ namespace HomeManager.Api.Controllers
             _dataTableFactory = dataTableFactory;
         }
 
-        [HttpGet]
-        public async DataTableResponse<UserDataTable> GetUserTableData(DataTableInput model)
+        [HttpPost]
+        public DataTableResponse<UserDataTable> GetUserTableData([FromBody]DataTableInput model)
         {
-            var users = await _userManager.Users.ToList();
-            return await _dataTableFactory.GetTableData(model, users);
+            var users = _userManager.Users.ToList();
+            return _dataTableFactory.GetTableData(model, users);
         }
     }
 }

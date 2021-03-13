@@ -21,7 +21,7 @@ namespace HomeManager.Services.Finance
             _statusRepository = statusRepository;
         }
 
-        public async Task<Status> GetById(User user, Guid id)
+        public Status GetById(User user, Guid id)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Status>> GetAll(User user)
+        public ICollection<Status> GetAll(User user)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Status>> GetByUser(User user)
+        public ICollection<Status> GetByUser(User user)
         {
             try
             {
@@ -62,11 +62,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Status>> GetByEndPoint(User user, bool endPoint)
+        public ICollection<Status> GetByEndPoint(User user, bool endPoint)
         {
             try
             {
-                var statuses = await GetAll(user);
+                var statuses = GetAll(user);
                 return statuses.Where(x => x.EndPoint == endPoint).ToList();
             }
             catch (Exception ex)
@@ -75,11 +75,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Status>> GetByTypeId(User user, Type type)
+        public ICollection<Status> GetByTypeId(User user, Type type)
         {
             try
             {
-                var statuses = await GetAll(user);
+                var statuses = GetAll(user);
                 if (type.TransactionType == PaymentTransactionType.Both)
                 {
                     return statuses.ToList();
@@ -94,7 +94,7 @@ namespace HomeManager.Services.Finance
                 throw;
             }
         }
-        public async Task<ICollection<Status>> GetDefault()
+        public ICollection<Status> GetDefault()
         {
             try
             {
@@ -107,7 +107,7 @@ namespace HomeManager.Services.Finance
         }
 
 
-        public async Task<bool> Add(User user, Status status)
+        public bool Add(User user, Status status)
         {
             try
             {
@@ -120,11 +120,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Update(User user, Status status)
+        public bool Update(User user, Status status)
         {
             try
             {
-                var realStatus = await GetById(user, status.Id);
+                var realStatus = GetById(user, status.Id);
                 if (realStatus != null && realStatus.fk_UserId == user.Id)
                 {
                     status.fk_UserId = user.Id;
@@ -138,11 +138,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Delete(User user, Status status)
+        public bool Delete(User user, Status status)
         {
             try
             {
-                var realStatus = await GetById(user, status.Id);
+                var realStatus = GetById(user, status.Id);
                 if (realStatus != null && realStatus.fk_UserId == user.Id)
                 {
                     status.fk_UserId = user.Id;
@@ -158,7 +158,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> AddDefault(IList<string> userRoles, Status status)
+        public bool AddDefault(IList<string> userRoles, Status status)
         {
             try
             {
@@ -175,13 +175,13 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> UpdateDefault(IList<string> userRoles, Status status)
+        public bool UpdateDefault(IList<string> userRoles, Status status)
         {
             try
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    var realStatuses = await GetDefault();
+                    var realStatuses = GetDefault();
                     var realStatus = realStatuses.Where(x => x.Id == status.Id).FirstOrDefault();
                     if (realStatus != null && realStatus.fk_UserId == null)
                     {
@@ -197,13 +197,13 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> DeleteDefault(IList<string> userRoles, Status status)
+        public bool DeleteDefault(IList<string> userRoles, Status status)
         {
             try
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    var realStatuses = await GetDefault();
+                    var realStatuses = GetDefault();
                     var realStatus = realStatuses.Where(x => x.Id == status.Id).FirstOrDefault();
                     if (realStatus != null && realStatus.fk_UserId == null)
                     {

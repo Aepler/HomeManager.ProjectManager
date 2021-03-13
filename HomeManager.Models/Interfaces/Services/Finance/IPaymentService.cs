@@ -11,22 +11,22 @@ namespace HomeManager.Models.Interfaces.Services.Finance
     public interface IPaymentService
     {
 
-        Task<Payment> GetById(User user, Guid id);
-        Task<ICollection<Payment>> GetAll(User user);
-        Task<ICollection<Payment>> GetByWallet(User user, Guid walletId);
-        Task<ICollection<Payment>> GetByCurrentWallet(User user);
-        Task<ICollection<Payment>> GetByType(User user, Guid typeId);
-        Task<ICollection<Payment>> GetByCategory(User user, Guid categoryId);
-        Task<ICollection<Payment>> GetByStatus(User user, Guid statusId);
-        Task<ICollection<Payment>> GetByDate(User user, DateTime dateTime);
-        Task<ICollection<Payment>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd);
-        Task<ICollection<Payment>> GetCompleted(User user);
-        Task<ICollection<Payment>> GetAllCompleted(User user);
-        Task<ICollection<Payment>> GetPending(User user);
-        Task<ICollection<Payment>> GetBalanceToday(User user);
-        Task<ICollection<Payment>> GetTotalBalanceToday(User user);
-        Task<bool> Add(User user, Payment payment);
-        Task<bool> Update(User user, Payment payment);
-        Task<bool> Delete(User user, Payment payment);
+        Payment GetById(User user, Guid id);
+        ICollection<Payment> GetAll(User user);
+        ICollection<Payment> GetByWallet(User user, Guid walletId);
+        ICollection<Payment> GetByCurrentWallet(User user);
+        ICollection<Payment> GetByType(User user, Guid typeId);
+        ICollection<Payment> GetByCategory(User user, Guid categoryId);
+        ICollection<Payment> GetByStatus(User user, Guid statusId);
+        ICollection<Payment> GetByDate(User user, DateTime dateTime);
+        ICollection<Payment> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd);
+        ICollection<Payment> GetCompleted(User user);
+        ICollection<Payment> GetAllCompleted(User user);
+        ICollection<Payment> GetPending(User user);
+        ICollection<Payment> GetBalanceToday(User user);
+        ICollection<Payment> GetTotalBalanceToday(User user);
+        bool Add(User user, Payment payment);
+        bool Update(User user, Payment payment);
+        bool Delete(User user, Payment payment);
     }
 }

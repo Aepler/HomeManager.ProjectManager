@@ -20,7 +20,7 @@ namespace HomeManager.Services.Finance
             _paymentRepository = paymentRepository;
         }
 
-        public async Task<Payment> GetById(User user, Guid id)
+        public Payment GetById(User user, Guid id)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetAll(User user)
+        public ICollection<Payment> GetAll(User user)
         {
             try
             {
@@ -49,13 +49,13 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetBalanceToday(User user)
+        public ICollection<Payment> GetBalanceToday(User user)
         {
             try
             {
                 decimal result = 0;
 
-                ICollection<Payment> payments = await GetCompleted(user);
+                ICollection<Payment> payments = GetCompleted(user);
 
                 foreach (var x in payments)
                 {
@@ -77,13 +77,13 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetTotalBalanceToday(User user)
+        public ICollection<Payment> GetTotalBalanceToday(User user)
         {
             try
             {
                 decimal result = 0;
 
-                ICollection<Payment> payments = await GetAllCompleted(user);
+                ICollection<Payment> payments = GetAllCompleted(user);
 
                 foreach (var x in payments)
                 {
@@ -105,11 +105,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetByWallet(User user, Guid walletId)
+        public ICollection<Payment> GetByWallet(User user, Guid walletId)
         {
             try
             {
-                var payments = await GetAll(user);
+                var payments = GetAll(user);
                 return payments.Where(x => x.fk_WalletId == walletId).ToList();
             }
             catch (Exception ex)
@@ -118,11 +118,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetByCurrentWallet(User user)
+        public ICollection<Payment> GetByCurrentWallet(User user)
         {
             try
             {
-                var payments = await GetAll(user);
+                var payments = GetAll(user);
                 return payments.Where(x => x.fk_WalletId == user.CurrentWallet).ToList();
             }
             catch (Exception ex)
@@ -131,11 +131,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetByCategory(User user, Guid categoryId)
+        public ICollection<Payment> GetByCategory(User user, Guid categoryId)
         {
             try
             {
-                var payments = await GetAll(user);
+                var payments = GetAll(user);
                 return payments.Where(x => x.fk_CategoryId == categoryId).ToList();
             }
             catch (Exception ex)
@@ -144,11 +144,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetByDate(User user, DateTime dateTime)
+        public ICollection<Payment> GetByDate(User user, DateTime dateTime)
         {
             try
             {
-                var payments = await GetAll(user);
+                var payments = GetAll(user);
                 return payments.Where(x => x.Date == dateTime).ToList();
             }
             catch (Exception ex)
@@ -157,11 +157,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
+        public ICollection<Payment> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
         {
             try
             {
-                var payments = await GetAll(user);
+                var payments = GetAll(user);
                 return payments.Where(x => x.Date >= dateTimeStart || x.Date <= dateTimeEnd).ToList();
             }
             catch (Exception ex)
@@ -170,11 +170,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetByStatus(User user, Guid statusId)
+        public ICollection<Payment> GetByStatus(User user, Guid statusId)
         {
             try
             {
-                var payments = await GetAll(user);
+                var payments = GetAll(user);
                 return payments.Where(x => x.fk_StatusId == statusId).ToList();
             }
             catch (Exception ex)
@@ -183,11 +183,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetByType(User user, Guid typeId)
+        public ICollection<Payment> GetByType(User user, Guid typeId)
         {
             try
             {
-                var payments = await GetAll(user);
+                var payments = GetAll(user);
                 return payments.Where(x => x.fk_TypeId == typeId).ToList();
             }
             catch (Exception ex)
@@ -196,11 +196,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetCompleted(User user)
+        public ICollection<Payment> GetCompleted(User user)
         {
             try
             {
-                ICollection<Payment> payments = await GetByCurrentWallet(user);
+                ICollection<Payment> payments = GetByCurrentWallet(user);
                 return payments.Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today).ToList();
             }
             catch (Exception ex)
@@ -209,11 +209,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetAllCompleted(User user)
+        public ICollection<Payment> GetAllCompleted(User user)
         {
             try
             {
-                ICollection<Payment> payments = await GetAll(user);
+                ICollection<Payment> payments = GetAll(user);
                 return payments.Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today).ToList();
             }
             catch (Exception ex)
@@ -222,11 +222,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Payment>> GetPending(User user)
+        public ICollection<Payment> GetPending(User user)
         {
             try
             {
-                ICollection<Payment> payments = await GetAll(user);
+                ICollection<Payment> payments = GetAll(user);
                 return payments.Where(x => x.Status.EndPoint == false && x.Date > DateTime.Today).ToList();
             }
             catch (Exception ex)
@@ -235,7 +235,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Add(User user, Payment payment)
+        public bool Add(User user, Payment payment)
         {
             try
             {
@@ -253,11 +253,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Update(User user, Payment payment)
+        public bool Update(User user, Payment payment)
         {
             try
             {
-                var realPayment = await GetById(user, payment.Id);
+                var realPayment = GetById(user, payment.Id);
                 if (realPayment != null)
                 {
                     payment.fk_UserId = user.Id;
@@ -271,11 +271,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Delete(User user, Payment payment)
+        public bool Delete(User user, Payment payment)
         {
             try
             {
-                var realPayment = await GetById(user, payment.Id);
+                var realPayment = GetById(user, payment.Id);
                 if (realPayment != null)
                 {
                     payment.fk_UserId = user.Id;

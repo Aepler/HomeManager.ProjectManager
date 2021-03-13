@@ -10,15 +10,15 @@ namespace HomeManager.Models.Interfaces.Services.Finance
 {
     public interface ICategoryService
     {
-        Task<Category> GetById(User user, Guid id);
-        Task<ICollection<Category>> GetAll(User user);
-        Task<ICollection<Category>> GetByUser(User user);
-        Task<ICollection<Category>> GetDefault();
-        Task<bool> Add(User user, Category category);
-        Task<bool> Update(User user, Category category);
-        Task<bool> Delete(User user, Category category);
-        Task<bool> AddDefault(IList<string> userRoles, Category category);
-        Task<bool> UpdateDefault(IList<string> userRoles, Category category);
-        Task<bool> DeleteDefault(IList<string> userRoles, Category category);
+        Category GetById(User user, Guid id);
+        ICollection<Category> GetAll(User user);
+        ICollection<Category> GetByUser(User user);
+        ICollection<Category> GetDefault();
+        bool Add(User user, Category category);
+        bool Update(User user, Category category);
+        bool Delete(User user, Category category);
+        bool AddDefault(IList<string> userRoles, Category category);
+        bool UpdateDefault(IList<string> userRoles, Category category);
+        bool DeleteDefault(IList<string> userRoles, Category category);
     }
 }

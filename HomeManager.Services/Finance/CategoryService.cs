@@ -19,7 +19,7 @@ namespace HomeManager.Services.Finance
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<Category> GetById(User user, Guid id)
+        public Category GetById(User user, Guid id)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Category>> GetAll(User user)
+        public ICollection<Category> GetAll(User user)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Category>> GetByUser(User user)
+        public ICollection<Category> GetByUser(User user)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Category>> GetDefault()
+        public ICollection<Category> GetDefault()
         {
             try
             {
@@ -72,7 +72,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Add(User user, Category category)
+        public bool Add(User user, Category category)
         {
             try
             {
@@ -85,11 +85,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Update(User user, Category category)
+        public bool Update(User user, Category category)
         {
             try
             {
-                var realCategory = await GetById(user, category.Id);
+                var realCategory = GetById(user, category.Id);
                 if (realCategory != null && realCategory.fk_UserId == user.Id)
                 {
                     category.fk_UserId = user.Id;
@@ -103,11 +103,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Delete(User user, Category category)
+        public bool Delete(User user, Category category)
         {
             try
             {
-                var realCategory = await GetById(user, category.Id);
+                var realCategory = GetById(user, category.Id);
                 if (realCategory != null && realCategory.fk_UserId == user.Id)
                 {
                     category.fk_UserId = user.Id;
@@ -124,7 +124,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> AddDefault(IList<string> userRoles, Category category)
+        public bool AddDefault(IList<string> userRoles, Category category)
         {
             try
             {
@@ -142,13 +142,13 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> UpdateDefault(IList<string> userRoles, Category category)
+        public bool UpdateDefault(IList<string> userRoles, Category category)
         {
             try
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    var realCategories = await GetDefault();
+                    var realCategories = GetDefault();
                     var realCategory = realCategories.Where(x => x.Id == category.Id).FirstOrDefault();
                     if (realCategory != null && realCategory.fk_UserId == null)
                     {
@@ -164,13 +164,13 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> DeleteDefault(IList<string> userRoles, Category category)
+        public bool DeleteDefault(IList<string> userRoles, Category category)
         {
             try
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    var realCategories = await GetDefault();
+                    var realCategories = GetDefault();
                     var realCategory = realCategories.Where(x => x.Id == category.Id).FirstOrDefault();
                     if (realCategory != null && realCategory.fk_UserId == null)
                     {

@@ -24,7 +24,7 @@ namespace HomeManager.WebApplication.Factories
             _roleManager = roleManager;
         }
 
-        public async Task<DataTableResponse<WalletDataTable>> GetTableData(DataTableInput model, ICollection<Wallet> list)
+        public DataTableResponse<WalletDataTable> GetTableData(DataTableInput model, ICollection<Wallet> list)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResponse<RoleDataTable>> GetTableData(DataTableInput model, ICollection<Role> list)
+        public DataTableResponse<RoleDataTable> GetTableData(DataTableInput model, ICollection<Role> list)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResponse<PaymentDataTable>> GetTableData(DataTableInput model, ICollection<Payment> list)
+        public DataTableResponse<PaymentDataTable> GetTableData(DataTableInput model, ICollection<Payment> list)
         {
             try
             {
@@ -188,7 +188,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResponse<CategoryDataTable>> GetTableData(DataTableInput model, ICollection<Category> list)
+        public DataTableResponse<CategoryDataTable> GetTableData(DataTableInput model, ICollection<Category> list)
         {
             try
             {
@@ -234,7 +234,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResponse<TemplateDataTable>> GetTableData(DataTableInput model, ICollection<Template> list)
+        public DataTableResponse<TemplateDataTable> GetTableData(DataTableInput model, ICollection<Template> list)
         {
             try
             {
@@ -290,7 +290,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResponse<TypeDataTable>> GetTableData(DataTableInput model, ICollection<Type> list)
+        public DataTableResponse<TypeDataTable> GetTableData(DataTableInput model, ICollection<Type> list)
         {
             try
             {
@@ -345,7 +345,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResponse<StatusDataTable>> GetTableData(DataTableInput model, ICollection<Status> list)
+        public DataTableResponse<StatusDataTable> GetTableData(DataTableInput model, ICollection<Status> list)
         {
             try
             {
@@ -393,7 +393,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResponse<UserRoleDataTable>> GetTableData(DataTableInput model, ICollection<UserRoleDataTable> list)
+        public DataTableResponse<UserRoleDataTable> GetTableData(DataTableInput model, ICollection<UserRoleDataTable> list)
         {
             try
             {
@@ -442,7 +442,7 @@ namespace HomeManager.WebApplication.Factories
             }
         }
 
-        public async Task<DataTableResponse<UserDataTable>> GetTableData(DataTableInput model, ICollection<User> list)
+        public DataTableResponse<UserDataTable> GetTableData(DataTableInput model, ICollection<User> list)
         {
             try
             {

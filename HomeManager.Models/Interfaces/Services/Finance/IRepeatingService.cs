@@ -10,12 +10,12 @@ namespace HomeManager.Models.Interfaces.Services.Finance
 {
     public interface IRepeatingService
     {
-        Task<Repeating> GetById(User user, Guid id);
-        Task<ICollection<Repeating>> GetAll(User user);
-        Task<ICollection<Repeating>> GetByType(User user, Guid typeId);
-        Task<ICollection<Repeating>> GetByCategory(User user, Guid categoryId);
-        Task<bool> Add(User user, Repeating repeating);
-        Task<bool> Update(User user, Repeating repeating);
-        Task<bool> Delete(User user, Repeating repeating);
+        Repeating GetById(User user, Guid id);
+        ICollection<Repeating> GetAll(User user);
+        ICollection<Repeating> GetByType(User user, Guid typeId);
+        ICollection<Repeating> GetByCategory(User user, Guid categoryId);
+        bool Add(User user, Repeating repeating);
+        bool Update(User user, Repeating repeating);
+        bool Delete(User user, Repeating repeating);
     }
 }

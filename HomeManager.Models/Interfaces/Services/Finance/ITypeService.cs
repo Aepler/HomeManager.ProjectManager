@@ -11,15 +11,15 @@ namespace HomeManager.Models.Interfaces.Services.Finance
 {
     public interface ITypeService
     {
-        Task<Type> GetById(User user, Guid id);
-        Task<ICollection<Type>> GetAll(User user);
-        Task<ICollection<Type>> GetByUser(User user);
-        Task<ICollection<Type>> GetDefault();
-        Task<bool> Add(User user, Type type);
-        Task<bool> Update(User user, Type type);
-        Task<bool> Delete(User user, Type type);
-        Task<bool> AddDefault(IList<string> userRoles, Type type);
-        Task<bool> UpdateDefault(IList<string> userRoles, Type type);
-        Task<bool> DeleteDefault(IList<string> userRoles, Type type);
+        Type GetById(User user, Guid id);
+        ICollection<Type> GetAll(User user);
+        ICollection<Type> GetByUser(User user);
+        ICollection<Type> GetDefault();
+        bool Add(User user, Type type);
+        bool Update(User user, Type type);
+        bool Delete(User user, Type type);
+        bool AddDefault(IList<string> userRoles, Type type);
+        bool UpdateDefault(IList<string> userRoles, Type type);
+        bool DeleteDefault(IList<string> userRoles, Type type);
     }
 }

@@ -19,7 +19,7 @@ namespace HomeManager.Services.Finance
             _walletRepository = walletRepository;
         }
 
-        public async Task<Wallet> GetById(User user, Guid id)
+        public Wallet GetById(User user, Guid id)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Wallet>> GetAll(User user)
+        public ICollection<Wallet> GetAll(User user)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Add(User user, Wallet wallet)
+        public bool Add(User user, Wallet wallet)
         {
             try
             {
@@ -61,11 +61,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Update(User user, Wallet wallet)
+        public bool Update(User user, Wallet wallet)
         {
             try
             {
-                var realWallet = await GetById(user, wallet.Id);
+                var realWallet = GetById(user, wallet.Id);
                 if (realWallet != null)
                 {
                     wallet.fk_UserId = user.Id;
@@ -79,11 +79,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Delete(User user, Wallet wallet)
+        public bool Delete(User user, Wallet wallet)
         {
             try
             {
-                var realWallet = await GetById(user, wallet.Id);
+                var realWallet = GetById(user, wallet.Id);
                 if (realWallet != null)
                 {
                     wallet.fk_UserId = user.Id;

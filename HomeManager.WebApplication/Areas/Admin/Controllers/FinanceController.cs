@@ -50,7 +50,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         public async Task<JsonResult> GetCategory(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
-            var category = await _categoryService.GetById(user, id);
+            var category = _categoryService.GetById(user, id);
             return Json(category);
         }
 
@@ -58,7 +58,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         public async Task<JsonResult> GetType(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
-            var type = await _typeService.GetById(user, id);
+            var type = _typeService.GetById(user, id);
             return Json(type);
         }
 
@@ -66,7 +66,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         public async Task<JsonResult> GetStatus(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
-            var status = await _statusService.GetById(user, id);
+            var status = _statusService.GetById(user, id);
             return Json(status);
         }
 
@@ -80,7 +80,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         {
             try
             {
-                var categories = await _categoryService.GetDefault();
+                var categories = _categoryService.GetDefault();
                 var result = await _dataTableFactory.GetTableData(model, categories);
 
                 return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
@@ -101,7 +101,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var userRoles = await _userManager.GetRolesAsync(user);
-                    await _categoryService.AddDefault(userRoles, category);
+                    _categoryService.AddDefault(userRoles, category);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -128,7 +128,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var userRoles = await _userManager.GetRolesAsync(user);
-                    await _categoryService.UpdateDefault(userRoles, category);
+                    _categoryService.UpdateDefault(userRoles, category);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -148,11 +148,11 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
-                    var category = await _categoryService.GetById(user, id);
+                    var category = _categoryService.GetById(user, id);
                     if (category != null)
                     {
                         var userRoles = await _userManager.GetRolesAsync(user);
-                        await _categoryService.DeleteDefault(userRoles, category);
+                        _categoryService.DeleteDefault(userRoles, category);
                     }
                 }
 
@@ -168,7 +168,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            ViewData["Status"] = new SelectList(await _statusService.GetByEndPoint(user, true), "Id", "Name");
+            ViewData["Status"] = new SelectList(_statusService.GetByEndPoint(user, true), "Id", "Name");
 
             return View();
         }
@@ -178,7 +178,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         {
             try
             {
-                var types = await _typeService.GetDefault();
+                var types = _typeService.GetDefault();
                 var result = await _dataTableFactory.GetTableData(model, types);
 
                 return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
@@ -199,7 +199,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var userRoles = await _userManager.GetRolesAsync(user);
-                    await _typeService.AddDefault(userRoles, type);
+                    _typeService.AddDefault(userRoles, type);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -226,7 +226,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var userRoles = await _userManager.GetRolesAsync(user);
-                    await _typeService.UpdateDefault(userRoles, type);
+                    _typeService.UpdateDefault(userRoles, type);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -246,11 +246,11 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
-                    var type = await _typeService.GetById(user, id);
+                    var type = _typeService.GetById(user, id);
                     if (type != null)
                     {
                         var userRoles = await _userManager.GetRolesAsync(user);
-                        await _typeService.DeleteDefault(userRoles, type);
+                        _typeService.DeleteDefault(userRoles, type);
                     }
                 }
 
@@ -272,7 +272,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
         {
             try
             {
-                var status = await _statusService.GetDefault();
+                var status = _statusService.GetDefault();
                 var result = await _dataTableFactory.GetTableData(model, status);
 
                 return Json(new { draw = result.draw, recordsTotal = result.recordsTotal, recordsFiltered = result.recordsFiltered, data = result.data });
@@ -293,7 +293,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var userRoles = await _userManager.GetRolesAsync(user);
-                    await _statusService.AddDefault(userRoles, status);
+                    _statusService.AddDefault(userRoles, status);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -320,7 +320,7 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                 {
                     var user = await _userManager.GetUserAsync(User);
                     var userRoles = await _userManager.GetRolesAsync(user);
-                    await _statusService.UpdateDefault(userRoles, status);
+                    _statusService.UpdateDefault(userRoles, status);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -339,11 +339,11 @@ namespace HomeManager.WebApplication.Areas.Admin.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user != null)
                 {
-                    var status = await _statusService.GetById(user, id);
+                    var status = _statusService.GetById(user, id);
                     if (status != null)
                     {
                         var userRoles = await _userManager.GetRolesAsync(user);
-                        await _statusService.DeleteDefault(userRoles, status);
+                        _statusService.DeleteDefault(userRoles, status);
                     }
                 }
 

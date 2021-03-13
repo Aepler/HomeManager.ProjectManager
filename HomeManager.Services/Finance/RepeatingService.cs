@@ -19,7 +19,7 @@ namespace HomeManager.Services.Finance
             _repeatingRepository = repeatingRepository;
         }
 
-        public async Task<Repeating> GetById(User user, Guid id)
+        public Repeating GetById(User user, Guid id)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Repeating>> GetAll(User user)
+        public ICollection<Repeating> GetAll(User user)
         {
             try
             {
@@ -48,11 +48,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Repeating>> GetByType(User user, Guid typeId)
+        public ICollection<Repeating> GetByType(User user, Guid typeId)
         {
             try
             {
-                var repeatings = await GetAll(user);
+                var repeatings = GetAll(user);
                 return repeatings.Where(x => x.fk_TypeId == typeId).ToList();
             }
             catch (Exception ex)
@@ -61,11 +61,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Repeating>> GetByCategory(User user, Guid categoryId)
+        public ICollection<Repeating> GetByCategory(User user, Guid categoryId)
         {
             try
             {
-                var repeatings = await GetAll(user);
+                var repeatings = GetAll(user);
                 return repeatings.Where(x => x.fk_CategoryId == categoryId).ToList();
             }
             catch (Exception ex)
@@ -74,7 +74,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Add(User user, Repeating repeating)
+        public bool Add(User user, Repeating repeating)
         {
             try
             {
@@ -87,11 +87,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Update(User user, Repeating repeating)
+        public bool Update(User user, Repeating repeating)
         {
             try
             {
-                var realRepeating = await GetById(user, repeating.Id);
+                var realRepeating = GetById(user, repeating.Id);
                 if (realRepeating != null)
                 {
                     repeating.fk_UserId = user.Id;
@@ -105,11 +105,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Delete(User user, Repeating repeating)
+        public bool Delete(User user, Repeating repeating)
         {
             try
             {
-                var realRepeating = await GetById(user, repeating.Id);
+                var realRepeating = GetById(user, repeating.Id);
                 if (realRepeating != null)
                 {
                     repeating.fk_UserId = user.Id;

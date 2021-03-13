@@ -19,7 +19,7 @@ namespace HomeManager.Services.Finance
             _templateRepository = templateRepository;
         }
 
-        public async Task<Template> GetById(User user, Guid id)
+        public Template GetById(User user, Guid id)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Template>> GetAll(User user)
+        public ICollection<Template> GetAll(User user)
         {
             try
             {
@@ -48,11 +48,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Template>> GetByCategory(User user, Guid categoryId)
+        public ICollection<Template> GetByCategory(User user, Guid categoryId)
         {
             try
             {
-                var templates = await GetAll(user);
+                var templates = GetAll(user);
                 return templates.Where(x => x.fk_CategoryId == categoryId).ToList();
             }
             catch (Exception ex)
@@ -61,11 +61,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Template>> GetByType(User user, Guid typeId)
+        public ICollection<Template> GetByType(User user, Guid typeId)
         {
             try
             {
-                var templates = await GetAll(user);
+                var templates = GetAll(user);
                 return templates.Where(x => x.fk_TypeId == typeId).ToList();
             }
             catch (Exception ex)
@@ -74,7 +74,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Add(User user, Template template)
+        public bool Add(User user, Template template)
         {
             try
             {
@@ -87,11 +87,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Update(User user, Template template)
+        public bool Update(User user, Template template)
         {
             try
             {
-                var realtemplate = await GetById(user, template.Id);
+                var realtemplate = GetById(user, template.Id);
                 if (realtemplate != null)
                 {
                     template.fk_UserId = user.Id;
@@ -105,11 +105,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Delete(User user, Template template)
+        public bool Delete(User user, Template template)
         {
             try
             {
-                var realtemplate = await GetById(user, template.Id);
+                var realtemplate = GetById(user, template.Id);
                 if (realtemplate != null)
                 {
                     template.fk_UserId = user.Id;

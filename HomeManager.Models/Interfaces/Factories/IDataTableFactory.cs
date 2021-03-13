@@ -13,14 +13,14 @@ namespace HomeManager.Models.Interfaces.Factories
 {
     public interface IDataTableFactory
     {
-        Task<DataTableResponse<WalletDataTable>> GetTableData(DataTableInput model, ICollection<Wallet> list);
-        Task<DataTableResponse<PaymentDataTable>> GetTableData(DataTableInput model, ICollection<Payment> list);
-        Task<DataTableResponse<CategoryDataTable>> GetTableData(DataTableInput model, ICollection<Category> list);
-        Task<DataTableResponse<TemplateDataTable>> GetTableData(DataTableInput model, ICollection<Template> list);
-        Task<DataTableResponse<TypeDataTable>> GetTableData(DataTableInput model, ICollection<Type> list);
-        Task<DataTableResponse<StatusDataTable>> GetTableData(DataTableInput model, ICollection<Status> list);
-        Task<DataTableResponse<UserDataTable>> GetTableData(DataTableInput model, ICollection<User> list);
-        Task<DataTableResponse<RoleDataTable>> GetTableData(DataTableInput model, ICollection<Role> list);
-        Task<DataTableResponse<UserRoleDataTable>> GetTableData(DataTableInput model, ICollection<UserRoleDataTable> list);
+        DataTableResponse<WalletDataTable> GetTableData(DataTableInput model, ICollection<Wallet> list);
+        DataTableResponse<PaymentDataTable> GetTableData(DataTableInput model, ICollection<Payment> list);
+        DataTableResponse<CategoryDataTable> GetTableData(DataTableInput model, ICollection<Category> list);
+        DataTableResponse<TemplateDataTable> GetTableData(DataTableInput model, ICollection<Template> list);
+        DataTableResponse<TypeDataTable> GetTableData(DataTableInput model, ICollection<Type> list);
+        DataTableResponse<StatusDataTable> GetTableData(DataTableInput model, ICollection<Status> list);
+        DataTableResponse<UserDataTable> GetTableData(DataTableInput model, ICollection<User> list);
+        DataTableResponse<RoleDataTable> GetTableData(DataTableInput model, ICollection<Role> list);
+        DataTableResponse<UserRoleDataTable> GetTableData(DataTableInput model, ICollection<UserRoleDataTable> list);
     }
 }

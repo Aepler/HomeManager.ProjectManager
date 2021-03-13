@@ -20,7 +20,7 @@ namespace HomeManager.Services.Finance
             _typeRepository = typeRepository;
         }
 
-        public async Task<Type> GetById(User user, Guid id)
+        public Type GetById(User user, Guid id)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Type>> GetAll(User user)
+        public ICollection<Type> GetAll(User user)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Type>> GetByUser(User user)
+        public ICollection<Type> GetByUser(User user)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<ICollection<Type>> GetDefault()
+        public ICollection<Type> GetDefault()
         {
             try
             {
@@ -73,7 +73,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Add(User user, Type type)
+        public bool Add(User user, Type type)
         {
             try
             {
@@ -86,11 +86,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Update(User user, Type type)
+        public bool Update(User user, Type type)
         {
             try
             {
-                var realType = await GetById(user, type.Id);
+                var realType = GetById(user, type.Id);
                 if (realType != null && realType.fk_UserId == user.Id)
                 {
                     type.fk_UserId = user.Id;
@@ -104,11 +104,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> Delete(User user, Type type)
+        public bool Delete(User user, Type type)
         {
             try
             {
-                var realType = await GetById(user, type.Id);
+                var realType = GetById(user, type.Id);
                 if (realType != null && realType.fk_UserId == user.Id)
                 {
                     type.fk_UserId = user.Id;
@@ -124,7 +124,7 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> AddDefault(IList<string> userRoles, Type type)
+        public bool AddDefault(IList<string> userRoles, Type type)
         {
             try
             {
@@ -141,13 +141,13 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> UpdateDefault(IList<string> userRoles, Type type)
+        public bool UpdateDefault(IList<string> userRoles, Type type)
         {
             try
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    var realTypes = await GetDefault();
+                    var realTypes = GetDefault();
                     var realType = realTypes.Where(x => x.Id == type.Id).FirstOrDefault();
                     if (realType != null && realType.fk_UserId == null)
                     {
@@ -163,13 +163,13 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public async Task<bool> DeleteDefault(IList<string> userRoles, Type type)
+        public bool DeleteDefault(IList<string> userRoles, Type type)
         {
             try
             {
                 if (userRoles.Contains("Admin"))
                 {
-                    var realTypes = await GetDefault();
+                    var realTypes = GetDefault();
                     var realType = realTypes.Where(x => x.Id == type.Id).FirstOrDefault();
                     if (realType != null && realType.fk_UserId == null)
                     {
