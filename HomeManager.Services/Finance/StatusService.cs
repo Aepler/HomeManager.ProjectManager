@@ -38,11 +38,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Status> GetAll(User user)
+        public IEnumerable<Status> GetAll(User user)
         {
             try
             {
-                return _statusRepository.GetAll().Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted).ToList();
+                return _statusRepository.GetAll().Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted);
             }
             catch (Exception ex)
             {
@@ -50,11 +50,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Status> GetByUser(User user)
+        public IEnumerable<Status> GetByUser(User user)
         {
             try
             {
-                return _statusRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted).ToList();
+                return _statusRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted);
             }
             catch (Exception ex)
             {
@@ -62,12 +62,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Status> GetByEndPoint(User user, bool endPoint)
+        public IEnumerable<Status> GetByEndPoint(User user, bool endPoint)
         {
             try
             {
-                var statuses = GetAll(user);
-                return statuses.Where(x => x.EndPoint == endPoint).ToList();
+                return GetAll(user).Where(x => x.EndPoint == endPoint);
             }
             catch (Exception ex)
             {
@@ -75,18 +74,18 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Status> GetByTypeId(User user, Type type)
+        public IEnumerable<Status> GetByTypeId(User user, Type type)
         {
             try
             {
                 var statuses = GetAll(user);
                 if (type.TransactionType == PaymentTransactionType.Both)
                 {
-                    return statuses.ToList();
+                    return statuses;
                 }
                 else
                 {
-                    return statuses.Where(x => x.EndPoint == false || x.Id == type.fk_StatusId).ToList();
+                    return statuses.Where(x => x.EndPoint == false || x.Id == type.fk_StatusId);
                 }
             }
             catch (Exception ex)
@@ -94,11 +93,11 @@ namespace HomeManager.Services.Finance
                 throw;
             }
         }
-        public ICollection<Status> GetDefault()
+        public IEnumerable<Status> GetDefault()
         {
             try
             {
-                return _statusRepository.GetAll().Where(x => x.fk_UserId == null && !x.Deleted).ToList();
+                return _statusRepository.GetAll().Where(x => x.fk_UserId == null && !x.Deleted);
             }
             catch (Exception ex)
             {

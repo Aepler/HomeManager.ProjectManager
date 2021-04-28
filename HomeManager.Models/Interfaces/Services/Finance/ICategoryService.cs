@@ -11,9 +11,9 @@ namespace HomeManager.Models.Interfaces.Services.Finance
     public interface ICategoryService
     {
         Category GetById(User user, Guid id);
-        ICollection<Category> GetAll(User user);
-        ICollection<Category> GetByUser(User user);
-        ICollection<Category> GetDefault();
+        IEnumerable<Category> GetAll(User user);
+        IEnumerable<Category> GetByUser(User user);
+        IEnumerable<Category> GetDefault();
         bool Add(User user, Category category);
         bool Update(User user, Category category);
         bool Delete(User user, Category category);

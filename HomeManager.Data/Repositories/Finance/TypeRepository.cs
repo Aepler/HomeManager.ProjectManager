@@ -13,9 +13,9 @@ namespace HomeManager.Data.Repositories.Finance
 {
     public class TypeRepository : ITypeRepository
     {
-        private readonly HomeManagerContext _context;
+        private readonly HomeManagerDbContext _context;
 
-        public TypeRepository(HomeManagerContext context)
+        public TypeRepository(HomeManagerDbContext context)
         {
             _context = context;
         }

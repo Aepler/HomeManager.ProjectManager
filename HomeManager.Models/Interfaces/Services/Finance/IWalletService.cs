@@ -11,7 +11,7 @@ namespace HomeManager.Models.Interfaces.Services.Finance
     public interface IWalletService
     {
         Wallet GetById(User user, Guid id);
-        ICollection<Wallet> GetAll(User user);
+        IEnumerable<Wallet> GetAll(User user);
         bool Add(User user, Wallet wallet);
         bool Update(User user, Wallet wallet);
         bool Delete(User user, Wallet wallet);

@@ -12,9 +12,9 @@ namespace HomeManager.Models.Interfaces.Services.Finance
     public interface ITypeService
     {
         Type GetById(User user, Guid id);
-        ICollection<Type> GetAll(User user);
-        ICollection<Type> GetByUser(User user);
-        ICollection<Type> GetDefault();
+        IEnumerable<Type> GetAll(User user);
+        IEnumerable<Type> GetByUser(User user);
+        IEnumerable<Type> GetDefault();
         bool Add(User user, Type type);
         bool Update(User user, Type type);
         bool Delete(User user, Type type);

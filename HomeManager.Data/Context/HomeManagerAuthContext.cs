@@ -17,6 +17,8 @@ using IdentityServer4.EntityFramework.Interfaces;
 using IdentityServer4.EntityFramework.Entities;
 using System.Threading.Tasks;
 using IdentityServer4.EntityFramework.Extensions;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.DependencyInjection;
 
 //Add-Migration HomeManagerAuth.PutNameHere -Context HomeManagerAuthContext -OutputDir "Migrations/Auth"
 //Update-Database -Context HomeManagerAuthContext
@@ -74,5 +76,23 @@ namespace HomeManager.Data
             : base(options, operationalStoreOptions)
         {
         }
+    }
+
+    public class DesignTimeAuthDbContextFactory : IDesignTimeDbContextFactory<HomeManagerAuthContext>
+    {
+        private const string CONN_STRING = "Server=localhost\\SQLEXPRESS;Database=HomeManagerAuth;Trusted_Connection=True;MultipleActiveResultSets=true";
+        public HomeManagerAuthContext CreateDbContext(string[] args)
+        {
+            IServiceCollection services = new ServiceCollection();
+
+
+            services.AddDbContext<HomeManagerAuthContext>(options => options.UseSqlServer(CONN_STRING));
+            services.Configure<IdentityServer4.EntityFramework.Options.OperationalStoreOptions>(x => { });
+
+            var context = services.BuildServiceProvider().GetService<HomeManagerAuthContext>();
+
+            return context;
+        }
+
     }
 }

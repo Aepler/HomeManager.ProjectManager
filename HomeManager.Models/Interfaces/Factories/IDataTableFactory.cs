@@ -1,5 +1,5 @@
-﻿using HomeManager.Models.DataTable;
-using HomeManager.Models.DataTable.Finance;
+﻿using HomeManager.Models.Core;
+using HomeManager.Models.DataTables.Finance;
 using HomeManager.Models.Entities.Finance;
 using HomeManager.Models.Entities;
 using System;
@@ -13,14 +13,14 @@ namespace HomeManager.Models.Interfaces.Factories
 {
     public interface IDataTableFactory
     {
-        DataTableResponse<WalletDataTable> GetTableData(DataTableInput model, ICollection<Wallet> list);
-        DataTableResponse<PaymentDataTable> GetTableData(DataTableInput model, ICollection<Payment> list);
-        DataTableResponse<CategoryDataTable> GetTableData(DataTableInput model, ICollection<Category> list);
-        DataTableResponse<TemplateDataTable> GetTableData(DataTableInput model, ICollection<Template> list);
-        DataTableResponse<TypeDataTable> GetTableData(DataTableInput model, ICollection<Type> list);
-        DataTableResponse<StatusDataTable> GetTableData(DataTableInput model, ICollection<Status> list);
-        DataTableResponse<UserDataTable> GetTableData(DataTableInput model, ICollection<User> list);
-        DataTableResponse<RoleDataTable> GetTableData(DataTableInput model, ICollection<Role> list);
-        DataTableResponse<UserRoleDataTable> GetTableData(DataTableInput model, ICollection<UserRoleDataTable> list);
+        DataTableResponse<WalletDataTable> GetTableData(DataTableInput model, IEnumerable<Wallet> query);
+        DataTableResponse<PaymentDataTable> GetTableData(DataTableInput model, IEnumerable<Payment> query);
+        DataTableResponse<CategoryDataTable> GetTableData(DataTableInput model, IEnumerable<Category> query);
+        DataTableResponse<TemplateDataTable> GetTableData(DataTableInput model, IEnumerable<Template> query);
+        DataTableResponse<TypeDataTable> GetTableData(DataTableInput model, IEnumerable<Type> query);
+        DataTableResponse<StatusDataTable> GetTableData(DataTableInput model, IEnumerable<Status> query);
+        DataTableResponse<UserDataTable> GetTableData(DataTableInput model, IEnumerable<User> query);
+        DataTableResponse<RoleDataTable> GetTableData(DataTableInput model, IEnumerable<Role> query);
+        DataTableResponse<UserRoleDataTable> GetTableData(DataTableInput model, IEnumerable<UserRoleDataTable> query);
     }
 }

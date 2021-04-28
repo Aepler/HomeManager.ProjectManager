@@ -37,11 +37,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Type> GetAll(User user)
+        public IEnumerable<Type> GetAll(User user)
         {
             try
             {
-                return _typeRepository.GetAll().Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted).ToList();
+                return _typeRepository.GetAll().Where(x => (x.fk_UserId == user.Id || x.fk_UserId == null) && !x.Deleted);
             }
             catch (Exception ex)
             {
@@ -49,11 +49,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Type> GetByUser(User user)
+        public IEnumerable<Type> GetByUser(User user)
         {
             try
             {
-                return _typeRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted).ToList();
+                return _typeRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted);
             }
             catch (Exception ex)
             {
@@ -61,11 +61,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Type> GetDefault()
+        public IEnumerable<Type> GetDefault()
         {
             try
             {
-                return _typeRepository.GetAll().Where(x => x.fk_UserId == null && !x.Deleted).ToList();
+                return _typeRepository.GetAll().Where(x => x.fk_UserId == null && !x.Deleted);
             }
             catch (Exception ex)
             {

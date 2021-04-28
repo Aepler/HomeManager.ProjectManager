@@ -12,9 +12,9 @@ namespace HomeManager.Data.Repositories.Cooking
 {
     public class RecipeRepository : IRecipeRepository
     {
-        private readonly HomeManagerContext _context;
+        private readonly HomeManagerDbContext _context;
 
-        public RecipeRepository(HomeManagerContext context)
+        public RecipeRepository(HomeManagerDbContext context)
         {
             _context = context;
         }

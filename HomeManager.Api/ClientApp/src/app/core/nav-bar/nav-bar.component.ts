@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 export class NavBarComponent implements OnInit {
   isAdmin: boolean;
   constructor(http: HttpClient) {
-    http.get<boolean>('https://localhost:44392/api/user/isadmin').subscribe(result => {
+    http.get<boolean>('https://localhost:44346/api/user/isadmin').subscribe(result => {
       this.isAdmin = result;
     }, error => console.error(error));
   }

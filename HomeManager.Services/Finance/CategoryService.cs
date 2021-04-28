@@ -36,11 +36,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Category> GetAll(User user)
+        public IEnumerable<Category> GetAll(User user)
         {
             try
             {
-                return _categoryRepository.GetAll().Where(x => x.fk_UserId == user.Id || x.fk_UserId == null && !x.Deleted).ToList();
+                return _categoryRepository.GetAll().Where(x => x.fk_UserId == user.Id || x.fk_UserId == null && !x.Deleted);
             }
             catch (Exception ex)
             {
@@ -48,11 +48,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Category> GetByUser(User user)
+        public IEnumerable<Category> GetByUser(User user)
         {
             try
             {
-                return _categoryRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted).ToList();
+                return _categoryRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted);
             }
             catch (Exception ex)
             {
@@ -60,11 +60,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Category> GetDefault()
+        public IEnumerable<Category> GetDefault()
         {
             try
             {
-                return _categoryRepository.GetAll().Where(x => x.fk_UserId == null && !x.Deleted).ToList();
+                return _categoryRepository.GetAll().Where(x => x.fk_UserId == null && !x.Deleted);
             }
             catch (Exception ex)
             {

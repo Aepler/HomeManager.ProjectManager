@@ -12,9 +12,9 @@ namespace HomeManager.Data.Repositories.Finance
 {
     public class StatusRepository : IStatusRepository
     {
-        private readonly HomeManagerContext _context;
+        private readonly HomeManagerDbContext _context;
 
-        public StatusRepository(HomeManagerContext context)
+        public StatusRepository(HomeManagerDbContext context)
         {
             _context = context;
         }

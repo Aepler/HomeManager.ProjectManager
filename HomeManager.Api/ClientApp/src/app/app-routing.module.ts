@@ -1,14 +1,45 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './modules/home/home.component';
-import { AuthorizeGuard } from './core/api-authorization/authorize.guard';
+import { AuthorizeGuard } from './core/guards/authorize.guard';
 
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent},
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthorizeGuard]},
+  { 
+    path: 'home', 
+    loadChildren: () =>
+            import('./modules/home/home-routing.module').then(m => m.HomeRoutingModule)
+  },
+  { 
+    path: 'admin', 
+    canActivate: [AuthorizeGuard],
+    loadChildren: () =>
+            import('./modules/admin/admin-routing.module').then(m => m.AdminRoutingModule)
+  },
+  { 
+    path: 'customize', 
+    canActivate: [AuthorizeGuard],
+    loadChildren: () =>
+            import('./modules/customize/customize-routing.module').then(m => m.CustomizeRoutingModule)
+  },
+  { 
+    path: 'dashboard', 
+    canActivate: [AuthorizeGuard],
+    loadChildren: () =>
+            import('./modules/dashboard/dashboard-routing.module').then(m => m.DashboardRoutingModule)
+  },
+  { 
+    path: 'settings', 
+    canActivate: [AuthorizeGuard],
+    loadChildren: () =>
+            import('./modules/settings/settings-routing.module').then(m => m.SettingsRoutingModule)
+  },
+  { 
+    path: 'finance', 
+    canActivate: [AuthorizeGuard],
+    loadChildren: () =>
+            import('./modules/finance/finance-routing.module').then(m => m.FinanceRoutingModule)
+  }
 ];
 
 @NgModule({

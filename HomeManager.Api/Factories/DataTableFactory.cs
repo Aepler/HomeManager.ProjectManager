@@ -1,5 +1,5 @@
-﻿using HomeManager.Models.DataTable;
-using HomeManager.Models.DataTable.Finance;
+﻿using HomeManager.Models.Core;
+using HomeManager.Models.DataTables.Finance;
 using HomeManager.Models.Entities;
 using HomeManager.Models.Entities.Finance;
 using HomeManager.Models.Interfaces.Factories;
@@ -15,23 +15,37 @@ namespace HomeManager.Api.Factories
 {
     public class DataTableFactory : IDataTableFactory
     {
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
-
-        public DataTableFactory(UserManager<User> userManager, RoleManager<Role> roleManager)
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-        }
-
-        public DataTableResponse<WalletDataTable> GetTableData(DataTableInput model, ICollection<Wallet> list)
+        public DataTableResponse<WalletDataTable> GetTableData(DataTableInput model, IEnumerable<Wallet> query)
         {
             try
             {
-                var result = new DataTableResponse<WalletDataTable>();
-                int totalRecords = list.Count;
+                int totalRecords = query.Count();
 
-                var modifiedData = list.Select(d => new WalletDataTable
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains(model.search.value.ToLower())
+                     );
+                }
+
+                int recFilter = query.Count();
+
+                if (model.order.Count > 0)
+                {
+                    var sortBy = model.columns[model.order[0].column].data;
+                    var sortDir = model.order[0].dir.ToLower();
+
+                    if (model.length == -1)
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir);
+                    else
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.Id);
+                }
+
+                var modifiedData = query.ToList().Select(d => new WalletDataTable
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name,
@@ -41,31 +55,13 @@ namespace HomeManager.Api.Factories
                 }
                     );
 
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
+                return new DataTableResponse<WalletDataTable>
                 {
-                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                result.draw = model.draw;
-                result.recordsTotal = totalRecords;
-                result.recordsFiltered = recFilter;
-                result.data = modifiedData;
-
-                return result;
+                    draw = model.draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = recFilter,
+                    data = modifiedData,
+                };
             }
             catch (Exception ex)
             {
@@ -73,14 +69,37 @@ namespace HomeManager.Api.Factories
             }
         }
 
-        public DataTableResponse<RoleDataTable> GetTableData(DataTableInput model, ICollection<Role> list)
+        public DataTableResponse<RoleDataTable> GetTableData(DataTableInput model, IEnumerable<Role> query)
         {
             try
             {
-                var result = new DataTableResponse<RoleDataTable>();
-                int totalRecords = list.Count;
+                int totalRecords = query.Count();
 
-                var modifiedData = list.Select(d => new RoleDataTable
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains(model.search.value.ToLower())
+                     );
+                }
+
+                int recFilter = query.Count();
+
+                if (model.order.Count > 0)
+                {
+                    var sortBy = model.columns[model.order[0].column].data;
+                    var sortDir = model.order[0].dir.ToLower();
+
+                    if (model.length == -1)
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir);
+                    else
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.Id);
+                }
+
+                var modifiedData = query.ToList().Select(d => new RoleDataTable
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name,
@@ -89,31 +108,13 @@ namespace HomeManager.Api.Factories
                 }
                     );
 
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
+                return new DataTableResponse<RoleDataTable>
                 {
-                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                result.draw = model.draw;
-                result.recordsTotal = totalRecords;
-                result.recordsFiltered = recFilter;
-                result.data = modifiedData;
-
-                return result;
+                    draw = model.draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = recFilter,
+                    data = modifiedData,
+                };
             }
             catch (Exception ex)
             {
@@ -121,15 +122,41 @@ namespace HomeManager.Api.Factories
             }
         }
 
-        public DataTableResponse<PaymentDataTable> GetTableData(DataTableInput model, ICollection<Payment> list)
+        public DataTableResponse<PaymentDataTable> GetTableData(DataTableInput model, IEnumerable<Payment> query)
         {
             try
             {
-                var result = new DataTableResponse<PaymentDataTable>();
-                int totalRecords = list.Count;
+                int totalRecords = query.Count();
 
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    query = query.Where(p => p.Date.ToString().Contains(model.search.value) ||
+                        p.Description.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.Amount.ToString().Contains(model.search.value) ||
+                        p.Type.Name.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.Category.Name.ToLower().Contains(model.search.value.ToLower())
+                     );
+                }
 
-                var modifiedData = list.Select(d => new PaymentDataTable
+                int recFilter = query.Count();
+
+                if (model.order.Count > 0)
+                {
+                    var sortBy = model.columns[model.order[0].column].data;
+                    var sortDir = model.order[0].dir.ToLower();
+
+                    if (model.length == -1)
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir);
+                    else
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.Id);
+                }
+
+                var modifiedData = query.ToList().Select(d => new PaymentDataTable
                 {
                     Id = d.Id.ToString(),
                     Date = d.Date.ToString("dd.MM.yyyy"),
@@ -152,35 +179,13 @@ namespace HomeManager.Api.Factories
                 }
                     );
 
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
+                return new DataTableResponse<PaymentDataTable>
                 {
-                    modifiedData = modifiedData.Where(p => p.Date.Contains(model.search.value) ||
-                        p.Description.ToLower().Contains(model.search.value) ||
-                        p.Amount.Contains(model.search.value) ||
-                        p.Type.ToLower().Contains(model.search.value) ||
-                        p.Category.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                result.draw = model.draw;
-                result.recordsTotal = totalRecords;
-                result.recordsFiltered = recFilter;
-                result.data = modifiedData;
-
-                return result;
+                    draw = model.draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = recFilter,
+                    data = modifiedData,
+                };
             }
             catch (Exception ex)
             {
@@ -188,45 +193,50 @@ namespace HomeManager.Api.Factories
             }
         }
 
-        public DataTableResponse<CategoryDataTable> GetTableData(DataTableInput model, ICollection<Category> list)
+        public DataTableResponse<CategoryDataTable> GetTableData(DataTableInput model, IEnumerable<Category> query)
         {
             try
             {
-                var result = new DataTableResponse<CategoryDataTable>();
-                int totalRecords = list.Count;
+                int totalRecords = query.Count();
 
-                var modifiedData = list.Select(d => new CategoryDataTable
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains(model.search.value.ToLower())
+                     );
+                }
+
+                int recFilter = query.Count();
+
+                if (model.order.Count > 0)
+                {
+                    var sortBy = model.columns[model.order[0].column].data;
+                    var sortDir = model.order[0].dir.ToLower();
+
+                    if (model.length == -1)
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir);
+                    else
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.Id);
+                }
+
+                var modifiedData = query.ToList().Select(d => new CategoryDataTable
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name
                 }
                     );
 
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
+                return new DataTableResponse<CategoryDataTable>
                 {
-                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                result.draw = model.draw;
-                result.recordsTotal = totalRecords;
-                result.recordsFiltered = recFilter;
-                result.data = modifiedData;
-
-                return result;
+                    draw = model.draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = recFilter,
+                    data = modifiedData,
+                };
             }
             catch (Exception ex)
             {
@@ -234,14 +244,41 @@ namespace HomeManager.Api.Factories
             }
         }
 
-        public DataTableResponse<TemplateDataTable> GetTableData(DataTableInput model, ICollection<Template> list)
+        public DataTableResponse<TemplateDataTable> GetTableData(DataTableInput model, IEnumerable<Template> query)
         {
             try
             {
-                var result = new DataTableResponse<TemplateDataTable>();
-                int totalRecords = list.Count;
+                int totalRecords = query.Count();
 
-                var modifiedData = list.Select(d => new TemplateDataTable
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    query = query.Where(p => p.Date.ToString().Contains(model.search.value) ||
+                        p.Description.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.Amount.ToString().Contains(model.search.value) ||
+                        p.Type.Name.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.Category.Name.ToLower().Contains(model.search.value.ToLower())
+                     );
+                }
+
+                int recFilter = query.Count();
+
+                if (model.order.Count > 0)
+                {
+                    var sortBy = model.columns[model.order[0].column].data;
+                    var sortDir = model.order[0].dir.ToLower();
+
+                    if (model.length == -1)
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir);
+                    else
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.Id);
+                }
+
+                var modifiedData = query.ToList().Select(d => new TemplateDataTable
                 {
                     Id = d.Id.ToString(),
                     Date = d.Date.ToString(),
@@ -254,35 +291,13 @@ namespace HomeManager.Api.Factories
                 }
                     );
 
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
+                return new DataTableResponse<TemplateDataTable>
                 {
-                    modifiedData = modifiedData.Where(p => p.Date.ToLower().Contains(model.search.value) ||
-                        p.Description.ToLower().Contains(model.search.value) ||
-                        p.Amount.ToLower().Contains(model.search.value) ||
-                        p.Type.Contains(model.search.value) ||
-                        p.Category.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                result.draw = model.draw;
-                result.recordsTotal = totalRecords;
-                result.recordsFiltered = recFilter;
-                result.data = modifiedData;
-
-                return result;
+                    draw = model.draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = recFilter,
+                    data = modifiedData,
+                };
             }
             catch (Exception ex)
             {
@@ -290,14 +305,41 @@ namespace HomeManager.Api.Factories
             }
         }
 
-        public DataTableResponse<TypeDataTable> GetTableData(DataTableInput model, ICollection<Type> list)
+        public DataTableResponse<TypeDataTable> GetTableData(DataTableInput model, IEnumerable<Type> query)
         {
             try
             {
-                var result = new DataTableResponse<TypeDataTable>();
-                int totalRecords = list.Count;
+                int totalRecords = query.Count();
 
-                var modifiedData = list.Select(d => new TypeDataTable
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.EndTaxType.ToString().ToLower().Contains(model.search.value.ToLower()) ||
+                        p.TransactionType.ToString().ToLower().Contains(model.search.value.ToLower()) ||
+                        p.ExtraInput.ToString().ToLower().Contains(model.search.value.ToLower()) ||
+                        p.Status.Name.ToLower().Contains(model.search.value.ToLower())
+                     );
+                }
+
+                int recFilter = query.Count();
+
+                if (model.order.Count > 0)
+                {
+                    var sortBy = model.columns[model.order[0].column].data;
+                    var sortDir = model.order[0].dir.ToLower();
+
+                    if (model.length == -1)
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir);
+                    else
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.Id);
+                }
+
+                var modifiedData = query.ToList().Select(d => new TypeDataTable
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name,
@@ -309,35 +351,13 @@ namespace HomeManager.Api.Factories
                 }
                     );
 
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
+                return new DataTableResponse<TypeDataTable>
                 {
-                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value) ||
-                        p.EndTaxType.ToLower().Contains(model.search.value) ||
-                        p.Debit.ToLower().Contains(model.search.value) ||
-                        p.ExtraInput.Contains(model.search.value) ||
-                        p.Status.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                result.draw = model.draw;
-                result.recordsTotal = totalRecords;
-                result.recordsFiltered = recFilter;
-                result.data = modifiedData;
-
-                return result;
+                    draw = model.draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = recFilter,
+                    data = modifiedData,
+                };
             }
             catch (Exception ex)
             {
@@ -345,14 +365,38 @@ namespace HomeManager.Api.Factories
             }
         }
 
-        public DataTableResponse<StatusDataTable> GetTableData(DataTableInput model, ICollection<Status> list)
+        public DataTableResponse<StatusDataTable> GetTableData(DataTableInput model, IEnumerable<Status> query)
         {
             try
             {
-                var result = new DataTableResponse<StatusDataTable>();
-                int totalRecords = list.Count;
+                int totalRecords = query.Count();
 
-                var modifiedData = list.Select(d => new StatusDataTable
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    query = query.Where(p => p.Name.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.EndPoint.ToString().ToLower().Contains(model.search.value.ToLower())
+                     );
+                }
+
+                int recFilter = query.Count();
+
+                if (model.order.Count > 0)
+                {
+                    var sortBy = model.columns[model.order[0].column].data;
+                    var sortDir = model.order[0].dir.ToLower();
+
+                    if (model.length == -1)
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir);
+                    else
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.Id);
+                }
+
+                var modifiedData = query.ToList().Select(d => new StatusDataTable
                 {
                     Id = d.Id.ToString(),
                     Name = d.Name,
@@ -360,32 +404,13 @@ namespace HomeManager.Api.Factories
                 }
                     );
 
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
+                return new DataTableResponse<StatusDataTable>
                 {
-                    modifiedData = modifiedData.Where(p => p.Name.ToLower().Contains(model.search.value) ||
-                        p.EndPoint.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                result.draw = model.draw;
-                result.recordsTotal = totalRecords;
-                result.recordsFiltered = recFilter;
-                result.data = modifiedData;
-
-                return result;
+                    draw = model.draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = recFilter,
+                    data = modifiedData,
+                };
             }
             catch (Exception ex)
             {
@@ -393,14 +418,38 @@ namespace HomeManager.Api.Factories
             }
         }
 
-        public DataTableResponse<UserRoleDataTable> GetTableData(DataTableInput model, ICollection<UserRoleDataTable> list)
+        public DataTableResponse<UserRoleDataTable> GetTableData(DataTableInput model, IEnumerable<UserRoleDataTable> query)
         {
             try
             {
-                var result = new DataTableResponse<UserRoleDataTable>();
-                int totalRecords = list.Count;
+                int totalRecords = query.Count();
 
-                var modifiedData = list.Select(d => new UserRoleDataTable
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    query = query.Where(p => p.User.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.Role.ToLower().Contains(model.search.value.ToLower())
+                     );
+                }
+
+                int recFilter = query.Count();
+
+                if (model.order.Count > 0)
+                {
+                    var sortBy = model.columns[model.order[0].column].data;
+                    var sortDir = model.order[0].dir.ToLower();
+
+                    if (model.length == -1)
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir);
+                    else
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length);
+                }
+                else
+                {
+                    query = query.OrderBy(x => x.User);
+                }
+
+                var modifiedData = query.ToList().Select(d => new UserRoleDataTable
                 {
                     User = d.User,
                     UserId = d.UserId,
@@ -409,32 +458,13 @@ namespace HomeManager.Api.Factories
                 }
                     );
 
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
+                return new DataTableResponse<UserRoleDataTable>
                 {
-                    modifiedData = modifiedData.Where(p => p.User.ToLower().Contains(model.search.value) ||
-                        p.Role.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                result.draw = model.draw;
-                result.recordsTotal = totalRecords;
-                result.recordsFiltered = recFilter;
-                result.data = modifiedData;
-
-                return result;
+                    draw = model.draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = recFilter,
+                    data = modifiedData,
+                };
             }
             catch (Exception ex)
             {
@@ -442,14 +472,42 @@ namespace HomeManager.Api.Factories
             }
         }
 
-        public DataTableResponse<UserDataTable> GetTableData(DataTableInput model, ICollection<User> list)
+        public DataTableResponse<UserDataTable> GetTableData(DataTableInput model, IEnumerable<User> query)
         {
             try
             {
-                var result = new DataTableResponse<UserDataTable>();
-                int totalRecords = list.Count;
+                int totalRecords = query.Count();
 
-                var modifiedData = list.Select(d => new UserDataTable
+                if (!string.IsNullOrEmpty(model.search.value) &&
+                    !string.IsNullOrWhiteSpace(model.search.value))
+                {
+                    query = query.Where(p => p.UserName.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.Email.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.FirstName.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.LastName.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.PhoneNumber.ToLower().Contains(model.search.value.ToLower()) ||
+                        p.TwoFactorEnabled.ToString().ToLower().Contains(model.search.value.ToLower())
+                     );
+                }
+
+                int recFilter = query.Count();
+
+                if (model.order.Count > 0)
+                {
+                    var sortBy = model.columns[model.order[0].column].data;
+                    var sortDir = model.order[0].dir.ToLower();
+
+                    if (model.length == -1)
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir);
+                    else
+                        query = query.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length);
+                }
+                else
+                {
+                    query = query.OrderByDescending(x => x.Id);
+                }
+
+                var modifiedData = query.ToList().Select(d => new UserDataTable
                 {
                     Id = d.Id.ToString(),
                     UserName = d.UserName,
@@ -461,36 +519,13 @@ namespace HomeManager.Api.Factories
                 }
                     );
 
-                if (!string.IsNullOrEmpty(model.search.value) &&
-                    !string.IsNullOrWhiteSpace(model.search.value))
+                return new DataTableResponse<UserDataTable>
                 {
-                    modifiedData = modifiedData.Where(p => p.UserName.ToLower().Contains(model.search.value) ||
-                        p.Email.ToLower().Contains(model.search.value) ||
-                        p.Name.ToLower().Contains(model.search.value) ||
-                        p.Lastname.ToLower().Contains(model.search.value) ||
-                        p.PhoneNumber.ToLower().Contains(model.search.value) ||
-                        p.TwoFactorEnabled.ToLower().Contains(model.search.value)
-                     ).ToList();
-                }
-
-                string sortBy = "";
-                string sortDir = "";
-
-                if (model.order != null)
-                {
-                    sortBy = model.columns[model.order[0].column].data;
-                    sortDir = model.order[0].dir.ToLower();
-                }
-
-                int recFilter = modifiedData.Count();
-                modifiedData = modifiedData.AsQueryable().OrderBy(sortBy + " " + sortDir).Skip(model.start).Take(model.length).ToList();
-
-                result.draw = model.draw;
-                result.recordsTotal = totalRecords;
-                result.recordsFiltered = recFilter;
-                result.data = modifiedData;
-
-                return result;
+                    draw = model.draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = recFilter,
+                    data = modifiedData,
+                };
             }
             catch (Exception ex)
             {

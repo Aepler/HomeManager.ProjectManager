@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HomeManager.Data.Migrations.Db
 {
-    [DbContext(typeof(HomeManagerContext))]
+    [DbContext(typeof(HomeManagerDbContext))]
     [Migration("20210313122843_HomeManagerDb.Init")]
     partial class HomeManagerDbInit
     {

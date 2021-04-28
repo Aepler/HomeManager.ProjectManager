@@ -12,9 +12,9 @@ namespace HomeManager.Data.Repositories.Finance
 {
     public class RepeatingRepository : IRepeatingRepository
     {
-        private readonly HomeManagerContext _context;
+        private readonly HomeManagerDbContext _context;
 
-        public RepeatingRepository(HomeManagerContext context)
+        public RepeatingRepository(HomeManagerDbContext context)
         {
             _context = context;
         }

@@ -12,9 +12,9 @@ namespace HomeManager.Data.Repositories.Cooking
 {
     public class TagRespoitory : ITagRepository
     {
-        private readonly HomeManagerContext _context;
+        private readonly HomeManagerDbContext _context;
 
-        public TagRespoitory(HomeManagerContext context)
+        public TagRespoitory(HomeManagerDbContext context)
         {
             _context = context;
         }

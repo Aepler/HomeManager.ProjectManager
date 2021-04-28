@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HomeManager.Data.Migrations.Db
 {
-    [DbContext(typeof(HomeManagerContext))]
+    [DbContext(typeof(HomeManagerDbContext))]
     partial class HomeManagerContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

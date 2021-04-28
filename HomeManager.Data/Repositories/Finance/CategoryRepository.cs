@@ -12,9 +12,9 @@ namespace HomeManager.Data.Repositories.Finance
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private readonly HomeManagerContext _context;
+        private readonly HomeManagerDbContext _context;
 
-        public CategoryRepository(HomeManagerContext context)
+        public CategoryRepository(HomeManagerDbContext context)
         {
             _context = context;
         }

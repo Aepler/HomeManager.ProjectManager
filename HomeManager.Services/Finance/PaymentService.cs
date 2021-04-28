@@ -37,11 +37,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetAll(User user)
+        public IEnumerable<Payment> GetAll(User user)
         {
             try
             {
-                return _paymentRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted).ToList();
+                return _paymentRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted);
             }
             catch (Exception ex)
             {
@@ -49,23 +49,23 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetBalanceToday(User user)
+        public IEnumerable<Payment> GetBalanceToday(User user)
         {
             try
             {
                 decimal result = 0;
 
-                ICollection<Payment> payments = GetCompleted(user);
+                IEnumerable<Payment> payments = GetCompleted(user);
 
-                foreach (var x in payments)
+                foreach (var payment in payments)
                 {
-                    if (x.Type.TransactionType == PaymentTransactionType.Deposit || x.Type.TransactionType == PaymentTransactionType.Both)
+                    if (payment.Type.TransactionType == PaymentTransactionType.Deposit || payment.Type.TransactionType == PaymentTransactionType.Both)
                     {
-                        result += x.Amount;
+                        result += payment.Amount;
                     }
-                    else if (x.Type.TransactionType == PaymentTransactionType.Debit)
+                    else if (payment.Type.TransactionType == PaymentTransactionType.Debit)
                     {
-                        result -= x.Amount;
+                        result -= payment.Amount;
                     }
                 }
 
@@ -77,23 +77,23 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetTotalBalanceToday(User user)
+        public IEnumerable<Payment> GetTotalBalanceToday(User user)
         {
             try
             {
                 decimal result = 0;
 
-                ICollection<Payment> payments = GetAllCompleted(user);
+                IEnumerable<Payment> payments = GetAllCompleted(user);
 
-                foreach (var x in payments)
+                foreach (var payment in payments)
                 {
-                    if (x.Type.TransactionType == PaymentTransactionType.Deposit || x.Type.TransactionType == PaymentTransactionType.Both)
+                    if (payment.Type.TransactionType == PaymentTransactionType.Deposit || payment.Type.TransactionType == PaymentTransactionType.Both)
                     {
-                        result += x.Amount;
+                        result += payment.Amount;
                     }
-                    else if (x.Type.TransactionType == PaymentTransactionType.Debit)
+                    else if (payment.Type.TransactionType == PaymentTransactionType.Debit)
                     {
-                        result -= x.Amount;
+                        result -= payment.Amount;
                     }
                 }
 
@@ -105,12 +105,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetByWallet(User user, Guid walletId)
+        public IEnumerable<Payment> GetByWallet(User user, Guid walletId)
         {
             try
             {
-                var payments = GetAll(user);
-                return payments.Where(x => x.fk_WalletId == walletId).ToList();
+                return GetAll(user).Where(x => x.fk_WalletId == walletId);
             }
             catch (Exception ex)
             {
@@ -118,12 +117,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetByCurrentWallet(User user)
+        public IEnumerable<Payment> GetByCurrentWallet(User user)
         {
             try
             {
-                var payments = GetAll(user);
-                return payments.Where(x => x.fk_WalletId == user.CurrentWallet).ToList();
+                return GetAll(user).Where(x => x.fk_WalletId == user.CurrentWallet);
             }
             catch (Exception ex)
             {
@@ -131,12 +129,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetByCategory(User user, Guid categoryId)
+        public IEnumerable<Payment> GetByCategory(User user, Guid categoryId)
         {
             try
             {
-                var payments = GetAll(user);
-                return payments.Where(x => x.fk_CategoryId == categoryId).ToList();
+                return GetAll(user).Where(x => x.fk_CategoryId == categoryId);
             }
             catch (Exception ex)
             {
@@ -144,12 +141,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetByDate(User user, DateTime dateTime)
+        public IEnumerable<Payment> GetByDate(User user, DateTime dateTime)
         {
             try
             {
-                var payments = GetAll(user);
-                return payments.Where(x => x.Date == dateTime).ToList();
+                return GetAll(user).Where(x => x.Date == dateTime);
             }
             catch (Exception ex)
             {
@@ -157,12 +153,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
+        public IEnumerable<Payment> GetByDateRange(User user, DateTime dateTimeStart, DateTime dateTimeEnd)
         {
             try
             {
-                var payments = GetAll(user);
-                return payments.Where(x => x.Date >= dateTimeStart || x.Date <= dateTimeEnd).ToList();
+                return GetAll(user).Where(x => x.Date >= dateTimeStart || x.Date <= dateTimeEnd);
             }
             catch (Exception ex)
             {
@@ -170,12 +165,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetByStatus(User user, Guid statusId)
+        public IEnumerable<Payment> GetByStatus(User user, Guid statusId)
         {
             try
             {
-                var payments = GetAll(user);
-                return payments.Where(x => x.fk_StatusId == statusId).ToList();
+                return GetAll(user).Where(x => x.fk_StatusId == statusId);
             }
             catch (Exception ex)
             {
@@ -183,12 +177,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetByType(User user, Guid typeId)
+        public IEnumerable<Payment> GetByType(User user, Guid typeId)
         {
             try
             {
-                var payments = GetAll(user);
-                return payments.Where(x => x.fk_TypeId == typeId).ToList();
+                return GetAll(user).Where(x => x.fk_TypeId == typeId);
             }
             catch (Exception ex)
             {
@@ -196,12 +189,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetCompleted(User user)
+        public IEnumerable<Payment> GetCompleted(User user)
         {
             try
             {
-                ICollection<Payment> payments = GetByCurrentWallet(user);
-                return payments.Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today).ToList();
+                return GetByCurrentWallet(user).Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today);
             }
             catch (Exception ex)
             {
@@ -209,12 +201,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetAllCompleted(User user)
+        public IEnumerable<Payment> GetAllCompleted(User user)
         {
             try
             {
-                ICollection<Payment> payments = GetAll(user);
-                return payments.Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today).ToList();
+                return GetAll(user).Where(x => x.Status.EndPoint == true && x.Date <= DateTime.Today);
             }
             catch (Exception ex)
             {
@@ -222,12 +213,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Payment> GetPending(User user)
+        public IEnumerable<Payment> GetPending(User user)
         {
             try
             {
-                ICollection<Payment> payments = GetAll(user);
-                return payments.Where(x => x.Status.EndPoint == false && x.Date > DateTime.Today).ToList();
+                return GetAll(user).Where(x => x.Status.EndPoint == false && x.Date > DateTime.Today);
             }
             catch (Exception ex)
             {

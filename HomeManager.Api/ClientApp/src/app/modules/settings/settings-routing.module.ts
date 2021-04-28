@@ -1,22 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthorizeGuard } from 'src/app/core/api-authorization/authorize.guard';
-
-import { SettingsComponent } from './settings.component';
-import { AccountComponent } from './account/account.component';
-import { FinanceComponent } from './finance/finance.component';
+import { AuthorizeGuard } from 'src/app/core/guards/authorize.guard';
 
 const routes: Routes = [
-    { 
-        path: 'settings', 
-        component: SettingsComponent, 
-        canActivate: [AuthorizeGuard],
-        children: [
-          { path: '', redirectTo: '/settings', pathMatch: 'full' },
-          { path: 'account', component: AccountComponent },
-          { path: 'finance', component: FinanceComponent }
-        ]
-      }
+
 ];
 
 @NgModule({

@@ -12,9 +12,9 @@ namespace HomeManager.Data.Repositories.Finance
 {
     public class TemplateRepository : ITemplateRepository
     {
-        private readonly HomeManagerContext _context;
+        private readonly HomeManagerDbContext _context;
 
-        public TemplateRepository(HomeManagerContext context)
+        public TemplateRepository(HomeManagerDbContext context)
         {
             _context = context;
         }

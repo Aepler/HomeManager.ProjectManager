@@ -1,4 +1,3 @@
-using HomeManager.Api.Models;
 using HomeManager.Data;
 using HomeManager.Models.Entities;
 using Microsoft.AspNetCore.Authentication;
@@ -29,7 +28,7 @@ namespace HomeManager.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<HomeManagerContext>(options =>
+            services.AddDbContext<HomeManagerDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("HomeManagerDbConnection")));
 
@@ -92,7 +91,7 @@ namespace HomeManager.Api
                 if (url.Contains("/Identity/Account/Login"))
                 {
                     var query = context.Request.QueryString;
-                    context.Response.Redirect("/Account/Login" + query);
+                    context.Response.Redirect("/Authorization/Login" + query);
                     return;
                 }
 

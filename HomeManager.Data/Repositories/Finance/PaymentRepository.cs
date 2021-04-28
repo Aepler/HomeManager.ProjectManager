@@ -12,9 +12,9 @@ namespace HomeManager.Data.Repositories.Finance
 {
     public class PaymentRepository : IPaymentRepository
     {
-        private readonly HomeManagerContext _context;
+        private readonly HomeManagerDbContext _context;
 
-        public PaymentRepository(HomeManagerContext context)
+        public PaymentRepository(HomeManagerDbContext context)
         {
             _context = context;
         }

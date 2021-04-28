@@ -36,11 +36,11 @@ namespace HomeManager.Services.Finance
             }
         }
 
-        public ICollection<Wallet> GetAll(User user)
+        public IEnumerable<Wallet> GetAll(User user)
         {
             try
             {
-                return _walletRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted).ToList();
+                return _walletRepository.GetAll().Where(x => x.fk_UserId == user.Id && !x.Deleted);
             }
             catch (Exception ex)
             {
